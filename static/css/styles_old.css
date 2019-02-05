@@ -1,0 +1,512 @@
+:root {
+    --bg-color: #f2f0f0;
+    --block-bg-color: white;
+    --shadow-color: #ccc;
+    --gsom-main-color: #be1e2d;
+    --gsom-secondary-color: #737373;
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: sans-serif;
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    background-color: var(--bg-color);
+}
+
+aside {
+    float:right;
+    margin: 2em;
+    width:25%;
+}
+
+.custom-shadow {
+    box-shadow: -0px 0 4px var(--shadow-color);
+}
+
+.block {
+    font-family: 'Montserrat', sans-serif;
+    display: block;
+    background-color: var(--block-bg-color);
+    border: none;
+    border-radius: 2px;
+}
+
+.title {
+    margin-top: 2rem;
+    padding: 1rem;
+    width: 100%;
+}
+
+.img-btn {
+    height: 2em;
+    padding: 3px;
+    cursor: pointer;
+}
+
+.badge {
+    background-color: var(--gsom-main-color);
+    padding: 0.3rem;
+    border-radius: 0.5rem;
+    color: white;
+}
+
+.beta-span {
+    background-color: dodgerblue;
+    padding: 0.2rem;
+    border-radius: 0.5rem;
+    font-size: 75%;
+    color: white;
+}
+
+.main-gpa{
+    padding: 1em;
+}
+.gpa-bar{
+    padding: auto;
+    height: 20em;
+    width:  20em;
+}
+
+.gpa-num{
+    font-size:500%;
+    text-anchor:middle;
+}
+
+circle {
+  fill: var(--block-bg-color);
+}
+
+svg.round-bar {
+  width: 300px;
+  height: 300px;
+  margin: calc(50% - 150px);
+}
+
+
+/*login form*/
+.spbu-login{
+    padding: 1.5em;
+    width: 20em;
+}
+
+.spbu-login form{
+    width:100%
+}
+
+.spbu-login h3{
+    margin: 0 0 1em 0;
+}
+
+.spbu-login input{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 100%;
+    border-radius: 1em;
+    border-style: solid;
+    border-width: 1.5px;
+    border-color: var(--gsom-secondary-color);
+    height: 1.8em;
+    padding: 0 1em;
+    margin: 0.5em;
+    width: 16em;
+}
+
+.spbu-login .btn-submit{
+
+    border-color: var(--gsom-main-color);
+    background-color: var(--gsom-main-color);
+    color: var(--bg-color);
+
+}
+
+.spbu-login .btn-submit:hover{
+
+    color: var(--gsom-main-color);
+    background-color: rgba(255,255,255,0);
+
+}
+
+/*quote*/
+
+.quote{
+    height: 320px;
+    width: 900px;
+    padding: 32px;
+    margin-top: 32px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.quote-main{
+    display: block;
+    float: left;
+    width: calc(70% - 32px);
+    height: 100%;
+    margin-right: 32px;
+}
+
+.quote-text{
+    width: 100%;
+    float: right;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 80px;
+    margin: 0;
+}
+.quote-author{
+    font-style: normal;
+    font-size: 24px;
+    display: block;
+    float: right;
+    height: 20%;
+}
+.quote-image{
+    width: 30%;
+    display: block;
+    float: right;
+    border-radius: 1000px;
+}
+
+
+
+/*navbar*/
+
+.navbar {
+    height: 4rem;
+    box-shadow: 0 0 5px #333333;
+    display: block;
+    color: var(--gsom-main-color);
+    background-color: var(--block-bg-color);
+    font-weight: bold;
+    min-width: 500px;
+
+}
+
+.navbar-brand {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    font-size: 150%;
+    float: left;
+    padding: 1rem;
+    color: var(--gsom-main-color);
+}
+
+.navbar-nav {
+    display: block;
+    height: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 1rem;
+    float: left;
+}
+
+.navbar-right {
+    display: block;
+    height: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 1rem;
+    float: right;
+}
+
+.nav-item {
+    display: inline-block;
+    padding: 0.4em;
+
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--gsom-secondary-color);
+}
+
+.nav-link:hover {
+    color: var(--gsom-main-color);
+}
+
+/* mark */
+
+.mark {
+    width: 100%;
+    height: 4rem;
+    margin: 0;
+    padding: 0;
+}
+
+.mark-divider{
+    height: 2px;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    width: calc(100% - 2rem);
+    display: block;
+    background-color: lightgray;
+}
+.mark-item {
+    height: 4rem;
+    float: left;
+    padding: 1rem;
+    line-height: 2rem;
+}
+
+.mark-subject {
+    min-width: 180px;
+    width: calc(60% - 48px);
+}
+
+.mark-code {
+    min-width: 60px;
+    width: calc(20% - 16px);
+}
+
+.mark-input {
+    font-size: 100%;
+    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+}
+
+.mark-number {
+    min-width: 60px;
+    width: calc(20% - 16px);
+}
+
+.mark-actions {
+    height: 4rem;
+    width: 80px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    float: right;
+}
+
+.mark-non-relevant {
+    color: gray;
+    font-style: italic;
+}
+
+.mark-error {
+    background-color: #fe9090;
+}
+
+/*semester card*/
+.sem-card {
+    width: calc((100% - 4rem) / 3);
+    margin-right: 2rem;
+    min-width: 380px;
+    display: inline-block;
+}
+
+@media (max-width: 1500px) {
+    .sem-card {
+        width: calc((100% - 2rem) / 2);
+        margin-right: 2rem;
+    }
+
+}
+
+@media (max-width: 980px) {
+    .sem-card {
+        width: 100%;
+    }
+}
+
+.last-sc {
+    margin-right: 0;
+}
+
+.sem-header {
+    font-size: 140%;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+/*container*/
+.container-wid {
+    margin-left: 5em;
+    margin-right: 5em;
+    min-width: 500px;
+}
+
+@media (max-width: 980px) {
+    .container-wid {
+        margin-left: 2em;
+        margin-right: 2em;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-wid {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+.checkbox {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    margin: 10px 0 0 20px;
+}
+
+.checkbox + label {
+    position: relative;
+    padding: 0 0 0 60px;
+    cursor: pointer;
+}
+
+.checkbox + label:before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 50px;
+    height: 26px;
+    border-radius: 13px;
+    background: #CDD1DA;
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, .2);
+    transition: .2s;
+}
+
+.checkbox + label:after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 10px;
+    background: #FFF;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .3);
+    transition: .2s;
+}
+
+.checkbox:checked + label:before {
+    background: var(--gsom-main-color);
+}
+
+.checkbox:checked + label:after {
+    left: 26px;
+}
+
+.mobile {
+    font-size: 200%;
+}
+
+.mobile .navbar {
+    height: 3em;
+    min-width: 870px;
+}
+
+.mobile .sem-card {
+    min-width: 580px;
+    width: 100%;
+}
+
+.mobile .mark {
+    height: 3em;
+    font-size: 120%;
+}
+
+.mobile .mark-item {
+    height: 3em;
+    padding: 1em;
+}
+
+.mobile .mark-actions {
+    width: 200px;
+}
+
+.mobile .mark-subject {
+    min-width: 360px;
+    width: calc(60% - 120px);
+}
+
+.mobile .mark-code {
+    min-width: 120px;
+    width: calc(20% - 40px);
+}
+
+.mobile .mark-number {
+    min-width: 120px;
+    width: calc(20% - 40px);
+}
+
+.mobile .mark-input {
+    margin: -1em;
+    width: calc(100% + 2em);
+    height: 3em;
+}
+
+.mobile .marks-list {
+    height: 100%;
+}
+
+.mobile .container-wid {
+    margin: 0;
+    min-width: 870px;
+
+}
+
+
+.mobile .checkbox {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    margin: 20px 0 0 40px;
+}
+
+.mobile .checkbox + label {
+    position: relative;
+    padding: 0 0 0 120px;
+    cursor: pointer;
+}
+
+.mobile .checkbox + label:before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 0;
+    width: 100px;
+    height: 52px;
+    border-radius: 26px;
+    background: #CDD1DA;
+    box-shadow: inset 0 4px 6px rgba(0, 0, 0, .2);
+    transition: .2s;
+}
+
+.mobile .checkbox + label:after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 4px;
+    width: 44px;
+    height: 44px;
+    border-radius: 20px;
+    background: #FFF;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .3);
+    transition: .2s;
+}
+
+.mobile .checkbox:checked + label:before {
+    background: var(--gsom-main-color);
+}
+
+.mobile .checkbox:checked + label:after {
+    left: 52px;
+}
+
+.mobile .spbu-login{
+    padding: 1.5em;
+    width: 100%;
+}
+
+.mobile .spbu-login input{
+    width: calc(100% - 4em);
+}

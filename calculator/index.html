@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-band="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+
+
+    <link href="../static/css/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <!--<link href="../static/css/animation.css" rel="stylesheet"> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/json2html/1.2.0/json2html.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tween.js@16.3.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/color-js@1.0.3"></script>
+
+
+    <title>GPA Calculator</title>
+</head>
+<body>
+<div class="not-loaded" :class="{'mobile' : isMobile}" id="calculator">
+    <nav class="navbar">
+        <a class="navbar-brand" href="/">GSOM</a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <input type="checkbox" class="checkbox" id="mobile" name="mobile" v-model="isMobile">
+                <label for="mobile">Mobile</label>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Калькулятор <span class="badge beta-span">beta</span> </a>
+            </li>
+            <!-- <li class="nav-item">
+                <a class="nav-link" href="#">Рейтинг</a>
+            </li> -->
+        </ul>
+        <img class="user-icon" src="../static/image/icons/user-black.svg" alt="user_ico">
+        <ul class="navbar-right">
+            <li class="nav-item">
+                <button class="login-menu-button">Log In</button>
+            </li>
+        </ul>
+    </nav>
+    <aside>
+        <div class="gpa-bar block custom-shadow" v-if="!isMobile">
+            <label v-if="GPA>=4.85">
+                👑
+            </label>
+            <svg class="round-bar">
+                <path
+                        v-bind:d="progressRoundPath(80,0)"
+                        :style="{'fill': tweenedCSSColor}"
+                >
+                </path>
+                <circle cx="50%" cy="50%" r="45%"></circle>
+                <text x="50%" y="58%" class="gpa-num">{{tweenedGpa.toFixed(2)}}</text>
+            </svg>
+        </div>
+
+        <div class="block spbu-login custom-shadow">
+            <form method="post" id="spbu-login-form" action="">
+                <input type="text" class="login" name="st_login" placeholder="Логин-st">
+                <input type="password" class="password" name="st_password" placeholder="Пароль">
+                <input type="button" class="btn-submit" id="get-marks" value="Синхронизировать оценки">
+            </form>
+            <p v-if="!isLoading"> Мы <b>не сохраняем</b> Ваш логин и пароль. Данные используются только для входа в
+                my.spbu</p>
+            <img v-if="isLoading" class="img-btn" src="../static/image/icons/Infinity.gif"
+                 alt="waiting fpr SPBU">
+            <p v-if="isLoading"> Ожидаем ответа my.spbu...</p>
+        </div>
+    </aside>
+    <div class="container-wid">
+        <div>
+            <div class="main-gpa block custom-shadow" v-if="isMobile">
+                <h2>
+                    Общий средний балл
+                    <label v-if="GPA>=4.85">
+                        👑
+                    </label>
+                    <span class="badge" v-if="!(GPA<=5)" style="background-color: black">
+                        !
+                    </span>
+                    <span class="badge"
+                          v-if="GPA>=0 && GPA<=5"
+                          :style="{'background-color': badgeColorByGpa(GPA)}"
+                    >
+                            {{tweenedGpa.toFixed(4)}}
+                    </span>
+                </h2>
+            </div>
+            <div class="card-group">
+                <div class="sem-card" v-for="(semester, index) in semesters"
+                     :class="{'last-sc': ((index+1)%cardsPerRow===0)}">
+                    <h3 class="sem-header">
+                        {{semester.name}}
+                        <span class="badge" v-if="!(semGPA[index]<=5)" style="background-color: black">
+                        !
+                    </span>
+                        <span class="badge"
+                              v-if="semGPA[index]>=0 && semGPA[index]<=5"
+                              v-bind:style="{ 'background-color': badgeColorByGpa(semGPA[index]) }"
+                        >
+                        {{tweenedSemgpa[index].toFixed(2)}}
+                    </span>
+                    </h3>
+                    <div class="block custom-shadow marks-list" @onclick="activeSem = index">
+                        <div class="mark" v-for="(mark, index) in semester.marks" :class="getRowClassByMark(mark)">
+                            <div class="mark-item mark-subject">
+                                {{ shortString(mark.subject, 22)}}
+                            </div>
+                            <div class="mark-item mark-code" v-if="isActive(mark)">
+                                <input
+                                        type="text"
+                                        class="mark-input"
+                                        v-model="activeMark.code"
+                                        v-on:keydown.enter="finishEditing()"
+                                        v-on:keydown.escape="cancelEditing()"
+                                        v-focus
+                                        v-select
+                                >
+                            </div>
+                            <div @click="startEditing(mark)" class="mark-item mark-code" v-if="!isActive(mark)">
+                                {{mark.code}}
+                            </div>
+                            <div class="mark-item mark-number">
+                                {{mark.number}}
+                            </div>
+                            <div class="mark-divider" v-if="index>0"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>2019© <a href="https://vk.com/g_charkovsky">g.charkovsky</a>, <a href="https://vk.com/doreshnikov">d.oreshnikov</a>
+        </p>
+        <p>При поддержке еды из KFC™ и Токио-CITY™, а также антикафе 12 комнат. При сопротивлении со стороны
+            my.spbu.ru</p>
+    </footer>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/tween.js@16.3.4"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
+<script src="calculator.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+</body>
+</html>
