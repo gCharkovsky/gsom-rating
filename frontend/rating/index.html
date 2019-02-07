@@ -4,10 +4,8 @@
 <head>
     <meta charset="UTF-8">
 
-
     <link href="../static/css/styles.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-    <!--<link href="../static/css/animation.css" rel="stylesheet"> -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/json2html/1.2.0/json2html.min.js"></script>
@@ -27,7 +25,7 @@
                 <label for="mobile">Mobile</label>
             </li>-->
             <li class="nav-item">
-                <a class="nav-link" href="/calculator">Калькулятор <span class="badge beta-span">beta</span> </a>
+                <a class="nav-link" href="../calculator">Калькулятор <span class="badge beta-span">beta</span> </a> <!---->
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="#">Рейтинг</a>
@@ -70,9 +68,9 @@
         <div class="side-card block custom-shadow" id="prioritiser">
             <h2>Ваши приоритеты:</h2>
             <div class="priority" v-for="prior in currentStudent['priority']">
-                <img class="up-btn img-btn" alt="up" src="../static/image/icons/up-arrow.svg">
+                <img class="up-btn img-btn" alt="up" src="../static/images/icons/up-arrow.svg">
                 <div class="priority-name">{{prior}}</div>
-                <img class="up-btn img-btn" alt="down" src="../static/image/icons/down-arrow.svg">
+                <img class="up-btn img-btn" alt="down" src="../static/images/icons/down-arrow.svg">
             </div>
         </div>
     </aside>

@@ -29,11 +29,11 @@
             <li class="nav-item active">
                 <a class="nav-link" href="#">Калькулятор <span class="badge beta-span">beta</span> </a>
             </li>
-            <!-- <li class="nav-item">
-                <a class="nav-link" href="#">Рейтинг</a>
-            </li> -->
+            <li class="nav-item">
+                <a class="nav-link" href="../rating">Рейтинг</a>
+            </li>
         </ul>
-        <img class="user-icon" src="../static/image/icons/user-black.svg" alt="user_ico">
+        <img class="user-icon" src="../static/images/icons/user-black.svg" alt="user_ico">
         <ul class="navbar-right">
             <li class="nav-item">
                 <button class="login-menu-button">Log In</button>
@@ -64,7 +64,7 @@
             </form>
             <p v-if="!isLoading"> Мы <b>не сохраняем</b> Ваш логин и пароль. Данные используются только для входа в
                 my.spbu</p>
-            <img v-if="isLoading" class="img-btn" src="../static/image/icons/Infinity.gif"
+            <img v-if="isLoading" class="img-btn" src="../static/images/animations/Infinity.gif"
                  alt="waiting fpr SPBU">
             <p v-if="isLoading"> Ожидаем ответа my.spbu...</p>
         </div>
