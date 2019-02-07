@@ -4,7 +4,8 @@
     --shadow-color: #ccc;
     --gsom-main-color: #be1e2d;
     --gsom-secondary-color: #737373;
-    --secondary-color: #606060
+    --secondary-color: #606060;
+    --light-marker: #efe;
 }
 
 *, ::after, ::before {
@@ -456,6 +457,11 @@ svg.round-bar {
 
 .student-expected-dir{
     width: 10em;
+}
+
+.current{
+    background-color: var(--light-marker);
+    font-weight: bold;
 }
 
 /*priority*/

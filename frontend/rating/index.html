@@ -20,10 +20,6 @@
     <nav class="navbar">
         <a class="navbar-brand" href="/">GSOM</a>
         <ul class="navbar-nav">
-            <!--<li class="nav-item">
-                <input type="checkbox" class="checkbox" id="mobile" name="mobile" v-model="isMobile">
-                <label for="mobile">Mobile</label>
-            </li>-->
             <li class="nav-item">
                 <a class="nav-link" href="../calculator">Калькулятор <span class="badge beta-span">beta</span> </a> <!---->
             </li>
@@ -32,6 +28,10 @@
             </li>
         </ul>
         <ul class="navbar-right">
+            <li class="nav-item">
+                <input type="checkbox" class="checkbox" id="mobile" name="mobile" v-model="isMobile">
+                <label for="mobile">Mobile</label>
+            </li>
             <li class="nav-item">
                 <button class="btn login-menu-button" id="login-btn">Войти</button>
             </li>
@@ -67,8 +67,10 @@
         </div>
         <div class="side-card block custom-shadow" id="prioritiser">
             <h3>Ваши приоритеты:</h3>
-            <div class="priority" v-for="prior in currentStudent['priority']">
-                <img class="img-btn" alt="up" src="../static/images/icons/up-arrow.svg"><div class="priority-name">{{prior}}</div><img class="img-btn" alt="down" src="../static/images/icons/down-arrow.svg">
+            <div class="priority" v-for="(prior,index) in priorities">
+                <img class="img-btn" alt="up" src="../static/images/icons/up-arrow.svg"  v-on:click="downPriority(index-1)"
+                ><div class="priority-name">{{user_namings[prior]}}</div
+                ><img class="img-btn" alt="down" src="../static/images/icons/down-arrow.svg" v-on:click="downPriority(index)"> <!--не трогать мусор!!! при переносе строк между img и div-ом вылезают неожиданные пробелы, от которых едет верстка -->
             </div>
         </div>
     </aside>
@@ -77,18 +79,18 @@
             <div class="block custom-shadow">
                 <div class="student-list">
                     <div class="students-header">
-                        <div class="student-index list-header">#</div>
+                        <div class="student-index list-header" v-on:click="getStudentsFromLongShityString()">#</div>
                         <div class="student-name list-header">Имя</div>
                         <div class="student-gpa list-header">GPA</div>
                         <div class="student-wanted-dir list-header">Светлые мечты</div>
                         <div class="student-expected-dir list-header">Суровая реальность</div>
                     </div>
-                    <div class="student" v-for="(student, index)  in students">
-                        <div class="list-item-part student-index">{{index}}</div>
+                    <div class="student" v-for="(student, index)  in students" :class="{'current' : student['id']==currentStudent['id']}">
+                        <div class="list-item-part student-index" :class="{'current' : student['id']==currentStudent['id']}">{{index+1}}</div>
                         <div class="list-item-part student-name">{{student['username']}}</div>
                         <div class="list-item-part student-gpa">{{student['gpa']}}</div>
-                        <div class="list-item-part student-wanted-dir">{{student['priority'][0]}}</div>
-                        <div class="list-item-part student-expected-dir">{{student['expectedDirection']}}</div>
+                        <div class="list-item-part student-wanted-dir">{{user_namings[student['priorities'][0]]}}</div>
+                        <div class="list-item-part student-expected-dir">{{user_namings[student['expectedDirection']]}}</div>
                     </div>
                 </div>
             </div>
