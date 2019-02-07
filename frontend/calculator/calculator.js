@@ -425,7 +425,7 @@ var vue = new Vue({
             var grand = this;
             grand.isLoading = true;
             $.ajax({
-                url: '/cgi-bin/get_spbu_marks.py', //url страницы
+                url: '/cgi-bin/marks_service.py', //url страницы
                 type: "POST", //метод отправки
                 dataType: "html", //формат данных
                 data: $("#spbu-login-form").serialize(),  // Сеарилизуем объект
