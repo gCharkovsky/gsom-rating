@@ -66,33 +66,31 @@
             <p>Здесь будет немного инфы о пользователе</p>
         </div>
         <div class="side-card block custom-shadow" id="prioritiser">
-            <h2>Ваши приоритеты:</h2>
+            <h3>Ваши приоритеты:</h3>
             <div class="priority" v-for="prior in currentStudent['priority']">
-                <img class="up-btn img-btn" alt="up" src="../static/images/icons/up-arrow.svg">
-                <div class="priority-name">{{prior}}</div>
-                <img class="up-btn img-btn" alt="down" src="../static/images/icons/down-arrow.svg">
+                <img class="img-btn" alt="up" src="../static/images/icons/up-arrow.svg"><div class="priority-name">{{prior}}</div><img class="img-btn" alt="down" src="../static/images/icons/down-arrow.svg">
             </div>
         </div>
     </aside>
     <div class="container-wid">
         <div class="long-content">
             <div class="block custom-shadow">
-                <table class="student-list">
-                    <thead class="students-header">
-                    <tr>
-                        <td>Имя</td>
-                        <td>Средний</td>
-                        <td>Желание</td>
-                        <td>Прогноз</td>
-                    </tr>
-                    </thead>
-                    <tr class="student" v-for="student in students">
-                        <td class="student-name">{{student['username']}}</td>
-                        <td class="student-gpa">{{student['gpa']}}</td>
-                        <td class="student-wanted-dir">{{student['priority'][0]}}</td>
-                        <td class="student-expected-dir">{{student['expectedDirection']}}</td>
-                    </tr>
-                </table>
+                <div class="student-list">
+                    <div class="students-header">
+                        <div class="student-index list-header">#</div>
+                        <div class="student-name list-header">Имя</div>
+                        <div class="student-gpa list-header">GPA</div>
+                        <div class="student-wanted-dir list-header">Светлые мечты</div>
+                        <div class="student-expected-dir list-header">Суровая реальность</div>
+                    </div>
+                    <div class="student" v-for="(student, index)  in students">
+                        <div class="list-item-part student-index">{{index}}</div>
+                        <div class="list-item-part student-name">{{student['username']}}</div>
+                        <div class="list-item-part student-gpa">{{student['gpa']}}</div>
+                        <div class="list-item-part student-wanted-dir">{{student['priority'][0]}}</div>
+                        <div class="list-item-part student-expected-dir">{{student['expectedDirection']}}</div>
+                    </div>
+                </div>
             </div>
         </div>
 

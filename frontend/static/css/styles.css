@@ -72,7 +72,7 @@ footer {
 }
 
 .img-btn {
-    height: 2em;
+    height: 2rem;
     cursor: pointer;
 }
 
@@ -230,6 +230,7 @@ svg.round-bar {
     margin-right: 32px;
 }
 
+
 .quote-text {
     width: 100%;
     float: right;
@@ -334,7 +335,7 @@ svg.round-bar {
     padding: 0;
 }
 
-.mark-divider {
+.divider {
     height: 2px;
     margin-right: 1rem;
     margin-left: 1rem;
@@ -413,51 +414,70 @@ svg.round-bar {
 }
 
 /*student-list*/
+.list-header{
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+}
+
+.list-item-part{
+        display: inline-block;
+
+}
 .student-list{
     margin-top: 4rem;
     width: 100%;
+    text-align: center;
 }
 
 .students-header{
-    padding: 1rem;
+    padding: 1em;
 }
 .student{
-    cellpadding: 1rem;
+    padding: 1em;
+    display: block;
 }
 
+.student-index{
+    width: 3em;
+}
 .student-name{
-
+    width: calc(100% - 29em);
+    text-align: left;
 }
 
 .student-gpa{
-
+    width: 4em;
 }
 
 .student-wanted-dir {
-
+    width: 10em;
 }
 
 .student-expected-dir{
-
+    width: 10em;
 }
 
 /*priority*/
+#prioritiser {
+    padding:0;
+
+}
+#prioritiser h3{
+    padding: 1rem;
+    margin: 0;
+}
 .priority{
-    display: block;
     width: 100%;
-    height: 2.8em;
-    padding: 0.4em;
+    height: 3em;
+    padding: 0.5em 1em;
+    box-shadow:  0 1px 1px var(--shadow-color);
 }
 .priority-controls{
     width: 2rem;
     display: inline-block;
 }
-.priority-controls .img-btn{
-    width: 2rem;
-    margin-top: -0.4em;
-    margin-bottom: -.4em;
-    padding: 0;
-}
+
 .priority-order-number{
     width: 2rem;
     text-align: center;
@@ -465,9 +485,12 @@ svg.round-bar {
 }
 .priority-name{
     margin: 0;
-    width: 12em;
+    width: calc(100% - 4rem);
+    font-size: 125%;
+    height: 100%;
+    vertical-align: top;
+    line-height: 2rem;
     text-align: center;
-    line-height: 2em;
     display: inline-block;
 }
 
