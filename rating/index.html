@@ -33,24 +33,69 @@
                 <a class="nav-link" href="#">Рейтинг</a>
             </li>
         </ul>
-        <img class="user-icon" src="../static/image/icons/user-black.svg" alt="user_ico">
         <ul class="navbar-right">
             <li class="nav-item">
-                <button class="login-menu-button">Log In</button>
+                <button class="btn login-menu-button" id="login-btn">Войти</button>
             </li>
         </ul>
     </nav>
+    <div id="login-modal" class="modal ">
+        <div class="modal-content block login">
+            <h2>Вход</h2>
+            <form method="post" id="login-form" action="">
+                <input type="text" class="login" name="login" placeholder="Логин">
+                <input type="password" class="password" name="password" placeholder="Пароль">
+                <input type="button" class="btn btn-submit" id="login" value="Войти">
+            </form>
+            <input type="button" class="btn btn-secondary" id="reg-from-login-btn" value="Регистрация">
+        </div>
+    </div>
+    <div id="register-modal" class="modal ">
+        <div class="modal-content block login">
+            <h2>Регистрация</h2>
+            <form method="post" id="registration-form" action="">
+                <input type="text" class="login" name="login" placeholder="Логин">
+                <input type="password" class="password" name="password" placeholder="Пароль">
+                <input type="password" class="password" name="password_copy" placeholder="Повторите пароль">
+                <!--TODO: RE-capcha -->
+                <input type="button" class="btn btn-submit" id="register" value="Зарегистрироваться">
+            </form>
+            <input type="button" class="btn btn-secondary" id="login-from-reg-btn" value="Вход">
+        </div>
+    </div>
     <aside>
-        <div class="side-info block custom-shadow">
+        <div class="side-card block custom-shadow">
             <p>Здесь будет немного инфы о пользователе</p>
         </div>
-        <div class="side-info block custom-shadow">
-            <p>А здесь пользователь будет выбирать свои направления</p>
+        <div class="side-card block custom-shadow" id="prioritiser">
+            <h2>Ваши приоритеты:</h2>
+            <div class="priority" v-for="prior in currentStudent['priority']">
+                <img class="up-btn img-btn" alt="up" src="../static/image/icons/up-arrow.svg">
+                <div class="priority-name">{{prior}}</div>
+                <img class="up-btn img-btn" alt="down" src="../static/image/icons/down-arrow.svg">
+            </div>
         </div>
     </aside>
     <div class="container-wid">
-        <div class="block custom-shadow">
-            <p>А здесь будет рейтинг</p>
+        <div class="long-content">
+            <div class="block custom-shadow">
+                <table class="student-list">
+                    <thead class="students-header">
+                    <tr>
+                        <td>Имя</td>
+                        <td>Средний</td>
+                        <td>Желание</td>
+                        <td>Прогноз</td>
+                    </tr>
+                    </thead>
+                    <tr class="student" v-for="student in students">
+                        <td class="student-name">{{student['username']}}</td>
+                        <td class="student-gpa">{{student['gpa']}}</td>
+                        <td class="student-wanted-dir">{{student['priority'][0]}}</td>
+                        <td class="student-expected-dir">{{student['expectedDirection']}}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
     </div>

@@ -4,6 +4,7 @@
     --shadow-color: #ccc;
     --gsom-main-color: #be1e2d;
     --gsom-secondary-color: #737373;
+    --secondary-color: #606060
 }
 
 *, ::after, ::before {
@@ -48,6 +49,11 @@ footer {
     margin-top: 1rem;
     float: bottom;
 }
+
+.btn{
+    display: block;
+    cursor: pointer;
+}
 .custom-shadow {
     box-shadow: -0px 0 4px var(--shadow-color);
 }
@@ -67,7 +73,6 @@ footer {
 
 .img-btn {
     height: 2em;
-    padding: 3px;
     cursor: pointer;
 }
 
@@ -86,11 +91,16 @@ footer {
     color: white;
 }
 
+.side-card{
+    width: 20em;
+    padding: 1em;
+}
+
 .main-gpa {
     padding: 1em;
 }
 
-.side-info {
+.gpa-info {
     padding: auto;
     height: 11em;
     width: 20em;
@@ -112,23 +122,42 @@ svg.round-bar {
     margin: calc(5.5rem - 80px) calc(50% - 80px);
 }
 
-
+/*modal*/
+.modal{
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.modal-content{
+    margin: 10% auto;
+}
 
 /*login form*/
-.spbu-login {
+.login {
     padding: 1.5em;
     width: 20em;
 }
 
-.spbu-login form {
+.login form {
     width: 100%
 }
 
-.spbu-login h3 {
+.login h2 {
     margin: 0 0 1em 0;
 }
 
-.spbu-login input {
+.login h3 {
+    margin: 0 0 1em 0;
+}
+
+.login input {
     font-family: 'Montserrat', sans-serif;
     font-size: 100%;
     border-radius: 1em;
@@ -141,23 +170,49 @@ svg.round-bar {
     width: 16em;
 }
 
-.spbu-login .btn-submit {
+.login label{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 100%;
+    height: 1.8em;
+    padding: 0 1em;
+    margin: 0.5em;
+    width: 16em;
+}
 
+.login label .checkbox{
+    width: 2em;
+    display: block;
+}
+
+.login .btn-submit {
     border-color: var(--gsom-main-color);
     background-color: var(--gsom-main-color);
     color: var(--bg-color);
     cursor: pointer;
 }
 
-.spbu-login .btn-submit:hover {
+.login .btn-submit:hover {
 
     color: var(--gsom-main-color);
     background-color: rgba(255, 255, 255, 0);
 
 }
 
-/*quote*/
+.login .btn-secondary {
+    border-style: none;
+    border-width: 0;
+    background-color: #00000000;
+    color: var(--secondary-color);
+    cursor: pointer;
+}
 
+.login .btn-secondary:hover {
+
+    background-color: #be1e2d10;
+
+}
+
+/*quote*/
 .quote {
     height: 320px;
     width: 900px;
@@ -199,9 +254,7 @@ svg.round-bar {
     border-radius: 1000px;
 }
 
-
 /*navbar*/
-
 .navbar {
     height: 4rem;
     box-shadow: 0 0 5px #333333;
@@ -357,6 +410,65 @@ svg.round-bar {
     font-size: 140%;
     margin-top: 2rem;
     margin-bottom: 0.5rem;
+}
+
+/*student-list*/
+.student-list{
+    margin-top: 4rem;
+    width: 100%;
+}
+
+.students-header{
+    padding: 1rem;
+}
+.student{
+    cellpadding: 1rem;
+}
+
+.student-name{
+
+}
+
+.student-gpa{
+
+}
+
+.student-wanted-dir {
+
+}
+
+.student-expected-dir{
+
+}
+
+/*priority*/
+.priority{
+    display: block;
+    width: 100%;
+    height: 2.8em;
+    padding: 0.4em;
+}
+.priority-controls{
+    width: 2rem;
+    display: inline-block;
+}
+.priority-controls .img-btn{
+    width: 2rem;
+    margin-top: -0.4em;
+    margin-bottom: -.4em;
+    padding: 0;
+}
+.priority-order-number{
+    width: 2rem;
+    text-align: center;
+    margin: 0;
+}
+.priority-name{
+    margin: 0;
+    width: 12em;
+    text-align: center;
+    line-height: 2em;
+    display: inline-block;
 }
 
 /*container*/
@@ -544,11 +656,11 @@ svg.round-bar {
     left: 52px;
 }
 
-.mobile .spbu-login {
+.mobile .login {
     padding: 1.5em;
     width: 100%;
 }
 
-.mobile .spbu-login input {
+.mobile .login input {
     width: calc(100% - 4em);
 }

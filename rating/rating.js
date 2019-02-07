@@ -1,4 +1,7 @@
-var Color = net.brehaut.Color
+var Color = net.brehaut.Color;
+
+var login_modal = document.getElementById("login-modal");
+var register_modal = document.getElementById("register-modal");
 
 function setCookie(name, value, options) {
     options = options || {};
@@ -41,6 +44,33 @@ var vue = new Vue({
     data: {
         isLoading: false,
         isMobile: false,
+        course: '2m', //пока не нужно
+        currentStudent: {
+            'id': 0,
+            'username': 'Marketolog228',
+            'priority': ['Маркетинг','Финмен','Логистика','УЧР','Инфмен'], //перестановка пяти названий направлений
+            'gpa': 3.12,
+            'expectedDirection': 'Маркетинг',
+        } ,
+        students: [{
+            'id': 0,
+            'username': 'Goshan',
+            'priority': ['Инфмен','Маркетинг','Финмен','Логистика','УЧР',],
+            'gpa': 3.92,
+            'expectedDirection': 'Инфмен',
+        } ,{
+            'id': 1,
+            'username': 'Marketolog228',
+            'priority': ['Маркетинг','Финмен','Логистика','УЧР','Инфмен'],
+            'gpa': 4.12,
+            'expectedDirection': 'Маркетинг',
+        } ,{
+            'id': 2,
+            'username': 'Marketolog229',
+            'priority': ['Маркетинг','Финмен','Логистика','УЧР','Инфмен'],
+            'gpa': 2.22,
+            'expectedDirection': 'Маркетинг',
+        } ,]
     },
     created: function () {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
@@ -62,10 +92,30 @@ var vue = new Vue({
                 this.cardsPerRow = 1;
         },
     },
-    computed: {
-    },
+    computed: {},
 });
 
 $(document).ready(function () {
-    $("#calculator").removeClass("not-loaded");
+    $("#rating").removeClass("not-loaded");
+    $("#login-btn")[0].onclick = function () {
+        $("#login-modal")[0].style.display = "block";
+    };
+    /*$("#register-btn")[0].onclick = function () {
+        $("#register-modal")[0].style.display = "block";
+        console.log("modal visibility changed");
+    };*/
+    $("#reg-from-login-btn")[0].onclick = function () {
+        $("#register-modal")[0].style.display = "block";
+        $("#login-modal")[0].style.display = "none";
+    };
+    $("#login-from-reg-btn")[0].onclick = function () {
+        $("#register-modal")[0].style.display = "none";
+        $("#login-modal")[0].style.display = "block";
+    };
+    window.onclick = function (event) {
+        if (event.target === $("#login-modal")[0] || event.target === $("#register-modal")[0] ) {
+            $("#register-modal")[0].style.display = "none";
+            $("#login-modal")[0].style.display = "none";
+        }
+    };
 });
