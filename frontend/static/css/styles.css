@@ -51,6 +51,10 @@ footer {
     float: bottom;
 }
 
+.ico-label{
+    height: 100%;
+    vertical-align: bottom;
+}
 .btn{
     display: block;
     cursor: pointer;
@@ -99,6 +103,24 @@ footer {
 .side-card{
     width: 20em;
     margin-bottom: 1rem;
+    min-height: 6em;
+
+}
+
+.side-card h3{
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+    margin: 0;
+}
+
+.side-content{
+    padding: 0 1rem 1rem 1rem;
+    margin: 0;
+}
+
+.mobile .side-card{
+    width: 100%;
 }
 
 .main-gpa {
@@ -291,7 +313,7 @@ svg.small-round-bar .gpa-num{
     color: var(--gsom-main-color);
     background-color: var(--block-bg-color);
     font-weight: bold;
-    min-width: 500px;
+    min-width: 720px;
 
 }
 
@@ -326,7 +348,7 @@ svg.small-round-bar .gpa-num{
 .nav-item {
     display: inline-block;
     padding: 0.4em;
-
+    height: 100%;
 }
 
 .nav-link {
@@ -471,7 +493,7 @@ svg.small-round-bar .gpa-num{
     width: 3em;
 }
 .student-name{
-    width: calc(100% - 29em);
+    width: calc(100% - 23em);
     text-align: left;
 }
 
@@ -480,11 +502,11 @@ svg.small-round-bar .gpa-num{
 }
 
 .student-wanted-dir {
-    width: 10em;
+    width: 7em;
 }
 
 .student-expected-dir{
-    width: 10em;
+    width: 7em;
 }
 
 .current{
@@ -493,17 +515,7 @@ svg.small-round-bar .gpa-num{
 }
 
 /*priority*/
-.side-card h3{
-    padding-top: 1rem;
-    padding-left: 1rem;
-    min-height: 4em;
-    margin: 0;
-}
 
-.side-content{
-    padding: 0 1rem 1rem 1rem;
-    margin: 0;
-}
 
 .priority{
     width: 100%;
