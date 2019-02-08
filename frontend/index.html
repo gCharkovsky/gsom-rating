@@ -11,6 +11,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <title>GPA Calculator</title>
 </head>
 <body>
@@ -57,35 +58,81 @@
 
 <script src="static/script/script-basic-vue.js"></script>
 <script>
+    $.removeCookie = function (key, options) {
+        if ($.cookie(key) === undefined) {
+            return false;
+        }
+        // Must not alter options, thus extending a fresh object...
+        $.cookie(key, '', $.extend({}, options, {expires: -1}));
+        return !$.cookie(key);
+    };
+
+    doAjax = function (url, type, data, success) {
+        if ($.cookie('token')) {
+            data = 'token=' + $.cookie('token') + '&' + data;
+        }
+        return $.ajax({
+            url: url,
+            type: type,
+            dataType: 'json',
+            data: data,
+            xhrFields: {withCredentials: true},
+            success: success,
+        });
+    };
+
     $("#user-button").click(function () {
-        $.get("http://127.0.0.1:5000/users/me").then(function (response) {
-            console.log(response);
-            $("#user-button").html(response['login']);
-        })
+        doAjax(
+            'http://127.0.0.1:5000/user/me',
+            'get',
+            '',
+            function (data) {
+                console.log(data);
+                $("#user-button").html('login' in data ? data['login'] : 'None');
+            }
+        );
     });
 
     $("#register-form").submit(function (e) {
         e.preventDefault();
 
-        $.post("http://127.0.0.1:5000/users/register", $("#register-form").serialize()).done(function (response) {
-            console.log(response)
-        })
+        doAjax(
+            'http://127.0.0.1:5000/auth/register',
+            'post',
+            $("#register-form").serialize(),
+            function (data) {
+                console.log(data);
+            }
+        );
     });
 
     $("#login-form").submit(function (e) {
         e.preventDefault();
 
-        $.post("http://127.0.0.1:5000/users/authorize", $("#register-form").serialize()).done(function (response) {
-            console.log(response)
-        })
+        doAjax(
+            'http://127.0.0.1:5000/auth/authorize',
+            'post',
+            $("#login-form").serialize(),
+            function (data) {
+                console.log(data);
+                $.cookie('token', data.token, {path: '/'})
+            }
+        );
     });
 
     $("#logout-form").submit(function (e) {
         e.preventDefault();
 
-        $.post("http://127.0.0.1:5000/users/logout").done(function (response) {
-            console.log(response)
-        })
+        doAjax(
+            'http://127.0.0.1:5000/auth/logout',
+            'post',
+            '',
+            function (data) {
+                console.log(data);
+                $.cookie('token', '', {path: '/', expires: -1});
+                $.removeCookie('token', {path: '/'})
+            }
+        );
     })
 </script>
 </body>

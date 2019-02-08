@@ -1,7 +1,7 @@
-from datetime import datetime, timedelta
-import jwt
-
 from flask import current_app
+
+import jwt
+from datetime import datetime, timedelta
 
 
 def create_token(data):
@@ -12,17 +12,17 @@ def create_token(data):
     }
     token = jwt.encode(
         payload,
-        current_app.config.get('SECRET'),
+        current_app.config.get('JWT_SECRET_KEY'),
         algorithm='HS256',
     )
-    return token
+    return token, payload['exp']
 
 
 def decode_token(token):
     try:
         payload = jwt.decode(
             token,
-            current_app.config.get('SECRET')
+            current_app.config.get('JWT_SECRET_KEY')
         )
         return payload['dat'], True
     except jwt.ExpiredSignatureError:
