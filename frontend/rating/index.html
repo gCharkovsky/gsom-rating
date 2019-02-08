@@ -37,7 +37,7 @@
             </li>
         </ul>
     </nav>
-    <div id="login-modal" class="modal ">
+    <div id="login-modal" class="modal">
         <div class="modal-content block login">
             <h2>Вход</h2>
             <form method="post" id="login-form" action="">
@@ -63,10 +63,17 @@
     </div>
     <aside>
         <div class="side-card block custom-shadow">
-            <p>Здесь будет немного инфы о пользователе</p>
+            <h3>Сводка</h3>
+            <div class="side-content">
+                <div>Средний балл: <b style="font-size:150%">{{currentStudent['gpa']}}</b></div>
+                <div>Место в рейтинге: <b style="font-size:150%">{{getCurrentPlace(false)}}</b></div>
+                <div>Место в общем рейтинге: <b style="font-size:150%">{{getCurrentPlace(true)}}</b></div>
+                <div>Прогноз: <b style="font-size:150%">{{user_namings[currentStudent['predictedDirection']]}}</b></div>
+            </div>
+
         </div>
         <div class="side-card block custom-shadow" id="prioritiser">
-            <h3>Ваши приоритеты:</h3>
+            <h3>Приоритеты</h3>
             <div class="priority" v-for="(prior,index) in priorities">
                 <img class="img-btn" alt="up" src="../static/images/icons/up-arrow.svg"  v-on:click="downPriority(index-1)"
                 ><div class="priority-name">{{user_namings[prior]}}</div

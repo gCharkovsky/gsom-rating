@@ -38,6 +38,7 @@ function getCookie(name) {
 var vue = new Vue({
     el: "#rating",
     data: {
+        sessionId: -1,
         isLoading: false,
         isMobile: false,
         isNotReversed: 1,
@@ -45,6 +46,7 @@ var vue = new Vue({
         course: '2m', //пока не нужно
         directions: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
         priorities: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'], //перестановка пяти названий направлений
+        loggedIn: false,
         user_namings: {
             'Marketing': 'Маркетинг',
             'FM': 'Финмен',
@@ -79,6 +81,8 @@ var vue = new Vue({
             'gpa': 3.12,
             'predictedDirection': 'Marketing'
         },
+        theoreticalNumberOfStudents: 135,
+        k_real: 1,
         students: [{
             'id': 0,
             'username': 'Goshan',
@@ -102,9 +106,36 @@ var vue = new Vue({
     created: function () {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
             this.isMobile = true;
+
+        $.ajax({
+                url: '/cgi-bin/sessionController.py', //url страницы
+                type: "POST", //метод отправки
+                dataType: "text", //формат данных
+                data: "getSession",
+                success: function (response_alpha) { //Данные отправлены успешно
+                    console.log('Данные обработаны и учтены')
+                },
+                error: function (response) { // Данные не отправлены
+                    //alert('Произошла ошибка. Попробуйте еще раз');
+                }
+            });
+
         this.getStudentsFromLongShityString() // TODO: Заменить на запрос в БД
     },
     methods: {
+        isCurrent: function(student, index, array){
+            return student['id'] === this.currentStudent['id']
+        },
+        getCurrentPlace: function(inTotal){
+            var p = this.students.findIndex(this.isCurrent);
+            p++;
+            if(inTotal){
+                return '~' + Math.floor(p/this.k_real)+'/'+this.theoreticalNumberOfStudents;
+            } else {
+                return p+'/'+this.students.length;
+            }
+
+        },
         compareByGpa: function (a, b) {
             if (a['gpa'] < b['gpa']) {
                 return 1;
@@ -151,17 +182,15 @@ var vue = new Vue({
         },
 
         scaleStudents: function () {
-            var theoreticalNumberOfStudents = 0;
+            this.theoreticalNumberOfStudents = 0;
             for (var direction in this.directions) {
                 console.log(this.directions[direction]);
-                theoreticalNumberOfStudents += this.theoreticalDirectionCapacity[this.directions[direction]];
+                this.theoreticalNumberOfStudents += this.theoreticalDirectionCapacity[this.directions[direction]];
             }
-            console.log(theoreticalNumberOfStudents);
-            var k_real = this.students.length / theoreticalNumberOfStudents;
+            this.k_real = this.students.length / this.theoreticalNumberOfStudents;
             for (var direction in this.directions) {
-                this.directionCapacity[this.directions[direction]] = Math.floor(this.theoreticalDirectionCapacity[this.directions[direction]] * k_real + 1)
+                this.directionCapacity[this.directions[direction]] = Math.floor(this.theoreticalDirectionCapacity[this.directions[direction]] * this.k_real + 1)
             }
-            console.log(this.directionCapacity);
         },
 
         getSerializedPriorities: function () {
@@ -176,13 +205,13 @@ var vue = new Vue({
             $.ajax({
                 url: '/cgi-bin/profileController.py', //url страницы
                 type: "POST", //метод отправки
-                dataType: "html", //формат данных
+                dataType: "application/json", //формат данных
                 data: this.getSerializedPriorities(),
                 success: function (response_alpha) { //Данные отправлены успешно
-                    console.log('данные обработаны и учтены')
+                    console.log('Данные обработаны и учтены')
                 },
                 error: function (response) { // Данные не отправлены
-                    alert('Произошла ошибка. попробуйте еще раз');
+                    alert('Произошла ошибка. Попробуйте еще раз');
                 }
             });
         },
@@ -230,18 +259,37 @@ var vue = new Vue({
             this.students.sort(this.compareByActual);
         },
         requestData:function () {
-            $.ajax({
-                url: '/cgi-bin/profileController.py', //url страницы
-                type: "POST", //метод отправки
-                dataType: "html", //формат данных
-                data: this.getSerializedPriorities(),
-                success: function (response_alpha) { //Данные отправлены успешно
+            var grand = this;
+            if(this.loggedIn){
+                $.ajax({
+                url: '/cgi-bin/profileController.py',
+                type: "POST",
+                dataType: "html",
+                data: "\'request\'=\'profile\' \'session\'="+this.sessionId,
+                success: function (response) {
+                    grand.jsonToStudentList(response);
                     console.log('данные обработаны и учтены')
                 },
-                error: function (response) { // Данные не отправлены
-                    alert('Произошла ошибка. попробуйте еще раз');
+                error: function (response) {
+                    alert('Произошла ошибка. Попробуйте еще раз');
                 }
             });
+            }
+            if(this.loggedIn){
+                $.ajax({
+                url: '/cgi-bin/profileController.py',
+                type: "POST",
+                dataType: "html",
+                data: "\'request\'=\'studentsList\'",
+                success: function (response) {
+                    grand.jsonToStudentList(response);
+                    console.log('данные обработаны и учтены')
+                },
+                error: function (response) {
+                    alert('Произошла ошибка. Попробуйте еще раз');
+                }
+            });
+            }
         },
         sortStudentsBy: function (parameter) {
             if(this.actualComparator===parameter){

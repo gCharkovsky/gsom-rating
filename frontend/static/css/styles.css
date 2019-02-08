@@ -94,7 +94,7 @@ footer {
 
 .side-card{
     width: 20em;
-    padding: 1em;
+
 }
 
 .main-gpa {
@@ -466,14 +466,16 @@ svg.round-bar {
 }
 
 /*priority*/
-#prioritiser {
-    padding:0;
-
-}
-#prioritiser h3{
+.side-card h3{
     padding: 1rem;
     margin: 0;
 }
+
+.side-content{
+    padding: 0 1rem 1rem 1rem;
+    margin: 0 0 1rem;
+}
+
 .priority{
     width: 100%;
     height: 3em;
