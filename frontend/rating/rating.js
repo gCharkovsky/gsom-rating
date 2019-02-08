@@ -34,6 +34,14 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
+function toHex(n) {
+    n = parseInt(n, 10);
+    if (isNaN(n)) return "00";
+    n = Math.max(0, Math.min(n, 255));
+    return "0123456789ABCDEF".charAt((n - n % 16) / 16)
+        + "0123456789ABCDEF".charAt(n % 16);
+}
+
 
 var vue = new Vue({
     el: "#rating",
@@ -75,12 +83,7 @@ var vue = new Vue({
             'HR': 0,
             'IM': 0
         },
-        currentStudent: {
-            'id': 0,
-            'username': 'Marketolog228',
-            'gpa': 3.12,
-            'predictedDirection': 'Marketing'
-        },
+        currentId:0,
         theoreticalNumberOfStudents: 135,
         k_real: 1,
         students: [{
@@ -121,18 +124,26 @@ var vue = new Vue({
             });
 
         this.getStudentsFromLongShityString() // TODO: Заменить на запрос в БД
+        this.initCurrentStudent(33);
+
+        var grand = this;
+        this.resize();
+        window.addEventListener("resize", grand.resize, false);
     },
     methods: {
-        isCurrent: function(student, index, array){
-            return student['id'] === this.currentStudent['id']
+        resize: function() {
+            $("#rating").removeClass("not-loaded");
         },
-        getCurrentPlace: function(inTotal){
+        isCurrent: function(student, index, array){
+            return student['id'] === this.currentId;
+        },
+        getCurrentRatingPosition: function(inTotal){
             var p = this.students.findIndex(this.isCurrent);
             p++;
             if(inTotal){
-                return '~' + Math.floor(p/this.k_real)+'/'+this.theoreticalNumberOfStudents;
+                return [Math.floor(p/this.k_real),this.theoreticalNumberOfStudents];
             } else {
-                return p+'/'+this.students.length;
+                return [p,this.students.length];
             }
 
         },
@@ -180,11 +191,43 @@ var vue = new Vue({
                 case 'predicted': return this.compareByPredicted(a,b)*this.isNotReversed;
             }
         },
+        initCurrentStudent: function(id){
+            this.currentId=id;
+            this.priorities = this.students.find(this.isCurrent)['priorities'];
+            this.priorities.reverse();
+            this.priorities.reverse();
+            console.log('Current student has id: '+id);
+        },
+
+        progressRoundPath: function (radius, stroke) {
+            const m = 'M' + radius + ',' + radius + ' ';
+            const l = 'L' + radius + ',' + stroke + ' ';
+            const a = 'A' + (radius - stroke) + ',' + (radius - stroke) + ' ';
+            const angle = -Math.PI * 2 * (this.students.find(this.isCurrent)['gpa'] - 2) / 3 + Math.PI * 0.5;
+            const endpoint = stroke + (radius - stroke) * (1 + Math.cos(angle)) + ',' + stroke + (radius - stroke) * (1 - Math.sin(angle)) + ' z';
+            const largeFlag = (angle > Math.PI * 0.5 || angle < -Math.PI * 0.5) ? 1 : 0;
+            return m + l + a + ' 1 ' + largeFlag + ',1 ' + endpoint;
+        },
+        progressRoundColorByGpa: function (gpa) {
+            if (gpa <= 3)
+                gpa = 3;
+            var color = {r: 0, g: 0, b: 0};
+            var min = {r: 255, g: 16, b: 16}, mid = {r: 240, g: 220, b: 80}, max = {r: 16, g: 196, b: 80};
+            if (gpa <= 4) {
+                color.r = min.r * (4 - gpa) + mid.r * (gpa - 3);
+                color.g = min.g * (4 - gpa) + mid.g * (gpa - 3);
+                color.b = min.b * (4 - gpa) + mid.b * (gpa - 3);
+            } else {
+                color.r = mid.r * (5 - gpa) + max.r * (gpa - 4);
+                color.g = mid.g * (5 - gpa) + max.g * (gpa - 4);
+                color.b = mid.b * (5 - gpa) + max.b * (gpa - 4);
+            }
+            return '#' + toHex(color.r) + toHex(color.g) + toHex(color.b)
+        },
 
         scaleStudents: function () {
             this.theoreticalNumberOfStudents = 0;
             for (var direction in this.directions) {
-                console.log(this.directions[direction]);
                 this.theoreticalNumberOfStudents += this.theoreticalDirectionCapacity[this.directions[direction]];
             }
             this.k_real = this.students.length / this.theoreticalNumberOfStudents;
@@ -198,7 +241,6 @@ var vue = new Vue({
             for (var i = 0; i < this.priorities.length; i++) {
                 res += '\'' + i + '\' : \'' + this.priorities[i];
             }
-            console.log(res);
             return res;
         },
         sendProfiles: function () {
@@ -225,7 +267,6 @@ var vue = new Vue({
             }
             this.students.sort(this.compareByGpa);
             this.predictProfiles();
-            console.log(this.students);
         },
         getStudentsFromLongShityString: function () {
             this.jsonToStudentList(
@@ -236,22 +277,27 @@ var vue = new Vue({
             if (index < this.priorities.length - 1 && index > -1) {
                 var temp = [this.priorities[index + 1], this.priorities[index]];
                 this.priorities.splice(index, 2, temp[0], temp[1]);
-                console.log('priority ' + index + ' downed. Priorities:');
-                console.log(this.priorities)
             } else {
                 console.log('невозможно изменить приоритет крайнего элемента')
             }
+
+            //TODO: this.sendPriorities();, reqest priorities
+            var current = this.students.find(this.isCurrent);
+            current['priorities'] = this.priorities;
+            this.predictProfiles();
         },
         predictProfiles: function () {
             this.scaleStudents();
             this.students.sort(this.compareByGpa);
-            console.log('start vanga');
+            for(var direction in this.directions) {
+                this.directionOccupancy[this.priorities[direction]] = 0;
+            }
+
             for (var student in this.students){
                 for(var priority in this.students[student]['priorities']){
                     if(this.directionOccupancy[this.students[student]['priorities'][priority]]<this.directionCapacity[this.students[student]['priorities'][priority]]){
                         this.students[student]['predictedDirection'] = this.students[student]['priorities'][priority];
                         this.directionOccupancy[this.students[student]['priorities'][priority]]++;
-                        console.log('direction for '+this.students[student]['id'] +' is '+ this.students[student]['priorities'][priority]);
                         break;
                     }
                 }
@@ -300,13 +346,14 @@ var vue = new Vue({
             }
             console.log('sorting by '+ this.actualComparator);
             this.students.sort(this.compareByActual);
+        },
+        changeMobility: function () {
+            this.isMobile ^=1
         }
     },
     computed: {},
     watch: {
-        priorities: function () {
-            console.log('priorities changed')
-        }
+
     }
 });
 

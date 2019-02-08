@@ -37,7 +37,7 @@ aside {
 .mobile aside {
     float: none;
     display: block;
-    padding: 2rem 0 0 0;
+    padding: 6rem 0 0 0;
 }
 
 footer {
@@ -65,6 +65,10 @@ footer {
     background-color: var(--block-bg-color);
     border: none;
     border-radius: 2px;
+}
+
+.modal-content{
+    width: 20rem;
 }
 
 .title {
@@ -121,6 +125,26 @@ svg.round-bar {
     height: 160px;
     margin: calc(5.5rem - 80px) calc(50% - 80px);
 }
+
+svg.small-round-bar {
+    width: 80px;
+    height: 80px;
+}
+svg.small-round-bar .gpa-num{
+    font-size: 150%;
+}
+
+.info-img{
+    height: 4em;
+    vertical-align: middle;
+    float:right;
+    margin-right: 1em;
+}
+
+.rating-position{
+    line-height: 1.8em;
+}
+
 
 /*modal*/
 .modal{
@@ -470,7 +494,9 @@ svg.round-bar {
 
 /*priority*/
 .side-card h3{
-    padding: 1rem;
+    padding-top: 1rem;
+    padding-left: 1rem;
+    min-height: 4em;
     margin: 0;
 }
 

@@ -211,8 +211,7 @@ var vue = new Vue({
     },
     methods: {
         resize: function () {
-                $("#calculator").removeClass("not-loaded");
-
+            $("#calculator").removeClass("not-loaded");
             this.clientWidth = document.body.clientWidth + 16;
             this.cardsPerRow = 1;
             if (this.clientWidth >= 980)
@@ -475,8 +474,6 @@ var vue = new Vue({
             animate()
 
         },
-        cardsPerRow: function () {
-        },
         gpacolor: function () {
             function animate() {
                 if (TWEEN.update()) {
@@ -500,4 +497,25 @@ $(document).ready(function () {
             vue.getSpbuMarks();
             return false;
         });
+    $("#login-btn")[0].onclick = function () {
+        $("#login-modal")[0].style.display = "block";
+    };
+    /*$("#register-btn")[0].onclick = function () {
+        $("#register-modal")[0].style.display = "block";
+        console.log("modal visibility changed");
+    };*/
+    $("#reg-from-login-btn")[0].onclick = function () {
+        $("#register-modal")[0].style.display = "block";
+        $("#login-modal")[0].style.display = "none";
+    };
+    $("#login-from-reg-btn")[0].onclick = function () {
+        $("#register-modal")[0].style.display = "none";
+        $("#login-modal")[0].style.display = "block";
+    };
+    window.onclick = function (event) {
+        if (event.target === $("#login-modal")[0] || event.target === $("#register-modal")[0]) {
+            $("#register-modal")[0].style.display = "none";
+            $("#login-modal")[0].style.display = "none";
+        }
+    };
 });
