@@ -419,6 +419,7 @@ svg.round-bar {
     font-weight: bold;
     text-align: center;
     display: inline-block;
+    cursor: pointer;
 }
 
 .list-item-part{

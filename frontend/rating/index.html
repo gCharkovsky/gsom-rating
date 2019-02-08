@@ -80,17 +80,17 @@
                 <div class="student-list">
                     <div class="students-header">
                         <div class="student-index list-header" v-on:click="getStudentsFromLongShityString()">#</div>
-                        <div class="student-name list-header">Имя</div>
-                        <div class="student-gpa list-header">GPA</div>
-                        <div class="student-wanted-dir list-header">Светлые мечты</div>
-                        <div class="student-expected-dir list-header">Суровая реальность</div>
+                        <div class="student-name list-header" v-on:click="sortStudentsBy('username')">Имя</div>
+                        <div class="student-gpa list-header" v-on:click="sortStudentsBy('gpa')">GPA</div>
+                        <div class="student-wanted-dir list-header" v-on:click="sortStudentsBy('expected')">Светлые мечты</div>
+                        <div class="student-expected-dir list-header" v-on:click="sortStudentsBy('predicted')">Суровая реальность</div>
                     </div>
                     <div class="student" v-for="(student, index)  in students" :class="{'current' : student['id']==currentStudent['id']}">
                         <div class="list-item-part student-index" :class="{'current' : student['id']==currentStudent['id']}">{{index+1}}</div>
                         <div class="list-item-part student-name">{{student['username']}}</div>
                         <div class="list-item-part student-gpa">{{student['gpa']}}</div>
                         <div class="list-item-part student-wanted-dir">{{user_namings[student['priorities'][0]]}}</div>
-                        <div class="list-item-part student-expected-dir">{{user_namings[student['expectedDirection']]}}</div>
+                        <div class="list-item-part student-expected-dir">{{user_namings[student['predictedDirection']]}}</div>
                     </div>
                 </div>
             </div>
