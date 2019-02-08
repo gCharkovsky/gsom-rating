@@ -31,7 +31,7 @@ body {
 
 aside {
     float: right;
-    padding: 4rem 3rem 2rem 0 ;
+    padding: 8rem 3rem 2rem 0 ;
 }
 
 .mobile aside {
@@ -94,7 +94,7 @@ footer {
 
 .side-card{
     width: 20em;
-
+    margin-bottom: 1rem;
 }
 
 .main-gpa {
@@ -104,7 +104,6 @@ footer {
 .gpa-info {
     padding: auto;
     height: 11em;
-    width: 20em;
 }
 
 .gpa-num {
@@ -143,7 +142,6 @@ svg.round-bar {
 /*login form*/
 .login {
     padding: 1.5em;
-    width: 20em;
 }
 
 .login form {
@@ -258,6 +256,11 @@ svg.round-bar {
 
 /*navbar*/
 .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
     height: 4rem;
     box-shadow: 0 0 5px #333333;
     display: block;
@@ -473,7 +476,7 @@ svg.round-bar {
 
 .side-content{
     padding: 0 1rem 1rem 1rem;
-    margin: 0 0 1rem;
+    margin: 0;
 }
 
 .priority{
@@ -533,6 +536,9 @@ svg.round-bar {
     padding-right: 0;
 }
 
+.long-content{
+    padding-top: 4rem;
+}
 /* checkbox*/
 .checkbox {
     position: absolute;

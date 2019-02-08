@@ -80,6 +80,18 @@
                 ><img class="img-btn" alt="down" src="../static/images/icons/down-arrow.svg" v-on:click="downPriority(index)"> <!--не трогать мусор!!! при переносе строк между img и div-ом вылезают неожиданные пробелы, от которых едет верстка -->
             </div>
         </div>
+        <div class="block side-card login custom-shadow">
+            <form method="post" id="spbu-login-form" action="">
+                <input type="text" class="login" name="st_login" placeholder="Логин-st">
+                <input type="password" class="password" name="st_password" placeholder="Пароль">
+                <input type="button" class="btn-submit" id="get-marks" value="Синхронизировать оценки">
+            </form>
+            <p v-if="!isLoading"> Мы <b>не сохраняем</b> Ваш логин и пароль. Данные используются только для входа в
+                my.spbu</p>
+            <img v-if="isLoading" class="img-btn" src="../static/images/animations/Infinity.gif"
+                 alt="waiting fpr SPBU">
+            <p v-if="isLoading"> Ожидаем ответа my.spbu...</p>
+        </div>
     </aside>
     <div class="container-wid">
         <div class="long-content">

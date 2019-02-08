@@ -40,7 +40,7 @@
         </ul>
     </nav>
     <aside>
-        <div class="gpa-info block custom-shadow" v-if="!isMobile">
+        <div class="gpa-info block side-card custom-shadow" v-if="!isMobile">
             <label v-if="GPA>=4.85">
                 👑
             </label>
@@ -55,7 +55,7 @@
             </svg>
         </div>
 
-        <div class="block login custom-shadow">
+        <div class="block login side-card custom-shadow">
             <form method="post" id="spbu-login-form" action="">
                 <input type="text" class="login" name="st_login" placeholder="Логин-st">
                 <input type="password" class="password" name="st_password" placeholder="Пароль">
@@ -69,7 +69,7 @@
         </div>
     </aside>
     <div class="container-wid">
-        <div>
+        <div class="long-content">
             <div class="main-gpa block custom-shadow" v-if="isMobile">
                 <h2>
                     Общий средний балл
