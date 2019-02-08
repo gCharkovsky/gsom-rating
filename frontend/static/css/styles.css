@@ -4,7 +4,8 @@
     --shadow-color: #ccc;
     --gsom-main-color: #be1e2d;
     --gsom-secondary-color: #737373;
-    --secondary-color: #606060
+    --secondary-color: #606060;
+    --light-marker: #efe;
 }
 
 *, ::after, ::before {
@@ -30,7 +31,7 @@ body {
 
 aside {
     float: right;
-    padding: 4rem 3rem 2rem 0 ;
+    padding: 8rem 3rem 2rem 0 ;
 }
 
 .mobile aside {
@@ -72,7 +73,7 @@ footer {
 }
 
 .img-btn {
-    height: 2em;
+    height: 2rem;
     cursor: pointer;
 }
 
@@ -93,7 +94,7 @@ footer {
 
 .side-card{
     width: 20em;
-    padding: 1em;
+    margin-bottom: 1rem;
 }
 
 .main-gpa {
@@ -103,7 +104,6 @@ footer {
 .gpa-info {
     padding: auto;
     height: 11em;
-    width: 20em;
 }
 
 .gpa-num {
@@ -142,7 +142,6 @@ svg.round-bar {
 /*login form*/
 .login {
     padding: 1.5em;
-    width: 20em;
 }
 
 .login form {
@@ -230,6 +229,7 @@ svg.round-bar {
     margin-right: 32px;
 }
 
+
 .quote-text {
     width: 100%;
     float: right;
@@ -256,6 +256,11 @@ svg.round-bar {
 
 /*navbar*/
 .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
     height: 4rem;
     box-shadow: 0 0 5px #333333;
     display: block;
@@ -334,7 +339,7 @@ svg.round-bar {
     padding: 0;
 }
 
-.mark-divider {
+.divider {
     height: 2px;
     margin-right: 1rem;
     margin-left: 1rem;
@@ -413,51 +418,78 @@ svg.round-bar {
 }
 
 /*student-list*/
+.list-header{
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.list-item-part{
+        display: inline-block;
+
+}
 .student-list{
     margin-top: 4rem;
     width: 100%;
+    text-align: center;
 }
 
 .students-header{
-    padding: 1rem;
+    padding: 1em;
 }
 .student{
-    cellpadding: 1rem;
+    padding: 1em;
+    display: block;
 }
 
+.student-index{
+    width: 3em;
+}
 .student-name{
-
+    width: calc(100% - 29em);
+    text-align: left;
 }
 
 .student-gpa{
-
+    width: 4em;
 }
 
 .student-wanted-dir {
-
+    width: 10em;
 }
 
 .student-expected-dir{
+    width: 10em;
+}
 
+.current{
+    background-color: var(--light-marker);
+    font-weight: bold;
 }
 
 /*priority*/
+.side-card h3{
+    padding: 1rem;
+    margin: 0;
+}
+
+.side-content{
+    padding: 0 1rem 1rem 1rem;
+    margin: 0;
+}
+
 .priority{
-    display: block;
     width: 100%;
-    height: 2.8em;
-    padding: 0.4em;
+    height: 3em;
+    padding: 0.5em 1em;
+    box-shadow:  0 1px 1px var(--shadow-color);
 }
 .priority-controls{
     width: 2rem;
     display: inline-block;
 }
-.priority-controls .img-btn{
-    width: 2rem;
-    margin-top: -0.4em;
-    margin-bottom: -.4em;
-    padding: 0;
-}
+
 .priority-order-number{
     width: 2rem;
     text-align: center;
@@ -465,9 +497,12 @@ svg.round-bar {
 }
 .priority-name{
     margin: 0;
-    width: 12em;
+    width: calc(100% - 4rem);
+    font-size: 125%;
+    height: 100%;
+    vertical-align: top;
+    line-height: 2rem;
     text-align: center;
-    line-height: 2em;
     display: inline-block;
 }
 
@@ -501,6 +536,9 @@ svg.round-bar {
     padding-right: 0;
 }
 
+.long-content{
+    padding-top: 4rem;
+}
 /* checkbox*/
 .checkbox {
     position: absolute;

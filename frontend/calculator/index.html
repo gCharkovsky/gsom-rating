@@ -22,10 +22,6 @@
     <nav class="navbar">
         <a class="navbar-brand" href="/">GSOM</a>
         <ul class="navbar-nav">
-            <li class="nav-item">
-                <input type="checkbox" class="checkbox" id="mobile" name="mobile" v-model="isMobile">
-                <label for="mobile">Mobile</label>
-            </li>
             <li class="nav-item active">
                 <a class="nav-link" href="#">Калькулятор <span class="badge beta-span">beta</span> </a>
             </li>
@@ -33,15 +29,18 @@
                 <a class="nav-link" href="../rating">Рейтинг</a>
             </li>
         </ul>
-        <img class="user-icon" src="../static/images/icons/user-black.svg" alt="user_ico">
         <ul class="navbar-right">
             <li class="nav-item">
-                <button class="login-menu-button">Log In</button>
+                <input type="checkbox" class="checkbox" id="mobile" name="mobile" v-model="isMobile">
+                <label for="mobile">Mobile</label>
+            </li>
+            <li class="nav-item">
+                <button class="login-menu-button">Войти</button>
             </li>
         </ul>
     </nav>
     <aside>
-        <div class="gpa-info block custom-shadow" v-if="!isMobile">
+        <div class="gpa-info block side-card custom-shadow" v-if="!isMobile">
             <label v-if="GPA>=4.85">
                 👑
             </label>
@@ -56,7 +55,7 @@
             </svg>
         </div>
 
-        <div class="block login custom-shadow">
+        <div class="block login side-card custom-shadow">
             <form method="post" id="spbu-login-form" action="">
                 <input type="text" class="login" name="st_login" placeholder="Логин-st">
                 <input type="password" class="password" name="st_password" placeholder="Пароль">
@@ -70,7 +69,7 @@
         </div>
     </aside>
     <div class="container-wid">
-        <div>
+        <div class="long-content">
             <div class="main-gpa block custom-shadow" v-if="isMobile">
                 <h2>
                     Общий средний балл
@@ -125,7 +124,7 @@
                             <div class="mark-item mark-number">
                                 {{mark.number}}
                             </div>
-                            <div class="mark-divider" v-if="index>0"></div>
+                            <div class="divider" v-if="index>0"></div>
                         </div>
                     </div>
                 </div>
