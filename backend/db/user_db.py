@@ -1,17 +1,18 @@
 class UserDatabase:
     def __init__(self):
-        self.f = open('tmp/users', 'a')
-        self.users = {k: v for [k, v] in map(lambda line: line.rstrip().split(), self.f.readlines())}
+        with open('tmp/users', 'r') as f:
+            self.users = {k: v for [k, v] in map(lambda line: line.rstrip().split(), f.readlines())}
 
     def add(self, username, password_hash):
-        print(username + ' ' + password_hash, file=self.f)
+        with open('tmp/users', 'a') as f:
+            print(username + ' ' + password_hash, file=f)
         self.users[username] = password_hash
 
     def get_all(self):
         return self.users
 
     def get(self, username):
-        return self.users[username]
+        return self.users.get(username)
 
 
 def get_db():

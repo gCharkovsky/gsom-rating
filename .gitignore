@@ -1,5 +1,8 @@
 *.idea/
+*__pycache__
 .git/
 tmp/
 
 *.zip
+*.secret
+__config__*
