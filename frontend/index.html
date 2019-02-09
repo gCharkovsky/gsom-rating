@@ -34,28 +34,30 @@
         </ul>
     </nav>
     <div class="container-wid">
-        <div class="title block">
-            Добро пожаловать. На главной ничего нет, зато есть <a href="calculator">калькулятор</a> среднего балла.
+        <div class="long-content">
+            <div class="title block">
+                Добро пожаловать. На главной ничего нет, зато есть <a href="calculator">калькулятор</a> среднего балла.
+            </div>
+            <button id="user-button">None</button>
+            <form id="register-form">
+                <input class="login" name="login" value="admin">
+                <input class="password" name="password" value="admin">
+                <input type="submit" name="submit" value="Register"/>
+            </form>
+            <form id="login-form">
+                <input class="login" name="login" value="admin">
+                <input class="password" name="password" value="admin">
+                <input type="submit" name="submit" value="Login"/>
+            </form>
+            <form id="logout-form">
+                <input type="submit" name="submit" value="Logout"/>
+            </form>
         </div>
-        <button id="user-button">None</button>
-        <form id="register-form">
-            <input class="login" name="login" value="admin">
-            <input class="password" name="password" value="admin">
-            <input type="submit" name="submit" value="Register"/>
-        </form>
-        <form id="login-form">
-            <input class="login" name="login" value="admin">
-            <input class="password" name="password" value="admin">
-            <input type="submit" name="submit" value="Login"/>
-        </form>
-        <form id="logout-form">
-            <input type="submit" name="submit" value="Logout"/>
-        </form>
+
     </div>
 </div>
 
 
-<script src="static/script/script-basic-vue.js"></script>
 <script>
     $.removeCookie = function (key, options) {
         if ($.cookie(key) === undefined) {

@@ -420,7 +420,7 @@ var vue = new Vue({
             }
             this.validateGPA();
         },
-        getSpbuMarks: function (ajax_form, url) {
+        getSpbuMarks: function () {
             var grand = this;
             grand.isLoading = true;
             $.ajax({
