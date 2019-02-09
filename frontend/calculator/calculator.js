@@ -36,6 +36,29 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
+$.removeCookie = function (key, options) {
+    if ($.cookie(key) === undefined) {
+        return false;
+    }
+    // Must not alter options, thus extending a fresh object...
+    $.cookie(key, '', $.extend({}, options, {expires: -1}));
+    return !$.cookie(key);
+};
+
+doAjax = function (url, type, data, success) {
+    if ($.cookie('token')) {
+        data = 'token=' + $.cookie('token') + '&' + data;
+    }
+    return $.ajax({
+        url: url,
+        type: type,
+        dataType: 'json',
+        data: data,
+        xhrFields: {withCredentials: true},
+        success: success,
+    });
+};
+
 function mark(subject, code, isRelevant) {
     return {
         subject, code, number: calculateNumber(code), isRelevant
@@ -110,7 +133,6 @@ function calculateNumber(code) {
     return number;
 }
 
-
 var semesters = [
     semester("Первый семестр", [
         mark("История бизнеса", "4C", true),
@@ -149,7 +171,6 @@ function toHex(n) {
         + "0123456789ABCDEF".charAt(n % 16);
 }
 
-
 var vue = new Vue({
     el: "#calculator",
     data: {
@@ -180,22 +201,21 @@ var vue = new Vue({
     },
     created: function () {
 
-        if (document.cookie.length > 50) {
-            console.log('loading marks from cookies');
+        if (getCookie('Marks') != null) {
             this.jsonToMarks(getCookie('Marks'));
         } else {
             console.log('There is no Cookie. Probably, this is Light Side.')
         }
+        this.checkSession();
 
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
             this.isMobile = true;
         var grand = this;
         this.resize();
         window.addEventListener("resize", grand.resize, false);
-        this.tweenedGpaColor = Object.assign({}, this.gpacolor)
+        this.tweenedGpaColor = Object.assign({}, this.gpacolor);
 
         console.log('go');
-        //  this.update_marks('', '');
     },
     directives: {
         focus: {
@@ -224,9 +244,11 @@ var vue = new Vue({
         },
 
         validateGPA: function () {
-            var date = new Date(new Date().getTime() + 60 * 60 * 24 * 200* 1000);
-            document.cookie = "Marks=" + this.marksToJson()+"; path=/calculator/; expires=" + date.toUTCString();
-
+            if($.cookie('Marks', this.marksToJson(), {expires: 60 * 60 * 24 * 200 * 1000})){
+                console.log(document.cookie);
+            } else {
+                console.log('error in cookie adding');
+            }
             var sum = 0, n = 0;
             for (var i = 0; i < this.semesters.length; i++) {
                 var sem = this.semesters[i];
@@ -239,7 +261,7 @@ var vue = new Vue({
             }
             this.gpa = (sum / n).toFixed(4);
 
-            var tempsemgpa=[];
+            var tempsemgpa = [];
             for (var i = 0; i < this.semesters.length; i++) {
                 var sem = this.semesters[i];
                 var sum = 0, n = 0;
@@ -257,7 +279,6 @@ var vue = new Vue({
 
             while (this.tweenedSemgpa.length > tempsemgpa.length)
                 this.tweenedSemgpa.pop();
-
 
 
             this.semgpa = [];
@@ -416,7 +437,7 @@ var vue = new Vue({
                 this.semesters[number - 1] = semester(' Семестр ' + number, smarks);
                 number++;
             }
-            while(semesters.length>number-1){
+            while (semesters.length > number - 1) {
                 semesters.pop();
             }
             this.validateGPA();
@@ -440,6 +461,9 @@ var vue = new Vue({
                 }
             });
         },
+        checkSession: function () {
+            this.isLogged = !($.cookie('token') == null)
+        },
         login: function () {
             var grand = this;
             doAjax(
@@ -447,35 +471,57 @@ var vue = new Vue({
                 'post',
                 $("#login-form").serialize(),
                 function (data) {
-                    grand.isLogged=true;
-                    //console.log(data);
+                    console.log(data);
                     $.cookie('token', data.token, {path: '/'})
+                    if (data.error == null) {
+                        grand.hideLoginModal();
+                        grand.isLogged = true;
+                        grand.requestData();
+                    }
                 }
             );
         },
         register: function () {
+            var grand = this;
             doAjax(
                 'http://127.0.0.1:5000/auth/register',
                 'post',
                 $("#register-form").serialize(),
                 function (data) {
-
+                    grand.hideRegisterModal();
+                    grand.showLoginModal();
                     console.log(data);
                 }
             );
         },
         logout: function () {
+            var grand = this;
             doAjax(
                 'http://127.0.0.1:5000/auth/logout',
                 'post',
                 '',
                 function (data) {
-                    console.log(data);
+                    //console.log(data);
+                    grand.isLogged = false;
                     $.cookie('token', '', {path: '/', expires: -1});
-                    $.removeCookie('token', {path: '/'})
+                    $.removeCookie('token', {path: '/'});
+                    $("#register-modal")[0].style.display = "none";
+                    $("#login-modal")[0].style.display = "none";
                 }
             );
-        }
+        },
+        showLoginModal: function () {
+            $("#login-modal")[0].style.display = "block";
+        },
+        showRegisterModal: function () {
+            $("#register-modal")[0].style.display = "block";
+        },
+        hideLoginModal: function () {
+            $("#login-modal")[0].style.display = "none";
+        },
+        hideRegisterModal: function () {
+            $("#register-modal")[0].style.display = "none";
+        },
 
     },
     computed: {
@@ -534,21 +580,6 @@ $(document).ready(function () {
             vue.getSpbuMarks();
             return false;
         });
-    $("#login-btn")[0].onclick = function () {
-        $("#login-modal")[0].style.display = "block";
-    };
-    /*$("#register-btn")[0].onclick = function () {
-        $("#register-modal")[0].style.display = "block";
-        console.log("modal visibility changed");
-    };*/
-    $("#reg-from-login-btn")[0].onclick = function () {
-        $("#register-modal")[0].style.display = "block";
-        $("#login-modal")[0].style.display = "none";
-    };
-    $("#login-from-reg-btn")[0].onclick = function () {
-        $("#register-modal")[0].style.display = "none";
-        $("#login-modal")[0].style.display = "block";
-    };
     window.onclick = function (event) {
         if (event.target === $("#login-modal")[0] || event.target === $("#register-modal")[0]) {
             $("#register-modal")[0].style.display = "none";

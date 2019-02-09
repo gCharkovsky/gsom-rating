@@ -134,17 +134,24 @@ var vue = new Vue({
     created: function () {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
             this.isMobile = true;
+        this.checkSession();
 
         this.getStudentsFromLongShityString();// TODO: Заменить на запрос в БД
-        this.initCurrentStudent(33);
-
+        if (this.isLogged)
+            this.requestData();
+        else
+            this.initCurrentStudent(0);
         var grand = this;
         this.resize();
         window.addEventListener("resize", grand.resize, false);
     },
     methods: {
+
         resize: function () {
             $("#rating").removeClass("not-loaded");
+        },
+        isCourseCorrect: function () {
+            return this.course==='2m';
         },
         isCurrent: function (student, index, array) {
             return student['id'] === this.currentId;
@@ -214,7 +221,6 @@ var vue = new Vue({
             this.priorities.reverse();
             console.log('Current student has id: ' + id);
         },
-
         progressRoundPath: function (radius, stroke) {
             const m = 'M' + radius + ',' + radius + ' ';
             const l = 'L' + radius + ',' + stroke + ' ';
@@ -240,7 +246,6 @@ var vue = new Vue({
             }
             return '#' + toHex(color.r) + toHex(color.g) + toHex(color.b)
         },
-
         scaleStudents: function () {
             this.theoreticalNumberOfStudents = 0;
             for (var direction in this.directions) {
@@ -251,7 +256,6 @@ var vue = new Vue({
                 this.directionCapacity[this.directions[direction]] = Math.floor(this.theoreticalDirectionCapacity[this.directions[direction]] * this.k_real + 1)
             }
         },
-
         getSerializedPriorities: function () {
             var res = '';
             for (var i = 0; i < this.priorities.length; i++) {
@@ -320,39 +324,6 @@ var vue = new Vue({
             }
             this.students.sort(this.compareByActual);
         },
-        requestData: function () {
-            var grand = this;
-            if (this.loggedIn) {
-                $.ajax({
-                    url: '/cgi-bin/profileController.py',
-                    type: "POST",
-                    dataType: "html",
-                    data: "\'request\'=\'profile\' \'session\'=" + this.sessionId,
-                    success: function (response) {
-                        grand.jsonToStudentList(response);
-                        console.log('данные обработаны и учтены')
-                    },
-                    error: function (response) {
-                        alert('Произошла ошибка. Попробуйте еще раз');
-                    }
-                });
-            }
-            if (this.loggedIn) {
-                $.ajax({
-                    url: '/cgi-bin/profileController.py',
-                    type: "POST",
-                    dataType: "html",
-                    data: "\'request\'=\'studentsList\'",
-                    success: function (response) {
-                        grand.jsonToStudentList(response);
-                        console.log('данные обработаны и учтены')
-                    },
-                    error: function (response) {
-                        alert('Произошла ошибка. Попробуйте еще раз');
-                    }
-                });
-            }
-        },
         sortStudentsBy: function (parameter) {
             if (this.actualComparator === parameter) {
                 this.isNotReversed *= -1;
@@ -366,6 +337,21 @@ var vue = new Vue({
         changeMobility: function () {
             this.isMobile ^= 1
         },
+        requestData: function () {
+            var grand = this;
+            doAjax(
+                'http://127.0.0.1:5000/user/me',
+                'get',
+                '',
+                function (data) {
+                    console.log(data.id);
+                    grand.initCurrentStudent(data.id);
+                }
+            );
+        },
+        checkSession: function () {
+            this.isLogged = !($.cookie('token') == null)
+        },
         login: function () {
             var grand = this;
             doAjax(
@@ -375,18 +361,23 @@ var vue = new Vue({
                 function (data) {
                     console.log(data);
                     $.cookie('token', data.token, {path: '/'})
-                    if(data.error == null)
-                        grand.isLogged=true;
+                    if (data.error == null) {
+                        grand.hideLoginModal();
+                        grand.isLogged = true;
+                        grand.requestData();
+                    }
                 }
             );
         },
         register: function () {
+            var grand = this;
             doAjax(
                 'http://127.0.0.1:5000/auth/register',
                 'post',
                 $("#register-form").serialize(),
                 function (data) {
-
+                    grand.hideRegisterModal();
+                    grand.showLoginModal();
                     console.log(data);
                 }
             );
@@ -399,14 +390,26 @@ var vue = new Vue({
                 '',
                 function (data) {
                     //console.log(data);
-                    grand.isLogged=false;
+                    grand.isLogged = false;
                     $.cookie('token', '', {path: '/', expires: -1});
                     $.removeCookie('token', {path: '/'});
                     $("#register-modal")[0].style.display = "none";
                     $("#login-modal")[0].style.display = "none";
                 }
             );
-        }
+        },
+        showLoginModal : function () {
+            $("#login-modal")[0].style.display = "block";
+        },
+        showRegisterModal : function () {
+            $("#register-modal")[0].style.display = "block";
+        },
+        hideLoginModal : function () {
+            $("#login-modal")[0].style.display = "none";
+        },
+        hideRegisterModal : function () {
+            $("#register-modal")[0].style.display = "none";
+        },
     },
     computed: {},
     watch: {}
@@ -414,21 +417,6 @@ var vue = new Vue({
 
 $(document).ready(function () {
     $("#rating").removeClass("not-loaded");
-    $("#login-btn")[0].onclick = function () {
-        $("#login-modal")[0].style.display = "block";
-    };
-    /*$("#register-btn")[0].onclick = function () {
-        $("#register-modal")[0].style.display = "block";
-        console.log("modal visibility changed");
-    };*/
-    $("#reg-from-login-btn")[0].onclick = function () {
-        $("#register-modal")[0].style.display = "block";
-        $("#login-modal")[0].style.display = "none";
-    };
-    $("#login-from-reg-btn")[0].onclick = function () {
-        $("#register-modal")[0].style.display = "none";
-        $("#login-modal")[0].style.display = "block";
-    };
     window.onclick = function (event) {
         if (event.target === $("#login-modal")[0] || event.target === $("#register-modal")[0]) {
             $("#register-modal")[0].style.display = "none";

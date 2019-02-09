@@ -10,6 +10,7 @@
     <!--<link href="../static/css/animation.css" rel="stylesheet"> -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/json2html/1.2.0/json2html.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tween.js@16.3.4"></script>
     <script src="https://cdn.jsdelivr.net/npm/color-js@1.0.3"></script>
@@ -37,7 +38,10 @@
                 <label for="mobile"><img class="ico-label" src="../static/images/icons/mobile.svg" alt="mobile"> </label>
             </li>
             <li class="nav-item">
-                <button class="login-menu-button">Войти</button>
+                <button class="login-menu-button" id="login-btn" v-if="!isLogged" v-on:click="showLoginModal()">Войти</button>
+                <button class="login-menu-button" id="logout-btn" v-if="isLogged" v-on:click="logout()">Выйти</button>
+                <a class="nav-link" href="../user" v-if="isLogged && !isMobile">Личный кабинет</a>
+                <a class="nav-link" href="../user" v-if="isMobile && isLogged"><img class="ico-label" src="../static/images/icons/user-black.svg" alt="Account"></a>
             </li>
         </ul>
     </nav>
@@ -47,9 +51,9 @@
             <form method="post" id="login-form" action="">
                 <input type="text"  name="login" placeholder="Логин">
                 <input type="password" class="password" name="password" placeholder="Пароль">
-                <input type="button" class="btn btn-submit" id="login" value="Войти">
+                <input type="button" class="btn btn-submit" id="login" value="Войти"  v-on:click="login()">
             </form>
-            <input type="button" class="btn btn-secondary" id="reg-from-login-btn" value="Регистрация">
+            <input type="button" class="btn btn-secondary" id="reg-from-login-btn" value="Регистрация" v-on:click="hideLoginModal(); showRegisterModal()">
         </div>
     </div>
     <div id="register-modal" class="modal ">
@@ -60,9 +64,9 @@
                 <input type="password" class="password" name="password" placeholder="Пароль">
                 <input type="password" class="password" name="password_copy" placeholder="Повторите пароль">
                 <!--TODO: RE-capcha -->
-                <input type="button" class="btn btn-submit" id="register" value="Зарегистрироваться">
+                <input type="button" class="btn btn-submit" id="register" value="Зарегистрироваться" v-on:click="register()">
             </form>
-            <input type="button" class="btn btn-secondary" id="login-from-reg-btn" value="Вход">
+            <input type="button" class="btn btn-secondary" id="login-from-reg-btn" value="Вход"  v-on:click="hideRegisterModal(); showLoginModal()">
         </div>
     </div>
     <aside>

@@ -16,6 +16,8 @@ def load():
     return parse_all(do_request(st_login, password))
 
 
+# TODO: проверка валидности ст-логина и ст-пароля
+# TODO: выгрузка курса и направления
 def do_request(username, password):
     SESSION_NAME = 'ASP.NET_SessionId'
     COOKIES = []

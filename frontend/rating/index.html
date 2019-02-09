@@ -36,7 +36,7 @@
                 <label for="mobile"><img class="ico-label" src="../static/images/icons/mobile.svg" alt="mobile"> </label>
             </li>
             <li class="nav-item">
-                <button class="login-menu-button" id="login-btn" v-if="!isLogged">Войти</button>
+                <button class="login-menu-button" id="login-btn" v-if="!isLogged" v-on:click="showLoginModal()">Войти</button>
                 <button class="login-menu-button" id="logout-btn" v-if="isLogged" v-on:click="logout()">Выйти</button>
                 <a class="nav-link" href="../user" v-if="isLogged && !isMobile">Личный кабинет</a>
                 <a class="nav-link" href="../user" v-if="isMobile && isLogged"><img class="ico-label" src="../static/images/icons/user-black.svg" alt="Account"></a>
@@ -51,7 +51,7 @@
                 <input type="password" class="password" name="password" placeholder="Пароль">
                 <input type="button" class="btn btn-submit" id="login" value="Войти"  v-on:click="login()">
             </form>
-            <input type="button" class="btn btn-secondary" id="reg-from-login-btn" value="Регистрация">
+            <input type="button" class="btn btn-secondary" id="reg-from-login-btn" value="Регистрация" v-on:click="hideLoginModal(); showRegisterModal()">
         </div>
     </div>
     <div id="register-modal" class="modal ">
@@ -64,11 +64,11 @@
                 <!--TODO: RE-capcha -->
                 <input type="button" class="btn btn-submit" id="register" value="Зарегистрироваться" v-on:click="register()">
             </form>
-            <input type="button" class="btn btn-secondary" id="login-from-reg-btn" value="Вход">
+            <input type="button" class="btn btn-secondary" id="login-from-reg-btn" value="Вход"  v-on:click="hideRegisterModal(); showLoginModal()">
         </div>
     </div>
     <aside>
-        <div class="side-card block custom-shadow">
+        <div class="side-card block custom-shadow" v-if="isLogged">
             <h3>Сводка</h3>
             <div class="side-content">
                 <div>
@@ -93,7 +93,7 @@
             </div>
 
         </div>
-        <div class="side-card block custom-shadow" id="prioritiser">
+        <div class="side-card block custom-shadow" v-if="isLogged">
             <h3>Приоритеты</h3>
             <div class="priority" v-for="(prior,index) in priorities">
                 <img class="img-btn" alt="up" src="../static/images/icons/up-arrow.svg"
@@ -104,7 +104,18 @@
                 <!--не трогать мусор!!! при переносе строк между img и div-ом вылезают неожиданные пробелы, от которых едет верстка -->
             </div>
         </div>
-
+        <div class="side-card block custom-shadow" v-if="!isLogged">
+            <h3>Требуется вход</h3>
+            <div class="side-content">
+                <b>Войдите</b> или <b>зарегистрируйтесь</b>, чтобы заглянуть в будущее
+            </div>
+        </div>
+        <div class="side-card block custom-shadow" v-if="!isCourseCorrect()">
+            <h3>Только второй курс</h3>
+            <div class="side-content">
+                К сожалению, в данный момент рейтинг функционирует только для второго курса. Ждём и верим)
+            </div>
+        </div>
     </aside>
     <div class="container-wid">
         <div class="long-content">

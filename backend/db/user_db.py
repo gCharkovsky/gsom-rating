@@ -65,3 +65,8 @@ def add_user(login, password_hash):
 
 def get_user_by_login(login):
     return User.query.filter_by(login=login).first()
+
+
+def get_public_users_by_course(course):
+   userlist = User.query.filter_by(course=course) #TODO: выдавать только id, username, gpa, priorities
+
