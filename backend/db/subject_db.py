@@ -1,6 +1,4 @@
-from backend.controller import controller
-
-db = controller.db
+from backend.db import db
 
 
 class Subject(db.Model):

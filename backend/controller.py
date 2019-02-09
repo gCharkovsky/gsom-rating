@@ -1,17 +1,21 @@
+import os
+
 from flask import Flask
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 
-from backend.__config__ import BaseConfig
+from backend.__config__ import BaseConfig, PathInfo
+from backend.db import db, initialize_database
+from backend.service import auth_service, user_service
 
 controller = Flask('controller')
 controller.config.from_object(BaseConfig)
-controller.db = SQLAlchemy(controller)
-controller.db.create_all()
+controller.app_context().push()
+db.init_app(controller)
 
 if __name__ == '__main__':
-    from backend.service import auth_service, user_service
-
+    if not os.path.exists(PathInfo.DATABASE_PATH):
+        db.create_all()
+        initialize_database()
     CORS(controller, supports_credentials=True)
 
     controller.register_blueprint(auth_service.auth, url_prefix='/auth')

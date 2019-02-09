@@ -1,6 +1,5 @@
-from backend.controller import controller
+from backend.db import db
 
-db = controller.db
 tracks = [
     'Marketing',
     'FM',
@@ -23,4 +22,5 @@ class Track(db.Model):
 
 def fill():
     for track in tracks:
-        db.session.add(name=track)
+        db.session.add(Track(name=track))
+    db.session.commit()

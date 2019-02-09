@@ -1,15 +1,16 @@
-from backend.controller import controller
+# noinspection PyUnresolvedReferences
+from backend.db import db, track_db, subject_db
 from datetime import datetime
 
-db = controller.db
-
 user_track = db.Table(
+    '$user$track',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('track_id', db.Integer, db.ForeignKey('track.id'), primary_key=True),
     db.Column('priority', db.Integer, nullable=False),
 )
 
 user_subject = db.Table(
+    '$user$subject',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('subject_id', db.Integer, db.ForeignKey('subject.id'), primary_key=True),
     db.Column('mark', db.String(2), nullable=False),
