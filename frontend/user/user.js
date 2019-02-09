@@ -50,6 +50,7 @@ var vue = new Vue({
         isLoading: false,
         isMobile: false,
         isPublic: true,
+        isLogged:true,
         scoreSecondLang: false,
         stLogin: '',
         validSt: '',

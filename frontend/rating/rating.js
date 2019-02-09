@@ -34,6 +34,30 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
+$.removeCookie = function (key, options) {
+    if ($.cookie(key) === undefined) {
+        return false;
+    }
+    // Must not alter options, thus extending a fresh object...
+    $.cookie(key, '', $.extend({}, options, {expires: -1}));
+    return !$.cookie(key);
+};
+
+doAjax = function (url, type, data, success) {
+    if ($.cookie('token')) {
+        data = 'token=' + $.cookie('token') + '&' + data;
+    }
+    return $.ajax({
+        url: url,
+        type: type,
+        dataType: 'json',
+        data: data,
+        xhrFields: {withCredentials: true},
+        success: success,
+    });
+};
+
+
 function toHex(n) {
     n = parseInt(n, 10);
     if (isNaN(n)) return "00";
@@ -49,6 +73,7 @@ var vue = new Vue({
         sessionId: -1,
         isLoading: false,
         isMobile: false,
+        isLogged: false,
         isNotReversed: 1,
         actualComparator: 'gpa',
         course: '2m', //пока не нужно
@@ -83,7 +108,7 @@ var vue = new Vue({
             'HR': 0,
             'IM': 0
         },
-        currentId:0,
+        currentId: 0,
         theoreticalNumberOfStudents: 135,
         k_real: 1,
         students: [{
@@ -110,20 +135,7 @@ var vue = new Vue({
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
             this.isMobile = true;
 
-        $.ajax({
-                url: '/cgi-bin/sessionController.py', //url страницы
-                type: "POST", //метод отправки
-                dataType: "text", //формат данных
-                data: "getSession",
-                success: function (response_alpha) { //Данные отправлены успешно
-                    console.log('Данные обработаны и учтены')
-                },
-                error: function (response) { // Данные не отправлены
-                    //alert('Произошла ошибка. Попробуйте еще раз');
-                }
-            });
-
-        this.getStudentsFromLongShityString() // TODO: Заменить на запрос в БД
+        this.getStudentsFromLongShityString();// TODO: Заменить на запрос в БД
         this.initCurrentStudent(33);
 
         var grand = this;
@@ -131,19 +143,19 @@ var vue = new Vue({
         window.addEventListener("resize", grand.resize, false);
     },
     methods: {
-        resize: function() {
+        resize: function () {
             $("#rating").removeClass("not-loaded");
         },
-        isCurrent: function(student, index, array){
+        isCurrent: function (student, index, array) {
             return student['id'] === this.currentId;
         },
-        getCurrentRatingPosition: function(inTotal){
+        getCurrentRatingPosition: function (inTotal) {
             var p = this.students.findIndex(this.isCurrent);
             p++;
-            if(inTotal){
-                return [Math.floor(p/this.k_real),this.theoreticalNumberOfStudents];
+            if (inTotal) {
+                return [Math.floor(p / this.k_real), this.theoreticalNumberOfStudents];
             } else {
-                return [p,this.students.length];
+                return [p, this.students.length];
             }
 
         },
@@ -183,20 +195,24 @@ var vue = new Vue({
             }
             return 0;
         },
-        compareByActual: function(a,b){
+        compareByActual: function (a, b) {
             switch (this.actualComparator) {
-                case 'gpa': return this.compareByGpa(a,b)*this.isNotReversed;
-                case 'username': return this.compareByUsername(a,b)*this.isNotReversed;
-                case 'expected': return this.compareByExpected(a,b)*this.isNotReversed;
-                case 'predicted': return this.compareByPredicted(a,b)*this.isNotReversed;
+                case 'gpa':
+                    return this.compareByGpa(a, b) * this.isNotReversed;
+                case 'username':
+                    return this.compareByUsername(a, b) * this.isNotReversed;
+                case 'expected':
+                    return this.compareByExpected(a, b) * this.isNotReversed;
+                case 'predicted':
+                    return this.compareByPredicted(a, b) * this.isNotReversed;
             }
         },
-        initCurrentStudent: function(id){
-            this.currentId=id;
+        initCurrentStudent: function (id) {
+            this.currentId = id;
             this.priorities = this.students.find(this.isCurrent)['priorities'];
             this.priorities.reverse();
             this.priorities.reverse();
-            console.log('Current student has id: '+id);
+            console.log('Current student has id: ' + id);
         },
 
         progressRoundPath: function (radius, stroke) {
@@ -289,13 +305,13 @@ var vue = new Vue({
         predictProfiles: function () {
             this.scaleStudents();
             this.students.sort(this.compareByGpa);
-            for(var direction in this.directions) {
+            for (var direction in this.directions) {
                 this.directionOccupancy[this.priorities[direction]] = 0;
             }
 
-            for (var student in this.students){
-                for(var priority in this.students[student]['priorities']){
-                    if(this.directionOccupancy[this.students[student]['priorities'][priority]]<this.directionCapacity[this.students[student]['priorities'][priority]]){
+            for (var student in this.students) {
+                for (var priority in this.students[student]['priorities']) {
+                    if (this.directionOccupancy[this.students[student]['priorities'][priority]] < this.directionCapacity[this.students[student]['priorities'][priority]]) {
                         this.students[student]['predictedDirection'] = this.students[student]['priorities'][priority];
                         this.directionOccupancy[this.students[student]['priorities'][priority]]++;
                         break;
@@ -304,57 +320,96 @@ var vue = new Vue({
             }
             this.students.sort(this.compareByActual);
         },
-        requestData:function () {
+        requestData: function () {
             var grand = this;
-            if(this.loggedIn){
+            if (this.loggedIn) {
                 $.ajax({
-                url: '/cgi-bin/profileController.py',
-                type: "POST",
-                dataType: "html",
-                data: "\'request\'=\'profile\' \'session\'="+this.sessionId,
-                success: function (response) {
-                    grand.jsonToStudentList(response);
-                    console.log('данные обработаны и учтены')
-                },
-                error: function (response) {
-                    alert('Произошла ошибка. Попробуйте еще раз');
-                }
-            });
+                    url: '/cgi-bin/profileController.py',
+                    type: "POST",
+                    dataType: "html",
+                    data: "\'request\'=\'profile\' \'session\'=" + this.sessionId,
+                    success: function (response) {
+                        grand.jsonToStudentList(response);
+                        console.log('данные обработаны и учтены')
+                    },
+                    error: function (response) {
+                        alert('Произошла ошибка. Попробуйте еще раз');
+                    }
+                });
             }
-            if(this.loggedIn){
+            if (this.loggedIn) {
                 $.ajax({
-                url: '/cgi-bin/profileController.py',
-                type: "POST",
-                dataType: "html",
-                data: "\'request\'=\'studentsList\'",
-                success: function (response) {
-                    grand.jsonToStudentList(response);
-                    console.log('данные обработаны и учтены')
-                },
-                error: function (response) {
-                    alert('Произошла ошибка. Попробуйте еще раз');
-                }
-            });
+                    url: '/cgi-bin/profileController.py',
+                    type: "POST",
+                    dataType: "html",
+                    data: "\'request\'=\'studentsList\'",
+                    success: function (response) {
+                        grand.jsonToStudentList(response);
+                        console.log('данные обработаны и учтены')
+                    },
+                    error: function (response) {
+                        alert('Произошла ошибка. Попробуйте еще раз');
+                    }
+                });
             }
         },
         sortStudentsBy: function (parameter) {
-            if(this.actualComparator===parameter){
+            if (this.actualComparator === parameter) {
                 this.isNotReversed *= -1;
             } else {
                 this.isNotReversed = 1;
-                this.actualComparator=parameter;
+                this.actualComparator = parameter;
             }
-            console.log('sorting by '+ this.actualComparator);
+            console.log('sorting by ' + this.actualComparator);
             this.students.sort(this.compareByActual);
         },
         changeMobility: function () {
-            this.isMobile ^=1
+            this.isMobile ^= 1
+        },
+        login: function () {
+            var grand = this;
+            doAjax(
+                'http://127.0.0.1:5000/auth/authorize',
+                'post',
+                $("#login-form").serialize(),
+                function (data) {
+                    console.log(data);
+                    $.cookie('token', data.token, {path: '/'})
+                    if(data.error == null)
+                        grand.isLogged=true;
+                }
+            );
+        },
+        register: function () {
+            doAjax(
+                'http://127.0.0.1:5000/auth/register',
+                'post',
+                $("#register-form").serialize(),
+                function (data) {
+
+                    console.log(data);
+                }
+            );
+        },
+        logout: function () {
+            var grand = this;
+            doAjax(
+                'http://127.0.0.1:5000/auth/logout',
+                'post',
+                '',
+                function (data) {
+                    //console.log(data);
+                    grand.isLogged=false;
+                    $.cookie('token', '', {path: '/', expires: -1});
+                    $.removeCookie('token', {path: '/'});
+                    $("#register-modal")[0].style.display = "none";
+                    $("#login-modal")[0].style.display = "none";
+                }
+            );
         }
     },
     computed: {},
-    watch: {
-
-    }
+    watch: {}
 });
 
 $(document).ready(function () {

@@ -154,6 +154,8 @@ var vue = new Vue({
     el: "#calculator",
     data: {
         isLoading: false,
+        isMobile: false,
+        isLogged: false,
         lastSem: 2,
         semesters: semesters,
         activeMark: mark("empt", "N", false),
@@ -165,7 +167,6 @@ var vue = new Vue({
         tweenedSemgpa: [],
         clientWidth: document.body.clientWidth,
         cardsPerRow: 3,
-        isMobile: false,
         actualMarks: [],
         colorQuery: '',
         gpacolor: {
@@ -439,6 +440,42 @@ var vue = new Vue({
                 }
             });
         },
+        login: function () {
+            var grand = this;
+            doAjax(
+                'http://127.0.0.1:5000/auth/authorize',
+                'post',
+                $("#login-form").serialize(),
+                function (data) {
+                    grand.isLogged=true;
+                    //console.log(data);
+                    $.cookie('token', data.token, {path: '/'})
+                }
+            );
+        },
+        register: function () {
+            doAjax(
+                'http://127.0.0.1:5000/auth/register',
+                'post',
+                $("#register-form").serialize(),
+                function (data) {
+
+                    console.log(data);
+                }
+            );
+        },
+        logout: function () {
+            doAjax(
+                'http://127.0.0.1:5000/auth/logout',
+                'post',
+                '',
+                function (data) {
+                    console.log(data);
+                    $.cookie('token', '', {path: '/', expires: -1});
+                    $.removeCookie('token', {path: '/'})
+                }
+            );
+        }
 
     },
     computed: {
