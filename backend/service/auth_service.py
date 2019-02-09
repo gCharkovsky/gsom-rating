@@ -1,7 +1,7 @@
 from flask import Blueprint, request, g, jsonify, make_response, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from backend.db.user_db import get_db
+from backend.db.user_db import add_user, get_user_by_login
 from backend.service.jwt_service import create_token, decode_token
 
 auth = Blueprint('auth', __name__)
@@ -32,11 +32,11 @@ def register():
         error = 'Login is required'
     elif not password:
         error = 'Password is required'
-    elif get_db().get(login) is not None:
+    elif get_user_by_login(login) is not None:
         error = 'Such login already exists'
 
     if error is None:
-        status = get_db().add(login, generate_password_hash(password))
+        status = add_user(login, generate_password_hash(password))
         return jsonify({'status': status})
     else:
         return jsonify({'error': error})
@@ -52,10 +52,10 @@ def authorize():
     elif not password:
         error = 'Password is required'
     else:
-        password_hash = get_db().get(login)
-        if password_hash is None:
+        user = get_user_by_login(login)
+        if user is None:
             error = 'No user with such login'
-        elif not check_password_hash(password_hash, password):
+        elif not check_password_hash(user.password_hash, password):
             error = 'Invalid password'
 
     if error is None:

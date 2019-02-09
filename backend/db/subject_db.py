@@ -15,12 +15,12 @@ class Subject(db.Model):
         return '<Subject %r>' % self.name
 
 
-def check_subject_exists(name):
-    return Subject.query.filter_by(name=name).first()
-
-
 def add_subject(name):
     subject = Subject(name=name)
     db.session.add(subject)
     db.session.commit()
     return subject.id
+
+
+def get_subject_by_name(name):
+    return Subject.query.filter_by(name=name).first()

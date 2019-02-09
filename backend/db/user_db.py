@@ -53,7 +53,7 @@ class User(db.Model):
         return '<User %r>' % self.login
 
 
-def register(login, password_hash):
+def add_user(login, password_hash):
     user = User(
         login=login,
         password_hash=password_hash,
@@ -62,3 +62,7 @@ def register(login, password_hash):
     db.session.add(user)
     db.session.commit()
     return user.id
+
+
+def get_user_by_login(login):
+    return User.query.filter_by(login=login).first()
