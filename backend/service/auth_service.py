@@ -1,4 +1,4 @@
-from flask import Blueprint, request, g, jsonify, make_response, current_app
+from flask import Blueprint, request, g, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from backend.db.user_db import add_user, get_user_by_login

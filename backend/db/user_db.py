@@ -1,9 +1,7 @@
-from flask import current_app
-from flask_sqlalchemy import SQLAlchemy
-
+from backend.controller import controller
 from datetime import datetime
 
-db = SQLAlchemy(current_app)
+db = controller.db
 
 user_track = db.Table(
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
