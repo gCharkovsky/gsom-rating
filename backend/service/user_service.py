@@ -1,6 +1,6 @@
 from flask import Blueprint, g, jsonify
 
-from backend.db.user_db import get_db
+from backend.db.user_db import get_user_by_login
 from backend.service.auth_service import login_required
 
 user = Blueprint('user', __name__)
@@ -14,4 +14,4 @@ def me():
 
 @user.route('/<string:login>', methods=['GET'])
 def profile(login):
-    return jsonify({'login': login, 'password_hash': get_db().get(login)})
+    return jsonify(get_user_by_login(login))
