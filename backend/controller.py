@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from __config__ import BaseConfig
+from backend.__config__ import BaseConfig
 from backend.service import auth_service, user_service
 
 controller = Flask('controller')

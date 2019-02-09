@@ -5,4 +5,4 @@ tmp/
 
 *.zip
 *.secret
-__config__*
+*__secret__.py
