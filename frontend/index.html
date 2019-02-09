@@ -34,124 +34,125 @@
         </ul>
     </nav>
     <div class="container-wid">
-        <div class="title block">
-            Добро пожаловать. На главной ничего нет, зато есть <a href="calculator">калькулятор</a> среднего балла.
+        <div class="long-content">
+            <div class="title block">
+                Добро пожаловать. На главной ничего нет, зато есть <a href="calculator">калькулятор</a> среднего балла.
+            </div>
+            <button id="user-button">None</button>
+
+            <form id="register-form">
+                <input class="login" name="login" value="admin">
+                <input class="password" name="password" value="admin">
+                <input type="submit" name="submit" value="Register"/>
+            </form>
+            <form id="login-form">
+                <input class="login" name="login" value="admin">
+                <input class="password" name="password" value="admin">
+                <input type="submit" name="submit" value="Login"/>
+            </form>
+            <form id="logout-form">
+                <input type="submit" name="submit" value="Logout"/>
+            </form>
+            <br>
+            <form id="request-form">
+                <input class="st_login" name="st_login" value="st064362">
+                <input class="password" name="password" value="JFHmWFi8">
+                <input type="submit" name="submit" value="Get marks"/>
+            </form>
         </div>
-        <button id="user-button">None</button>
-        <form id="register-form">
-            <input class="login" name="login" value="admin">
-            <input class="password" name="password" value="admin">
-            <input type="submit" name="submit" value="Register"/>
-        </form>
-        <form id="login-form">
-            <input class="login" name="login" value="admin">
-            <input class="password" name="password" value="admin">
-            <input type="submit" name="submit" value="Login"/>
-        </form>
-        <form id="logout-form">
-            <input type="submit" name="submit" value="Logout"/>
-        </form>
-        <br>
-        <form id="request-form">
-            <input class="st_login" name="st_login" value="st064362">
-            <input class="password" name="password" value="JFHmWFi8">
-            <input type="submit" name="submit" value="Get marks"/>
-        </form>
     </div>
-</div>
 
 
-<script src="static/script/script-basic-vue.js"></script>
-<script>
-    $.removeCookie = function (key, options) {
-        if ($.cookie(key) === undefined) {
-            return false;
-        }
-        // Must not alter options, thus extending a fresh object...
-        $.cookie(key, '', $.extend({}, options, {expires: -1}));
-        return !$.cookie(key);
-    };
+    <script>
+        $.removeCookie = function (key, options) {
+            if ($.cookie(key) === undefined) {
+                return false;
+            }
+            // Must not alter options, thus extending a fresh object...
+            $.cookie(key, '', $.extend({}, options, {expires: -1}));
+            return !$.cookie(key);
+        };
 
-    doAjax = function (url, type, data, success) {
-        if ($.cookie('token')) {
-            data = 'token=' + $.cookie('token') + '&' + data;
-        }
-        return $.ajax({
-            url: url,
-            type: type,
-            dataType: 'json',
-            data: data,
-            xhrFields: {withCredentials: true},
-            success: success,
+        doAjax = function (url, type, data, success) {
+            if ($.cookie('token')) {
+                data = 'token=' + $.cookie('token') + '&' + data;
+            }
+            return $.ajax({
+                url: url,
+                type: type,
+                dataType: 'json',
+                data: data,
+                xhrFields: {withCredentials: true},
+                success: success,
+            });
+        };
+
+        $("#user-button").click(function () {
+            doAjax(
+                'http://127.0.0.1:5000/user/me',
+                'get',
+                '',
+                function (data) {
+                    console.log(data);
+                    $("#user-button").html('login' in data ? data['login'] : 'None');
+                }
+            );
         });
-    };
 
-    $("#user-button").click(function () {
-        doAjax(
-            'http://127.0.0.1:5000/user/me',
-            'get',
-            '',
-            function (data) {
-                console.log(data);
-                $("#user-button").html('login' in data ? data['login'] : 'None');
-            }
-        );
-    });
+        $("#register-form").submit(function (e) {
+            e.preventDefault();
 
-    $("#register-form").submit(function (e) {
-        e.preventDefault();
+            doAjax(
+                'http://127.0.0.1:5000/auth/register',
+                'post',
+                $("#register-form").serialize(),
+                function (data) {
+                    console.log(data);
+                }
+            );
+        });
 
-        doAjax(
-            'http://127.0.0.1:5000/auth/register',
-            'post',
-            $("#register-form").serialize(),
-            function (data) {
-                console.log(data);
-            }
-        );
-    });
+        $("#login-form").submit(function (e) {
+            e.preventDefault();
 
-    $("#login-form").submit(function (e) {
-        e.preventDefault();
+            doAjax(
+                'http://127.0.0.1:5000/auth/authorize',
+                'post',
+                $("#login-form").serialize(),
+                function (data) {
+                    console.log(data);
+                    $.cookie('token', data.token, {path: '/'})
+                }
+            );
+        });
 
-        doAjax(
-            'http://127.0.0.1:5000/auth/authorize',
-            'post',
-            $("#login-form").serialize(),
-            function (data) {
-                console.log(data);
-                $.cookie('token', data.token, {path: '/'})
-            }
-        );
-    });
+        $("#logout-form").submit(function (e) {
+            e.preventDefault();
 
-    $("#logout-form").submit(function (e) {
-        e.preventDefault();
+            doAjax(
+                'http://127.0.0.1:5000/auth/logout',
+                'post',
+                '',
+                function (data) {
+                    console.log(data);
+                    $.cookie('token', '', {path: '/', expires: -1});
+                    $.removeCookie('token', {path: '/'})
+                }
+            );
+        });
 
-        doAjax(
-            'http://127.0.0.1:5000/auth/logout',
-            'post',
-            '',
-            function (data) {
-                console.log(data);
-                $.cookie('token', '', {path: '/', expires: -1});
-                $.removeCookie('token', {path: '/'})
-            }
-        );
-    });
+        $("#request-form").submit(function (e) {
+            e.preventDefault();
 
-    $("#request-form").submit(function (e) {
-        e.preventDefault();
-
-        doAjax(
-            'http://127.0.0.1:5000/marks/load',
-            'post',
-            $("#request-form").serialize(),
-            function (data) {
-                console.log(data);
-            }
-        );
-    });
-</script>
+            doAjax(
+                'http://127.0.0.1:5000/marks/load',
+                'post',
+                $("#request-form").serialize(),
+                function (data) {
+                    console.log(data);
+                }
+            );
+        });
+    </script>
 </body>
 </html>

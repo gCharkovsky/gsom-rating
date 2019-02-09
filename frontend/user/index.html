@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-band="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+
+    <link href="../static/css/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/json2html/1.2.0/json2html.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tween.js@16.3.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/color-js@1.0.3"></script>
+
+
+    <title>Account</title>
+</head>
+<body>
+<div class="not-loaded" :class="{'mobile' : isMobile}" id="user">
+    <nav class="navbar">
+        <a class="navbar-brand" href="/">GSOM</a>
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="../calculator" v-if="!isMobile">Калькулятор</a>
+                <a class="nav-link" href="../calculator" v-if="isMobile"><img class="ico-label" src="../static/images/icons/calculator.svg" alt="Calculator"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="../rating" v-if="!isMobile">Рейтинг</a>
+                <a class="nav-link" href="../rating" v-if="isMobile"><img class="ico-label" src="../static/images/icons/trophy.svg" alt="Rating"></a>
+            </li>
+        </ul>
+        <ul class="navbar-right">
+            <li class="nav-item">
+                <input type="checkbox" class="checkbox" id="mobile" name="mobile" v-model="isMobile">
+                <label for="mobile"><img class="ico-label" src="../static/images/icons/mobile.svg" alt="mobile"></label>
+            </li>
+            <li class="nav-item">
+                <button class="login-menu-button" id="logout">Выйти</button>
+            </li>
+        </ul>
+    </nav>
+    <aside>
+        <div class="block login side-card custom-shadow">
+            <form method="post" id="spbu-login-form" action="">
+                <input type="text"  name="st_login" placeholder="Логин-st" v-model="validSt">
+                <input type="password" class="password" name="st_password" placeholder="Пароль">
+                <input type="button" class="btn-submit" id="get-marks" value="Синхронизировать оценки">
+            </form>
+            <p v-if="!isLoading"> Мы <b>не сохраняем</b> Ваш логин и пароль. Данные используются только для входа в
+                my.spbu</p>
+            <img v-if="isLoading" class="img-btn" src="../static/images/animations/infinity.gif"
+                 alt="waiting fpr SPBU">
+            <p v-if="isLoading"> Ожидаем ответа my.spbu...</p>
+        </div>
+    </aside>
+    <div class="container-wid">
+        <div class="long-content">
+            <h2>Личный кабинет</h2>
+            <div class="block custom-shadow">
+                <div class="account-item">
+                    <label class="account-item-name">Имя пользователя:
+                        <input class="account-item-value" v-model="username">
+                    </label>
+                </div>
+                <div class="account-item">
+                    <label class="account-item-name">ST:
+                        <input class="account-item-value" v-model="stLogin">
+                    </label>
+                    <div style="display: inline-block" v-if="stLogin!==validSt">
+                        Пароль:
+                        <input type="password"  v-model="stPassword">
+                        <input type="button" class="" id="validate-st" value="Подтвердить">
+                    </div>
+
+                </div>
+                <div class="account-item">
+                    <input type="checkbox" class="checkbox" id="is-public" v-model="isPublic">
+                    <label for="is-public">Учитывать в общем рейтинге</label>
+                </div>
+                <div class="account-item">
+                    <input type="checkbox" class="checkbox" id="second-lang" v-model="scoreSecondLang">
+                    <label for="second-lang">Учитывать оценку по второму иностранному</label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <footer>
+        <p>2019© <a href="https://vk.com/g_charkovsky">g.charkovsky</a>, <a href="https://vk.com/doreshnikov">d.oreshnikov</a>
+        </p>
+        <p>При поддержке еды из KFC™ и Токио-CITY™, а также антикафе 12 комнат. При сопротивлении со стороны
+            my.spbu.ru</p>
+    </footer>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/tween.js@16.3.4"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
+<script src="user.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+</body>
+</html>
