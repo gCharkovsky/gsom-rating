@@ -2,7 +2,7 @@ from flask import Blueprint, request, g, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from backend.db.user_db import add_user, get_user_by_login
-from backend.service.jwt_service import create_token, decode_token
+from backend.service.util.jwt import create_token, decode_token
 
 auth = Blueprint('auth', __name__)
 

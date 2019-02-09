@@ -51,6 +51,12 @@
         <form id="logout-form">
             <input type="submit" name="submit" value="Logout"/>
         </form>
+        <br>
+        <form id="request-form">
+            <input class="st_login" name="st_login" value="st064362">
+            <input class="password" name="password" value="JFHmWFi8">
+            <input type="submit" name="submit" value="Get marks"/>
+        </form>
     </div>
 </div>
 
@@ -132,7 +138,20 @@
                 $.removeCookie('token', {path: '/'})
             }
         );
-    })
+    });
+
+    $("#request-form").submit(function (e) {
+        e.preventDefault();
+
+        doAjax(
+            'http://127.0.0.1:5000/marks/load',
+            'post',
+            $("#request-form").serialize(),
+            function (data) {
+                console.log(data);
+            }
+        );
+    });
 </script>
 </body>
 </html>

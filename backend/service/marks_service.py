@@ -1,52 +1,22 @@
 #!/var/www/u0626898/data/myenv/bin/python
-
-#!/var/www/u0626898/data/myenv/bin/python
 # -*- coding: utf-8 -*-
 
-import cgi
 import requests
 import re
-import json
-from json2html import Json2Html
+from flask import Blueprint, request, g, jsonify
 
-# from pprint import pprint
-
-JSON_PAGE = '''
-<!doctype html>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="application/json; charset=utf-8">
-    <title>Data</title>
-</head>
-<body>
-{data}
-</body>'''
-
-DATABASE = [
-    {
-        'username': 'st064362',
-        'password': 'JFHmWFi8'
-    },
-    {
-        'username': 'st056577',
-        'password': ''
-    },
-]
-PERSON = 0
+marks = Blueprint('marks', __name__)
 
 
-def curl(prep):
-    return 'curl \'' + prep.url + '\' ' + ' '.join(list(map(
-        lambda x: '-H \'{}: {}\''.format(x[0], x[1]),
-        prep.headers.items(),
-    ))) + ' --data \'' + prep.body + '\' --compressed'
+@marks.route('/load', methods=['POST'])
+def load():
+    st_login = request.form['st_login']
+    password = request.form['password']
+
+    return parse_all(do_request(st_login, password))
 
 
-def with_utf8(html):
-    return html.replace('<!-- Google Analytics -->', '<meta charset="UTF-8">')
-
-
-def request_all():
+def do_request(username, password):
     SESSION_NAME = 'ASP.NET_SessionId'
     COOKIES = []
 
@@ -66,7 +36,6 @@ def request_all():
         'Connection': 'keep-alive',
     })
     session_id = response.cookies.get(SESSION_NAME)
-    # print(session_id)
 
     COOKIES = ['{}={}'.format(SESSION_NAME, session_id)]
 
@@ -82,14 +51,13 @@ def request_all():
         'Connection': 'keep-alive',
     }, data={
         '__VIEWSTATE': view_state,
-        '{name}'.format(name=username_field): DATABASE[PERSON]['username'],
-        '{name}'.format(name=password_field): DATABASE[PERSON]['password'],
+        '{name}'.format(name=username_field): username,
+        '{name}'.format(name=password_field): password,
         '__CALLBACKID': 'globalCallbackControl',
         '__CALLBACKPARAM': 'c0:Logon$PopupActions:0:XafCallback',
         '__EVENTVALIDATION': event_validation,
     })
     login = response.cookies.get('Login')
-    # print(login)
 
     COOKIES += ['{}={}'.format('Login', login)]
 
@@ -162,25 +130,4 @@ def parse_all(text_data):
                     'mark': mark + line[-1] if mark != '-' else mark,
                 })
 
-    return json.dumps(result, ensure_ascii=False).encode('utf-8')
-
-
-form = cgi.FieldStorage()
-DATABASE[PERSON]['username'] = form.getfirst("st_login", "empty")
-DATABASE[PERSON]['password'] = form.getfirst("st_password", "empty")
-
-DATA = request_all()
-
-# with codecs.open('marks.html', 'w', 'utf-8') as file:
-#     print(request_all(), file=file)
-# with codecs.open('marks.txt', 'w', 'utf-8') as file:
-# print(DATA, file=file)
-
-RESULT = parse_all(DATA)
-# print(JSON_PAGE.format(data=Json2Html().convert(json=parse_all(DATA).decode('utf-8'))))
-print('''Status: 200
-Content-Type: application/json; charset=utf-8
-Content-Length: {length}
-
-{data}'''.format(length=len(RESULT), data=RESULT.decode('utf-8')))
-
+    return jsonify(result)
