@@ -461,7 +461,7 @@ var vue = new Vue({
                     grand.isLoading = false;
                 });
             /*$.ajax({
-                url: '/cgi-bin/marks_service.py', //url страницы
+                url: '/cgi-bin/spbu_service.py', //url страницы
                 type: "POST", //метод отправки
                 dataType: "html", //формат данных
                 data: $("#spbu-login-form").serialize(),  // Сеарилизуем объект

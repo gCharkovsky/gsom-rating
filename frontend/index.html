@@ -90,7 +90,7 @@
         $("#user-button").click(function () {
             doAjax(
                 'http://127.0.0.1:5000/user/me',
-                'get',
+                'post',
                 '',
                 function (data) {
                     console.log(data);
@@ -145,7 +145,7 @@
             e.preventDefault();
 
             doAjax(
-                'http://127.0.0.1:5000/marks/load',
+                'http://127.0.0.1:5000/spbu/load',
                 'post',
                 $("#request-form").serialize(),
                 function (data) {

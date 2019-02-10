@@ -56,7 +56,7 @@ class User(db.Model):
         return '<User %r>' % self.login
 
     def jsonify(self):
-        return self.__dict__
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 def add_user(login, password_hash):

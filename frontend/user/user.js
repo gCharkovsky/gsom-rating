@@ -163,7 +163,7 @@ var vue = new Vue({
             var grand = this;
             grand.isLoading = true;
             $.ajax({
-                url: '/cgi-bin/marks_service.py', //url страницы
+                url: '/cgi-bin/spbu_service.py', //url страницы
                 type: "POST", //метод отправки
                 dataType: "html", //формат данных
                 data: '',  // Сеарилизуем объект

@@ -26,8 +26,8 @@ def decode_token(token):
             token,
             current_app.config.get('JWT_SECRET_KEY')
         )
-        return payload['dat'], True
+        return payload['dat'], None
     except jwt.ExpiredSignatureError:
-        return 'Expired token', False
+        return None, 'Expired token'
     except jwt.InvalidTokenError:
-        return 'Invalid token', False
+        return None, 'Invalid token'

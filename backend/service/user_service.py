@@ -4,7 +4,7 @@ from flask import Blueprint, request, session, jsonify
 
 from backend.db.user_db import *
 from backend.service.auth_service import login_required
-from backend.service.marks_service import load
+from backend.service.spbu_service import load
 
 user = Blueprint('user', __name__)
 
@@ -19,16 +19,20 @@ def profile(login):
     return jsonify(get_user_by_login(login))
 
 
-@user.route('/me', methods=['GET'], endpoint='me')
+@user.route('/me', methods=['POST'], endpoint='me')
 @login_required
 def me():
-    return jsonify(session['user'].jsonify())
+    user_id = session['user_id']
+    user = get_user_by_id(user_id)
+    return jsonify(user.jsonify())
 
 
 @user.route('/update', methods=['POST'], endpoint='update_profile')
 @login_required
 def update_profile():
-    user = session['user']
+    user_id = session['user_id']
+    user = get_user_by_id(user_id)
+
     for field in ['username', 'priorities', 'is_public', 'score_second_lang']:
         if field in request.form:
             setattr(user, field, request.form[field])
@@ -40,11 +44,15 @@ def update_profile():
 @user.route('/update_st', methods=['POST'], endpoint='update_st')
 @login_required
 def update_st():
-    user = session['user']
-    st_login = request.form['st-login']
-    password = request.form['password']
+    user_id = session['user_id']
+    user = get_user_by_id(user_id)
+    st_login = request.form.get('st_login')
+    password = request.form.get('password')
+
     if not st_login or not password:
-        return jsonify({'error': 'Not enough credentials data'})
+        return jsonify({
+            'status': 'Not enough data to authorize at my.spbu.ru',
+        })
     else:
         user.st_login = st_login
         user.st_password = password
@@ -60,4 +68,7 @@ def update_st():
         user.gpa = scores / cnt
 
         db.session.commit()
-        return jsonify({'status': None})
+        return jsonify({
+            'marks': marks,
+            'gpa': user.gpa,
+        })
