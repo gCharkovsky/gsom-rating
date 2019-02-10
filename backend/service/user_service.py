@@ -4,6 +4,7 @@ from flask import Blueprint, request, session, jsonify
 
 from backend.db.user_db import *
 from backend.service.auth_service import login_required
+from backend.service.marks_service import load
 
 user = Blueprint('user', __name__)
 
@@ -47,6 +48,16 @@ def update_st():
     else:
         user.st_login = st_login
         user.st_password = password
+
+        marks = load()
+        scores, cnt = 0, 0
+        for term in marks:
+            for k, v in term:
+                mark = user.scores.query.filter_by(subject_id=subject_db.get_subject_by_name(k).id)
+                if mark.is_relevant:
+                    cnt += 1
+                    scores += mark.mark[1]
+        user.gpa = scores / cnt
 
         db.session.commit()
         return jsonify({'status': None})

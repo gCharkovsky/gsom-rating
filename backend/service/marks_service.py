@@ -105,6 +105,8 @@ def course():
         'Connection': 'keep-alive',
     })
 
+    #TODO: выгрузить курс
+
 
 def parse_all(text_data):
     MARKS_MAP = {
