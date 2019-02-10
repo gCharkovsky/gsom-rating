@@ -3,43 +3,35 @@
 
 import requests
 import re
-from flask import Blueprint, request, g, jsonify
+from flask import Blueprint, request, session, jsonify
 
 marks = Blueprint('marks', __name__)
+SESSION_NAME = 'ASP.NET_SessionId'
+_session_id = re.compile(r'{name}=([^;]*);'.format(name=SESSION_NAME))
+_username_field = re.compile(r'(Logon\$v0_[0-9]+\$MainLayoutEdit\$xaf_l12\$xaf_l35\$xaf_dviUserName_Edit)')
+_password_field = re.compile(r'(Logon\$v0_[0-9]+\$MainLayoutEdit\$xaf_l12\$xaf_l40\$xaf_dviPassword_Edit)')
+_event_validation = re.compile(r'id="__EVENTVALIDATION" value="([^"]+)"')
 
 
-@marks.route('/load', methods=['POST'])
-def load():
-    st_login = request.form['st_login']
-    password = request.form['password']
-
-    return parse_all(do_request(st_login, password))
+def cookies():
+    return '; '.join(session['cookies'])
 
 
-# TODO: проверка валидности ст-логина и ст-пароля
-# TODO: выгрузка курса и направления
-def do_request(username, password):
-    SESSION_NAME = 'ASP.NET_SessionId'
-    COOKIES = []
+def parse_argument(text, arg):
+    _arg = re.compile(r'id="__{arg}" value="([^"]+)'.format(arg=arg))
+    return re.findall(_arg, text)[0]
 
-    def cookies():
-        return '; '.join(COOKIES)
 
-    _session_id = re.compile(r'{name}=([^;]*);'.format(name=SESSION_NAME))
-    _username_field = re.compile(r'(Logon\$v0_[0-9]+\$MainLayoutEdit\$xaf_l12\$xaf_l35\$xaf_dviUserName_Edit)')
-    _password_field = re.compile(r'(Logon\$v0_[0-9]+\$MainLayoutEdit\$xaf_l12\$xaf_l40\$xaf_dviPassword_Edit)')
-    _event_validation = re.compile(r'id="__EVENTVALIDATION" value="([^"]+)"')
-
-    def parse_argument(text, arg):
-        _arg = re.compile(r'id="__{arg}" value="([^"]+)'.format(arg=arg))
-        return re.findall(_arg, text)[0]
+@marks.route('/authorize', methods=['POST'])
+def authorize(username, password):
+    session['cookies'] = {}
 
     response = requests.get('https://my.spbu.ru/Login.aspx', headers={
         'Connection': 'keep-alive',
     })
     session_id = response.cookies.get(SESSION_NAME)
 
-    COOKIES = ['{}={}'.format(SESSION_NAME, session_id)]
+    session['cookies'] = ['{}={}'.format(SESSION_NAME, session_id)]
 
     text = response.text
     username_field = re.findall(_username_field, text)[0]
@@ -59,9 +51,23 @@ def do_request(username, password):
         '__CALLBACKPARAM': 'c0:Logon$PopupActions:0:XafCallback',
         '__EVENTVALIDATION': event_validation,
     })
-    login = response.cookies.get('Login')
+    login_hash = response.cookies.get('Login')
 
-    COOKIES += ['{}={}'.format('Login', login)]
+    if not login_hash:
+        return jsonify({'error': 'Invalid login/password'})
+    else:
+        session['cookies'] += ['{}={}'.format('Login', login_hash)]
+        return jsonify({
+            'status': None,
+            'login_hash': login_hash
+        })
+
+
+@marks.route('/load', methods=['POST'])
+def load():
+    st_login = request.form['st_login']
+    password = request.form['password']
+    authorize(st_login, password)
 
     requests.get('https://my.spbu.ru/default.aspx', headers={
         'Cookie': cookies(),
@@ -85,7 +91,19 @@ def do_request(username, password):
         '__EVENTARGUMENT': 'Vertical$mainMenu:2i4:XafCallback',
     })
 
-    return response.content.decode('utf-8')
+    return parse_all(response.content.decode('utf-8'))
+
+
+@marks.route('/course', methods=['POST'])
+def course():
+    st_login = request.form['st_login']
+    password = request.form['password']
+    authorize(st_login, password)
+
+    requests.get('https://my.spbu.ru/default.aspx', headers={
+        'Cookie': cookies(),
+        'Connection': 'keep-alive',
+    })
 
 
 def parse_all(text_data):

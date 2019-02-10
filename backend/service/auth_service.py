@@ -1,6 +1,6 @@
 #!/var/www/u0626898/data/myenv/bin/python
 # -*- coding: utf-8 -*-
-from flask import Blueprint, request, g, jsonify
+from flask import Blueprint, request, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from backend.db.user_db import add_user, get_user_by_login
@@ -9,18 +9,26 @@ from backend.service.util.jwt import create_token, decode_token
 auth = Blueprint('auth', __name__)
 
 
+# @auth.before_app_request
+# def set_user():
+#     if 'token' not in request.form and 'token' not in request.args:
+#         session['error'] = 'Unauthorized access'
+#     else:
+#         result, status = decode_token(request.form['token'] if 'token' in request.form else request.args['token'])
+#         if status:
+#             session['user'] = result
+#             if 'error' in session:
+#                 session.pop('error')
+#         else:
+#             session['error'] = result
+
+
 def login_required(action):
     def wrapper():
-        if 'token' not in request.form and 'token' not in request.args:
-            error = 'Unauthorized access'
+        if 'user' in session:
+            action()
         else:
-            result, status = decode_token(request.form['token'] if 'token' in request.form else request.args['token'])
-            if not status:
-                error = result
-            else:
-                g.user = result
-                return action()
-        return jsonify({'error': error})
+            return jsonify({'error': session['error']})
 
     return wrapper
 
@@ -62,6 +70,7 @@ def authorize():
 
     if error is None:
         h, exp = create_token(login)
+        session['user'] = get_user_by_login(login)
         return jsonify({
             'status': None,
             'token': h.decode('utf-8'),
@@ -73,19 +82,14 @@ def authorize():
 
 @auth.route('/logout', methods=['POST'])
 def logout():
-    if 'user' in g:
-        g.pop('user')
-    return jsonify({
-        'status': None,
-        'token': None}
-    )
+    if 'user' in session:
+        session.pop('user')
+    return jsonify({'status': None})
 
-@auth.route('/check', methods=['POST']) # TODO: проверить валидность токена -- нужно для сохранения понимания залогиненности фронтэндом
+
+@auth.route('/check', methods=['POST'])
 def check():
-    if 'user' in g:
-        g.pop('user')
     return jsonify({
-        'status': None,
-        'token': None}
-    )
-
+        'status': 'user' in session,
+        'error': session.get('error')
+    })

@@ -16,7 +16,7 @@ controller.app_context().push()
 db.init_app(controller)
 
 if __name__ == '__main__':
-    if not os.path.exists(PathInfo.DATABASE_PATH):
+    if not os.path.exists(PathInfo.DATABASE_DORESH_PATH):
         db.create_all()
         initialize_database()
     CORS(controller, supports_credentials=True)
