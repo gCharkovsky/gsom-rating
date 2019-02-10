@@ -1,3 +1,5 @@
+#!/var/www/u0626898/data/myenv/bin/python
+# -*- coding: utf-8 -*-
 from flask import Blueprint, g, jsonify
 
 from backend.db.user_db import get_user_by_login, get_public_users_by_course

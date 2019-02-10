@@ -1,3 +1,5 @@
+#!/var/www/u0626898/data/myenv/bin/python
+# -*- coding: utf-8 -*-
 from flask import Blueprint, request, g, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 

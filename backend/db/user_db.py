@@ -1,3 +1,5 @@
+#!/var/www/u0626898/data/myenv/bin/python
+# -*- coding: utf-8 -*-
 # noinspection PyUnresolvedReferences
 from backend.db import db, track_db, subject_db
 from datetime import datetime
