@@ -1,8 +1,0 @@
-Name: u0626898_gsom-rating
-Server: MySQL
-Encoding: UTF-8
-Login: u0626898_gsContr
-Password: H9y1T3a4
-URL: gsom-rating.ru:3306/u0626898_gsom-rating?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-
-//Говно в конце URL не удалять -- оно полезное
