@@ -10,7 +10,7 @@ user = Blueprint('user', __name__)
 
 @user.route('/course_list/<string:course>', methods=['GET'])
 def course_list(course):
-    return jsonify(get_public_users_by_course('course'))  # TODO: смотреть get_users_by_course
+    return jsonify(get_public_users_by_course('course'))
 
 
 @user.route('/me', methods=['GET'])
@@ -35,4 +35,4 @@ def update_profile():
 # @login_required
 def update_st():
     return jsonify({'message': 'success'})  # TODO: на входе вместе с st-паролем, ПРОВЕРИТЬ СООТВЕТСВИЕ ЛОГИНА ТОКЕНУ
-    # TODO: проверить валидность через спбгу
+    # TODO: проверить валидность через спбгу --DONE(см spbu/check_st)

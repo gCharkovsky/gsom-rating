@@ -5,12 +5,12 @@ from backend.__secret__ import SecretConfig
 
 class PathInfo(object):
     DATABASE_PATH = \
-        r'C:\Users\georg\OneDrive\01_Учеба\Учеба-stats\gsom-rating\tmp\test.sqlite'
+        r'gsom-rating.ru:3306/u0626898_gsom-rating'
 
 
 class BaseConfig(SecretConfig):
     SQLALCHEMY_DATABASE_URI = \
-        'sqlite:///' + PathInfo.DATABASE_PATH
+        'mysql://' + SecretConfig.DB_USER+':'+SecretConfig.DB_PASSWORD+'@'+PathInfo.DATABASE_PATH
 
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False

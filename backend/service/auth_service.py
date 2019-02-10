@@ -80,12 +80,9 @@ def logout():
         'token': None}
     )
 
-@auth.route('/check', methods=['POST']) # TODO: проверить валидность токена -- нужно для сохранения понимания залогиненности фронтэндом
+
+@auth.route('/check', methods=['POST'])
+# TODO: проверить валидность токена -- нужно для сохранения понимания залогиненности фронтэндом --SKIPPED
 def check():
-    if 'user' in g:
-        g.pop('user')
-    return jsonify({
-        'status': None,
-        'token': None}
-    )
+    return jsonify({'isLogged': 'user' in g})
 
