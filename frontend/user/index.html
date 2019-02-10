@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/json2html/1.2.0/json2html.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tween.js@16.3.4"></script>
     <script src="https://cdn.jsdelivr.net/npm/color-js@1.0.3"></script>
@@ -69,7 +70,7 @@
                     <div style="display: inline-block" v-if="stLogin!==validSt">
                         Пароль:
                         <input type="password"  v-model="stPassword">
-                        <input type="button" class="" id="validate-st" value="Подтвердить">
+                        <input type="button" class="" id="validate-st" value="Подтвердить" @click="validateSt()">
                     </div>
 
                 </div>

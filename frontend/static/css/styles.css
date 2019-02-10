@@ -421,6 +421,8 @@ svg.small-round-bar .gpa-num{
 }
 
 .mark-input {
+    border: none;
+    padding: 0;
     font-size: 100%;
     font-family: 'Montserrat', sans-serif;
     width: 100%;

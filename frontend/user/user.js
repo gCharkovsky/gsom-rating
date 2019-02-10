@@ -1,3 +1,17 @@
+
+doAjax = function (url, type, data, success) {
+    if ($.cookie('token')) {
+        data = 'token=' + $.cookie('token') + '&' + data;
+    }
+    return $.ajax({
+        url: url,
+        type: type,
+        dataType: 'json',
+        data: data,
+        xhrFields: {withCredentials: true},
+        success: success,
+    });
+};
 function setCookie(name, value, options) {
     options = options || {};
 
@@ -127,24 +141,15 @@ var vue = new Vue({
             });
         },
         validateSt: function() {
-             $.ajax({
-                url: '/cgi-bin/user_service.py', //url страницы
-                type: "POST", //метод отправки
-                dataType: "html", //формат данных
-                data: 'login='+this.stLogin+'&password='+this.stPassword,
-                success: function (response_alpha) { //Данные отправлены успешно
-                    if (response_alpha==='valid') {
-                        this.validSt = st;
-                    } else {
-
-                    }
-                },
-                error: function (response) { // Данные не отправлены
-                    grand.isLoading = false;
-                    alert('Произошла ошибка. Проверьте введенные данные');
-
-                }
-            });
+            var grand = this;
+            console.log('st_login='+grand.stLogin+'&password='+grand.st_Password);
+                doAjax(
+                'http://127.0.0.1:5000/spbu/check_st',
+                'post',
+                'st_login='+grand.stLogin+'&password='+grand.stPassword,
+                function (data) {
+                    console.log(data.isValid)//grand.jsonToMarks(data);
+                });
         },
         getSpbuMarks: function () {
             var grand = this;
@@ -153,7 +158,7 @@ var vue = new Vue({
                 url: '/cgi-bin/marks_service.py', //url страницы
                 type: "POST", //метод отправки
                 dataType: "html", //формат данных
-                data: $("#spbu-login-form").serialize(),  // Сеарилизуем объект
+                data: '',  // Сеарилизуем объект
                 success: function (response_alpha) { //Данные отправлены успешно
                     grand.jsonToMarks(response_alpha);
                     grand.isLoading = false;

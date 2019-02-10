@@ -19,6 +19,8 @@ user_subject = db.Table(
     db.Column('is_relevant', db.Boolean, default=True),
 )
 
+public_user_data = ['id', 'username', 'gpa', 'priorities']
+
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -77,5 +79,11 @@ def get_user_by_id(id):
 
 
 def get_public_users_by_course(course):
-    userlist = User.query.filter_by(course=course)
-    return userlist
+    full_userlist = User.query.filter(User.course == course and User.is_public)
+    required_userlist = []
+    for user in full_userlist:
+        curr_user = {}
+        for data in public_user_data:
+            curr_user[data] = user[data]
+        required_userlist.append(curr_user)
+    return required_userlist

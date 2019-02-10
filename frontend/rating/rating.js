@@ -351,7 +351,16 @@ var vue = new Vue({
             );
         },
         checkSession: function () {
-            this.isLogged = !($.cookie('token') == null)
+            /*var grand = this;
+            doAjax(
+                ' http://127.0.0.1:5000/auth/check',
+                'post',
+                '',
+                function (data) {
+                    grand.isLogged = data.isLogged;
+                }
+            );*/
+            this.isLogged = ($.cookie('token') != null);
         },
         login: function () {
             console.log('login');
@@ -389,7 +398,7 @@ var vue = new Vue({
                         if (data.error == null) {
                             grand.hideRegisterModal();
                             grand.showLoginModal();
-                        } else if(data.error === 'Such login already exists') {
+                        } else if (data.error === 'Such login already exists') {
                             grand.regErrorMessage = 'Логин занят';
                         } else {
                             grand.regErrorMessage = data.error;
@@ -433,8 +442,7 @@ var vue = new Vue({
             $("#register-modal")[0].style.display = "none";
         },
     },
-    computed: {
-    },
+    computed: {},
     watch: {}
 });
 
