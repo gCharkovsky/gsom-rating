@@ -51,7 +51,7 @@ footer {
     float: bottom;
 }
 
-input {
+input, button#user-button {
     font-family: 'Montserrat', sans-serif;
     font-size: 100%;
     border-radius: 1em;

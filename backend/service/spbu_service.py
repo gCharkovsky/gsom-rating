@@ -13,7 +13,7 @@ _username_field = re.compile(r'(Logon\$v0_[0-9]+\$MainLayoutEdit\$xaf_l12\$xaf_l
 _password_field = re.compile(r'(Logon\$v0_[0-9]+\$MainLayoutEdit\$xaf_l12\$xaf_l40\$xaf_dviPassword_Edit)')
 _event_validation = re.compile(r'id="__EVENTVALIDATION" value="([^"]+)"')
 
-_study_program = re.compile(r'<span id="[\w]+Study_Program_Name_View">([0-9]+)</span>')
+_study_program = re.compile(r'<span id="[\w]+StudyProgram_Name_View">(\w+)</span>')
 _course_year = re.compile(r'<span id="[\w]+Course_Name_View">([0-9]+)</span>')
 
 
