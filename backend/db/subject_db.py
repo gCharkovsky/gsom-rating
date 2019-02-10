@@ -1,10 +1,14 @@
 #!/var/www/u0626898/data/myenv/bin/python
 # -*- coding: utf-8 -*-
-from backend.db import db
+from backend.db import db, JSONStripped
 
 
-class Subject(db.Model):
+class Subject(db.Model, JSONStripped):
     __tablename__ = 'subject'
+
+    def __init__(self, *args, **kwargs):
+        super(Subject, self).__init__(args, kwargs)
+
     id = \
         db.Column(db.Integer, primary_key=True)
     name = \

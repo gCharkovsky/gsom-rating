@@ -1,6 +1,6 @@
 #!/var/www/u0626898/data/myenv/bin/python
 # -*- coding: utf-8 -*-
-from backend.db import db
+from backend.db import db, JSONStripped
 
 tracks = [
     'Marketing',
@@ -11,8 +11,12 @@ tracks = [
 ]
 
 
-class Track(db.Model):
+class Track(db.Model, JSONStripped):
     __tablename__ = 'track'
+
+    def __init__(self, *args, **kwargs):
+        super(Track, self).__init__(args, kwargs)
+
     id = \
         db.Column(db.Integer, primary_key=True)
     name = \
