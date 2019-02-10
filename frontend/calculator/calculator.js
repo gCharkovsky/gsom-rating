@@ -177,6 +177,8 @@ var vue = new Vue({
         isLoading: false,
         isMobile: false,
         isLogged: false,
+        regErrorMessage: '',
+        loginErrorMessage: '',
         lastSem: 2,
         semesters: semesters,
         activeMark: mark("empt", "N", false),
@@ -244,8 +246,8 @@ var vue = new Vue({
         },
 
         validateGPA: function () {
-            if($.cookie('Marks', this.marksToJson(), {expires: 60 * 60 * 24 * 200 * 1000})){
-               // console.log(document.cookie);
+            if ($.cookie('Marks', this.marksToJson(), {expires: 60 * 60 * 24 * 200 * 1000})) {
+                // console.log(document.cookie);
             } else {
                 console.log('error in cookie adding');
             }
@@ -427,9 +429,12 @@ var vue = new Vue({
         },
         jsonToMarks: function (jsonString) {
             var response = $.parseJSON(jsonString);
+            this.arrayToMarks(response)
+        },
+        arrayToMarks: function(array){
             var number = 1;
-            for (sem_index in response) {
-                var sem = response[sem_index];
+            for (sem_index in array) {
+                var sem = array[sem_index];
                 var smarks = [];
                 for (mark_index in sem) {
                     smarks.push(mark(sem[mark_index].subject, sem[mark_index].mark, true));
@@ -445,21 +450,30 @@ var vue = new Vue({
         getSpbuMarks: function () {
             var grand = this;
             grand.isLoading = true;
-            $.ajax({
+            doAjax(
+                'http://127.0.0.1:5000/marks/load',
+                'post',
+                $("#spbu-login-form").serialize(),
+                function (data) {
+                    console.log(data);
+                    grand.arrayToMarks(data);
+                    //grand.jsonToMarks(data);
+                    grand.isLoading = false;
+                });
+            /*$.ajax({
                 url: '/cgi-bin/marks_service.py', //url страницы
                 type: "POST", //метод отправки
                 dataType: "html", //формат данных
                 data: $("#spbu-login-form").serialize(),  // Сеарилизуем объект
                 success: function (response_alpha) { //Данные отправлены успешно
-                    grand.jsonToMarks(response_alpha);
-                    grand.isLoading = false;
+
                 },
                 error: function (response) { // Данные не отправлены
                     grand.isLoading = false;
                     alert('Произошла ошибка. Проверьте введенные данные');
 
                 }
-            });
+            });*/
         },
         checkSession: function () {
             this.isLogged = !($.cookie('token') == null)
@@ -500,7 +514,7 @@ var vue = new Vue({
                         if (data.error == null) {
                             grand.hideRegisterModal();
                             grand.showLoginModal();
-                        } else if(data.error === 'Such login already exists') {
+                        } else if (data.error === 'Such login already exists') {
                             grand.regErrorMessage = 'Логин занят';
                         } else {
                             grand.regErrorMessage = data.error;
