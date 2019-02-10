@@ -9,12 +9,12 @@ class PathInfo(object):
     DATABASE_DORESH_PATH = \
         r'C:\Users\isuca\projects\gsom-rating\tmp\test.sqlite'
     SERVER_PATH = \
-        r'...'
+        r'gsom-rating.ru:3306/u0626898_gsom-rating'
 
 class BaseConfig(SecretConfig):
     SQLALCHEMY_DATABASE_URI = \
-        'sqlite:///' + PathInfo.DATABASE_DORESH_PATH
-        # 'mysql://' + SecretConfig.DB_USER+':'+SecretConfig.DB_PASSWORD+'@'+PathInfo.DATABASE_PATH
+         'mysql://' + SecretConfig.DB_USER+':'+SecretConfig.DB_PASSWORD+'@'+PathInfo.SERVER_PATH
+    # 'sqlite:///' + PathInfo.DATABASE_DORESH_PATH
 
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False

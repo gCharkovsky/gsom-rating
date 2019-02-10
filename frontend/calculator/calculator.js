@@ -451,7 +451,7 @@ var vue = new Vue({
             var grand = this;
             grand.isLoading = true;
             doAjax(
-                'http://127.0.0.1:5000/marks/load',
+                'http://127.0.0.1:5000/spbu/load',
                 'post',
                 $("#spbu-login-form").serialize(),
                 function (data) {
@@ -460,20 +460,6 @@ var vue = new Vue({
                     //grand.jsonToMarks(data);
                     grand.isLoading = false;
                 });
-            /*$.ajax({
-                url: '/cgi-bin/spbu_service.py', //url страницы
-                type: "POST", //метод отправки
-                dataType: "html", //формат данных
-                data: $("#spbu-login-form").serialize(),  // Сеарилизуем объект
-                success: function (response_alpha) { //Данные отправлены успешно
-
-                },
-                error: function (response) { // Данные не отправлены
-                    grand.isLoading = false;
-                    alert('Произошла ошибка. Проверьте введенные данные');
-
-                }
-            });*/
         },
         checkSession: function () {
             this.isLogged = !($.cookie('token') == null)

@@ -98,6 +98,80 @@ def load():
 
     return parse_all(response.content.decode('utf-8'))
 
+def array_load():
+    st_login = request.form['st_login']
+    password = request.form['password']
+    authorize(st_login, password)
+
+    requests.get('https://my.spbu.ru/default.aspx', headers={
+        'Cookie': cookies(),
+        'Connection': 'keep-alive',
+    })
+
+    requests.post('https://my.spbu.ru/default.aspx', headers={
+        'Cookie': cookies(),
+        'Connection': 'keep-alive',
+    }, data={
+        '__EVENTTARGET': '',
+        '__CALLBACKID': 'globalCallbackControl',
+        '__CALLBACKPARAM': 'c0:XafNavigationHandlerId:Mark_ListView:XafCallback',
+    })
+
+    response = requests.post('https://my.spbu.ru/default.aspx', headers={
+        'Cookie': cookies(),
+        'Connection': 'keep-alive',
+    }, data={
+        '__EVENTTARGET': 'globalCallbackControl',
+        '__EVENTARGUMENT': 'Vertical$mainMenu:2i4:XafCallback',
+    })
+
+    return parse_to_array(response.content.decode('utf-8'))
+
+
+def parse_to_array(text_data):
+    MARKS_MAP = {
+        'Неудовлетворительно': '2',
+        'Удовлетворительно': '3',
+        'Хорошо': '4',
+        'Отлично': '5',
+
+        'Зачтено': '',
+        'Не зачтено': '',
+
+        'Неявка': '-'
+    }
+    MARKS_LETTERS = {
+        'A', 'B', 'C', 'D', 'E', 'F',
+    }
+
+    lines = list(map(str.split, text_data.split('\n')))[1:]
+    result = []
+    for line in lines:
+        if len(line) == 0:
+            continue
+        if line[0] == 'Семестр':
+            result.append([])
+        else:
+            mark = ''
+            mark_index = -1
+            for i, word in enumerate(line):
+                if word in MARKS_MAP.keys():
+                    mark += MARKS_MAP[word]
+                    mark_index = i
+                    break
+            if mark_index == -1:
+                continue
+
+            name = ' '.join(list(filter(
+                lambda x: len(x) > 0,
+                line[:mark_index - 1]
+            )))
+            if line[-1] in MARKS_LETTERS or mark == '-':
+                result[-1].append({
+                    'subject': name,
+                    'mark': mark + line[-1] if mark != '-' else mark,
+                })
+    return result
 
 @spbu.route('/course', methods=['POST'])
 def course():

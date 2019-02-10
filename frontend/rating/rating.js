@@ -342,7 +342,7 @@ var vue = new Vue({
             var grand = this;
             doAjax(
                 'http://127.0.0.1:5000/user/me',
-                'get',
+                'post',
                 '',
                 function (data) {
                     console.log(data.id);
@@ -370,18 +370,20 @@ var vue = new Vue({
                 'post',
                 $("#login-form").serialize(),
                 function (data) {
-                    console.log(data);
+                    console.log('data.status');
+                    console.log(data.status);
                     $.cookie('token', data.token, {path: '/'})
-                    if (data.error == null) {
+                    if (data.status == null) {
                         grand.hideLoginModal();
                         grand.isLogged = true;
                         grand.requestData();
-                    } else if (data.error === 'No user with such login') {
+
+                    } else if (data.status === 'No user with such login') {
                         grand.loginErrorMessage = 'Неверный логин';
-                    } else if (data.error === 'Invalid password') {
+                    } else if (data.status === 'Invalid password') {
                         grand.loginErrorMessage = 'Неверный пароль';
                     } else {
-                        grand.loginErrorMessage = data.error;
+                        grand.loginErrorMessage = data.status;
                     }
                 }
             );
@@ -395,13 +397,13 @@ var vue = new Vue({
                     'post',
                     $("#register-form").serialize(),
                     function (data) {
-                        if (data.error == null) {
+                        if (data.status == null) {
                             grand.hideRegisterModal();
                             grand.showLoginModal();
-                        } else if (data.error === 'Such login already exists') {
+                        } else if (data.status === 'Such login already exists') {
                             grand.regErrorMessage = 'Логин занят';
                         } else {
-                            grand.regErrorMessage = data.error;
+                            grand.regErrorMessage = data.status;
                         }
                         console.log(data);
                     }

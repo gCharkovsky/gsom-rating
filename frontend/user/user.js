@@ -65,8 +65,8 @@ var vue = new Vue({
         isPublic: true,
         isLogged:true,
         scoreSecondLang: false,
-        stLogin: 'st064362',
-        validSt: 'st064362',
+        stLogin: '',
+        validSt: '',
         stPassword: '',
         username: 'user',
         course: '2m',
@@ -82,6 +82,7 @@ var vue = new Vue({
     created: function () {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
             this.isMobile = true;
+        this.requestData();
         var grand = this;
         this.resize();
         window.addEventListener("resize", grand.resize, false);
@@ -132,16 +133,17 @@ var vue = new Vue({
         requestData: function () {
             var grand = this;
             doAjax(
-                'http://127.0.0.1:5000/user/full',
+                'http://127.0.0.1:5000/user/me',
                 'post',
                 '',
                 function(data) {
-                    this.course=data.course;
-                    this.validSt=data.st_login;
-                    this.isPublic=data.is_public;
-                    this.scoreSecondLang=data.score_second_lang;
-                    this.username=data.username;
-                    this.priorities=data.priorities;
+                    console.log(data);
+                    grand.course=data.course;
+                    grand.validSt=data.st_login;
+                    grand.isPublic=data.is_public;
+                    grand.scoreSecondLang=data.score_second_lang;
+                    grand.username=data.username;
+                    grand.priorities=data.priorities;
                 }
             )
         },
@@ -149,7 +151,7 @@ var vue = new Vue({
             var grand = this;
             console.log('st_login='+grand.stLogin+'&password='+grand.st_Password);
                 doAjax(
-                'http://127.0.0.1:5000/spbu/check_st',
+                'http://127.0.0.1:5000/user/update_st',
                 'post',
                 'st_login='+grand.stLogin+'&password='+grand.stPassword,
                 function (data) {
