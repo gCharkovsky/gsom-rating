@@ -16,13 +16,6 @@ _event_validation = re.compile(r'id="__EVENTVALIDATION" value="([^"]+)"')
 def cookies():
     return '; '.join(session['cookies'])
 
-<<<<<<< HEAD
-=======
-
-def do_request(username, password):
-    SESSION_NAME = 'ASP.NET_SessionId'
-    COOKIES = []
->>>>>>> 60617e7480dcd0b492d4bb5cf3868bd9ce4c217d
 
 def parse_argument(text, arg):
     _arg = re.compile(r'id="__{arg}" value="([^"]+)'.format(arg=arg))
@@ -111,6 +104,8 @@ def course():
         'Cookie': cookies(),
         'Connection': 'keep-alive',
     })
+
+    #TODO: выгрузить курс
 
 
 def parse_all(text_data):

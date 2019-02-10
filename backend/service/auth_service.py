@@ -87,18 +87,9 @@ def logout():
     return jsonify({'status': None})
 
 
-<<<<<<< HEAD
 @auth.route('/check', methods=['POST'])
 def check():
     return jsonify({
         'status': 'user' in session,
         'error': session.get('error')
     })
-=======
-
-@auth.route('/check', methods=['POST'])
-# TODO: проверить валидность токена -- нужно для сохранения понимания залогиненности фронтэндом --SKIPPED
-def check():
-    return jsonify({'isLogged': 'user' in g})
-
->>>>>>> 60617e7480dcd0b492d4bb5cf3868bd9ce4c217d
