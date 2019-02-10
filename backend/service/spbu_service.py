@@ -7,10 +7,14 @@ from flask import Blueprint, request, session, jsonify
 
 spbu = Blueprint('spbu', __name__)
 SESSION_NAME = 'ASP.NET_SessionId'
+
 _session_id = re.compile(r'{name}=([^;]*);'.format(name=SESSION_NAME))
 _username_field = re.compile(r'(Logon\$v0_[0-9]+\$MainLayoutEdit\$xaf_l12\$xaf_l35\$xaf_dviUserName_Edit)')
 _password_field = re.compile(r'(Logon\$v0_[0-9]+\$MainLayoutEdit\$xaf_l12\$xaf_l40\$xaf_dviPassword_Edit)')
 _event_validation = re.compile(r'id="__EVENTVALIDATION" value="([^"]+)"')
+
+_study_program = re.compile(r'<span id="[\w]+Study_Program_Name_View">([0-9]+)</span>')
+_course_year = re.compile(r'<span id="[\w]+Course_Name_View">([0-9]+)</span>')
 
 
 def cookies():
@@ -92,7 +96,7 @@ def load():
         '__EVENTARGUMENT': 'Vertical$mainMenu:2i4:XafCallback',
     })
 
-    return parse_all(response.content.decode('utf-8'))
+    return parse_all(response.text)
 
 
 @spbu.route('/course', methods=['POST'])
@@ -101,11 +105,17 @@ def course():
     password = request.form['password']
     authorize(st_login, password)
 
-    requests.get('https://my.spbu.ru/default.aspx', headers={
+    response = requests.get('https://my.spbu.ru/default.aspx', headers={
         'Cookie': cookies(),
         'Connection': 'keep-alive',
     })
-    # TODO: выгрузить курс
+    study_program = re.findall(_study_program, response.text)[0]
+    course_year = re.findall(_course_year, response.text)[0]
+
+    return jsonify({
+        'study_program': study_program,
+        'course_year': course_year,
+    })
 
 
 def parse_all(text_data):
