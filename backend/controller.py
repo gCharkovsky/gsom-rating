@@ -1,13 +1,11 @@
 #!/var/www/u0626898/data/myenv/bin/python
 # -*- coding: utf-8 -*-
 
-import os
-
 from flask import Flask
 from flask_cors import CORS
 from sqlalchemy_utils import database_exists
 
-from backend.__config__ import BaseConfig, PathInfo
+from backend.__config__ import BaseConfig
 from backend.db import db, initialize_database
 from backend.service import auth_service, user_service, marks_service, spbu_service
 

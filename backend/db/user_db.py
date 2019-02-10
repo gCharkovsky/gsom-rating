@@ -55,6 +55,9 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.login
 
+    def jsonify(self):
+        return self.__dict__
+
 
 def add_user(login, password_hash):
     user = User(
@@ -71,8 +74,12 @@ def get_user_by_login(login):
     return User.query.filter_by(login=login).first()
 
 
+def get_user_by_id(id):
+    return User.query.filter_by(id=id).first()
+
+
 def get_public_users_by_course(course):
-    full_userlist = User.query.filter(User.course == course & User.is_public)
+    full_userlist = User.query.filter(User.course == course and User.is_public)
     required_userlist = []
     for user in full_userlist:
         curr_user = {}
@@ -80,4 +87,3 @@ def get_public_users_by_course(course):
             curr_user[data] = user[data]
         required_userlist.append(curr_user)
     return required_userlist
-    # TODO: выдавать только id, username, gpa, priorities --DONE
