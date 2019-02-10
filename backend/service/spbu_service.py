@@ -96,7 +96,7 @@ def load():
         '__EVENTARGUMENT': 'Vertical$mainMenu:2i4:XafCallback',
     })
 
-    return parse_all(response.text)
+    return parse_all(response.content.decode('utf-8'))
 
 
 @spbu.route('/course', methods=['POST'])
@@ -109,8 +109,9 @@ def course():
         'Cookie': cookies(),
         'Connection': 'keep-alive',
     })
-    study_program = re.findall(_study_program, response.text)[0]
-    course_year = re.findall(_course_year, response.text)[0]
+    response_text = response.content.decode('utf-8')
+    study_program = re.findall(_study_program, response_text)[0]
+    course_year = re.findall(_course_year, response_text)[0]
 
     return jsonify({
         'study_program': study_program,
