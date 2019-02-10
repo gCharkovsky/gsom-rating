@@ -13,7 +13,7 @@ def check_st():
     st_login = request.form['st_login']
     password = request.form['password']
 
-    return check(st_login, password);
+    return check(st_login, password)
 
 
 
@@ -64,8 +64,6 @@ def check(username, password):# проверка валидности ст-ло�
 
 
 def get_course(username, password): # TODO: выгрузка курса и направления
-
-
     SESSION_NAME = 'ASP.NET_SessionId'
     COOKIES = []
 

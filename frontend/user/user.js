@@ -136,7 +136,12 @@ var vue = new Vue({
                 'post',
                 '',
                 function(data) {
-
+                    this.course=data.course;
+                    this.validSt=data.st_login;
+                    this.isPublic=data.is_public;
+                    this.scoreSecondLang=data.score_second_lang;
+                    this.username=data.username;
+                    this.priorities=data.priorities;
                 }
             )
         },
