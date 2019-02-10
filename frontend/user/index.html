@@ -41,6 +41,17 @@
         </ul>
     </nav>
     <aside>
+        <div class="side-card block custom-shadow" v-if="isLogged">
+            <h3>Приоритеты</h3>
+            <div class="priority" v-for="(prior,index) in priorities">
+                <img class="img-btn" alt="up" src="../static/images/icons/up-arrow.svg"
+                     v-on:click="downPriority(index-1)"
+                ><div class="priority-name">{{user_namings[prior]}}</div
+                ><img class="img-btn" alt="down" src="../static/images/icons/down-arrow.svg"
+                     v-on:click="downPriority(index)">
+                <!--не трогать мусор!!! при переносе строк между img и div-ом вылезают неожиданные пробелы, от которых едет верстка -->
+            </div>
+        </div>
         <div class="block login side-card custom-shadow">
             <form method="post" id="spbu-login-form" action="">
                 <input type="text"  name="st_login" placeholder="Логин-st" v-model="validSt">
