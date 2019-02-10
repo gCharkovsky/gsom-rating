@@ -13,11 +13,7 @@ def check_st():
     st_login = request.form['st_login']
     password = request.form['password']
 
-    isValid = check(st_login, password);
-    if not isValid:
-        return False
-    else:
-        return True
+    return check(st_login, password);
 
 
 
@@ -112,5 +108,3 @@ def get_course(username, password): # TODO: выгрузка курса и на�
         '__CALLBACKPARAM': 'c0:Logon$PopupActions:0:XafCallback',
         '__EVENTVALIDATION': event_validation,
     })
-
-    prog=parse_argument(response,)

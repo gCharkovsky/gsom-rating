@@ -1,4 +1,3 @@
-
 doAjax = function (url, type, data, success) {
     if ($.cookie('token')) {
         data = 'token=' + $.cookie('token') + '&' + data;
@@ -66,12 +65,19 @@ var vue = new Vue({
         isPublic: true,
         isLogged:true,
         scoreSecondLang: false,
-        stLogin: '',
-        validSt: '',
+        stLogin: 'st064362',
+        validSt: 'st064362',
         stPassword: '',
         username: 'user',
         course: '2m',
         priorities: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
+        user_namings: {
+            'Marketing': 'Маркетинг',
+            'FM': 'Финмен',
+            'Logistics': 'Логистика',
+            'HR': 'УЧР',
+            'IM': 'Инфмен'
+        },
     },
     created: function () {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
@@ -109,7 +115,6 @@ var vue = new Vue({
             }
             return '#' + toHex(color.r) + toHex(color.g) + toHex(color.b)
         },
-
         sendProfiles: function () {
             $.ajax({
                 url: '/cgi-bin/profileController.py', //url страницы
@@ -126,19 +131,14 @@ var vue = new Vue({
         },
         requestData: function () {
             var grand = this;
-            $.ajax({
-                url: '/cgi-bin/profileController.py',
-                type: "POST",
-                dataType: "html",
-                data: "\'request\'=\'profile\' \'session\'=" + this.sessionId,
-                success: function (response) {
-                    grand.jsonToStudentList(response);
-                    console.log('данные обработаны и учтены')
-                },
-                error: function (response) {
-                    alert('Произошла ошибка. Попробуйте еще раз');
+            doAjax(
+                'http://127.0.0.1:5000/user/full',
+                'post',
+                '',
+                function(data) {
+
                 }
-            });
+            )
         },
         validateSt: function() {
             var grand = this;
@@ -148,7 +148,10 @@ var vue = new Vue({
                 'post',
                 'st_login='+grand.stLogin+'&password='+grand.stPassword,
                 function (data) {
-                    console.log(data.isValid)//grand.jsonToMarks(data);
+                    console.log(data.isValid);
+                    if(data.isValid){
+                        grand.validSt = grand.stLogin;
+                    }
                 });
         },
         getSpbuMarks: function () {
@@ -180,21 +183,6 @@ var vue = new Vue({
 
 $(document).ready(function () {
     $("#user").removeClass("not-loaded");
-    $("#login-btn")[0].onclick = function () {
-        $("#login-modal")[0].style.display = "block";
-    };
-    /*$("#register-btn")[0].onclick = function () {
-        $("#register-modal")[0].style.display = "block";
-        console.log("modal visibility changed");
-    };*/
-    $("#reg-from-login-btn")[0].onclick = function () {
-        $("#register-modal")[0].style.display = "block";
-        $("#login-modal")[0].style.display = "none";
-    };
-    $("#login-from-reg-btn")[0].onclick = function () {
-        $("#register-modal")[0].style.display = "none";
-        $("#login-modal")[0].style.display = "block";
-    };
     window.onclick = function (event) {
         if (event.target === $("#login-modal")[0] || event.target === $("#register-modal")[0]) {
             $("#register-modal")[0].style.display = "none";
