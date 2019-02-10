@@ -56,7 +56,14 @@ class User(db.Model):
         return '<User %r>' % self.login
 
     def jsonify(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        blacklist = {
+            'metadata',
+            'query',
+            'query_class',
+        }
+        return {attr: getattr(self, attr)
+                for attr in self.__dict__.keys()
+                if not attr.startswith('_') and attr not in blacklist}
 
 
 def add_user(login, password_hash):
