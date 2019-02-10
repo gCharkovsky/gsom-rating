@@ -31,13 +31,13 @@ body {
 
 aside {
     float: right;
-    padding: 8rem 3rem 2rem 0 ;
+    padding: 8em 3rem 2rem 0 ;
 }
 
 .mobile aside {
     float: none;
     display: block;
-    padding: 6rem 0 0 0;
+    padding: 6em 0 0 0;
 }
 
 footer {
@@ -62,6 +62,10 @@ input {
     padding: 0 1em;
     margin: 0.5em;
     width: 16em;
+}
+h2{
+    height: 1.33333em;
+    margin: 1em 0 0.3333em 0;
 }
 
 .ico-label{
@@ -94,9 +98,10 @@ input {
 }
 
 .img-btn {
-    height: 2rem;
+    height: 2em;
     cursor: pointer;
 }
+
 
 .badge {
     background-color: var(--gsom-main-color);
@@ -309,7 +314,7 @@ svg.small-round-bar .gpa-num{
     left: 0;
     z-index: 1;
     width: 100%;
-    height: 4rem;
+    height: 4em;
     box-shadow: 0 0 5px #333333;
     display: block;
     color: var(--gsom-main-color);
@@ -326,6 +331,8 @@ svg.small-round-bar .gpa-num{
     font-size: 150%;
     float: left;
     padding: 1rem;
+    line-height: 1.3333em;
+    vertical-align: middle;
     color: var(--gsom-main-color);
 }
 
@@ -478,7 +485,6 @@ svg.small-round-bar .gpa-num{
 
 }
 .student-list{
-    margin-top: 4rem;
     width: 100%;
     text-align: center;
 }
@@ -525,26 +531,18 @@ svg.small-round-bar .gpa-num{
     padding: 0.5em 1em;
     box-shadow:  0 1px 1px var(--shadow-color);
 }
-.priority-controls{
-    width: 2rem;
-    display: inline-block;
-}
 
-.priority-order-number{
-    width: 2rem;
-    text-align: center;
-    margin: 0;
-}
 .priority-name{
     margin: 0;
-    width: calc(100% - 4rem);
+    width: calc(100% - 4em);
     font-size: 125%;
     height: 100%;
     vertical-align: top;
-    line-height: 2rem;
+    line-height: 2em;
     text-align: center;
     display: inline-block;
 }
+
 
 /*user*/
 
@@ -650,6 +648,7 @@ svg.small-round-bar .gpa-num{
 }
 
 .mobile .navbar {
+    font-size: 150%;
     height: 3em;
     min-width: 870px;
 }

@@ -74,12 +74,13 @@ var vue = new Vue({
         isLoading: false,
         isMobile: false,
         isLogged: false,
+        regErrorMessage: '',
+        loginErrorMessage: '',
         isNotReversed: 1,
         actualComparator: 'gpa',
         course: '2m', //пока не нужно
         directions: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
         priorities: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'], //перестановка пяти названий направлений
-        loggedIn: false,
         user_namings: {
             'Marketing': 'Маркетинг',
             'FM': 'Финмен',
@@ -151,7 +152,7 @@ var vue = new Vue({
             $("#rating").removeClass("not-loaded");
         },
         isCourseCorrect: function () {
-            return this.course==='2m';
+            return this.course === '2m';
         },
         isCurrent: function (student, index, array) {
             return student['id'] === this.currentId;
@@ -353,6 +354,7 @@ var vue = new Vue({
             this.isLogged = !($.cookie('token') == null)
         },
         login: function () {
+            console.log('login');
             var grand = this;
             doAjax(
                 'http://127.0.0.1:5000/auth/authorize',
@@ -365,24 +367,42 @@ var vue = new Vue({
                         grand.hideLoginModal();
                         grand.isLogged = true;
                         grand.requestData();
+                    } else if (data.error === 'No user with such login') {
+                        grand.loginErrorMessage = 'Неверный логин';
+                    } else if (data.error === 'Invalid password') {
+                        grand.loginErrorMessage = 'Неверный пароль';
+                    } else {
+                        grand.loginErrorMessage = data.error;
                     }
                 }
             );
         },
         register: function () {
+            console.log('register');
             var grand = this;
-            doAjax(
-                'http://127.0.0.1:5000/auth/register',
-                'post',
-                $("#register-form").serialize(),
-                function (data) {
-                    grand.hideRegisterModal();
-                    grand.showLoginModal();
-                    console.log(data);
-                }
-            );
+            if ($("#register-form input[type=password]")[0].value === $("#register-form input[type=password]")[1].value) {
+                doAjax(
+                    'http://127.0.0.1:5000/auth/register',
+                    'post',
+                    $("#register-form").serialize(),
+                    function (data) {
+                        if (data.error == null) {
+                            grand.hideRegisterModal();
+                            grand.showLoginModal();
+                        } else if(data.error === 'Such login already exists') {
+                            grand.regErrorMessage = 'Логин занят';
+                        } else {
+                            grand.regErrorMessage = data.error;
+                        }
+                        console.log(data);
+                    }
+                );
+            } else {
+                this.regErrorMessage = 'Пароли не совпадают';
+            }
         },
         logout: function () {
+            console.log('logout');
             var grand = this;
             doAjax(
                 'http://127.0.0.1:5000/auth/logout',
@@ -398,20 +418,23 @@ var vue = new Vue({
                 }
             );
         },
-        showLoginModal : function () {
+        showLoginModal: function () {
             $("#login-modal")[0].style.display = "block";
         },
-        showRegisterModal : function () {
+        showRegisterModal: function () {
             $("#register-modal")[0].style.display = "block";
         },
-        hideLoginModal : function () {
+        hideLoginModal: function () {
+            this.loginErrorMessage = '';
             $("#login-modal")[0].style.display = "none";
         },
-        hideRegisterModal : function () {
+        hideRegisterModal: function () {
+            this.regErrorMessage = '';
             $("#register-modal")[0].style.display = "none";
         },
     },
-    computed: {},
+    computed: {
+    },
     watch: {}
 });
 
@@ -419,8 +442,8 @@ $(document).ready(function () {
     $("#rating").removeClass("not-loaded");
     window.onclick = function (event) {
         if (event.target === $("#login-modal")[0] || event.target === $("#register-modal")[0]) {
-            $("#register-modal")[0].style.display = "none";
-            $("#login-modal")[0].style.display = "none";
+            vue.hideLoginModal();
+            vue.hideRegisterModal();
         }
     };
 });
