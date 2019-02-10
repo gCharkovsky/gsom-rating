@@ -18,14 +18,14 @@ def profile(login):
     return jsonify(get_user_by_login(login))
 
 
-@user.route('/me', methods=['GET'])
+@user.route('/me', methods=['GET'], endpoint='me')
 @login_required
 def me():
     return jsonify(session['user'].jsonify())
 
 
-@user.route('/update', methods=['POST'])
-# @login_required # TODO: понять, почему появление этой строчки крашит запуск
+@user.route('/update', methods=['POST'], endpoint='update_profile')
+@login_required
 def update_profile():
     user = session['user']
     for field in ['username', 'priorities', 'is_public', 'score_second_lang']:
@@ -36,17 +36,17 @@ def update_profile():
     return jsonify({'status': None})
 
 
-# @user.route('/update_st', methods=['POST'])
-# @login_required
-# def update_st():
-#     user = session['user']
-#     st_login = request.form['st-login']
-#     password = request.form['password']
-#     if not st_login or not password:
-#         return jsonify({'error': 'Not enough credentials data'})
-#     else:
-#         user.st_login = st_login
-#         user.st_password = password
-#
-#         db.session.commit()
-#         return jsonify({'status': None})
+@user.route('/update_st', methods=['POST'], endpoint='update_st')
+@login_required
+def update_st():
+    user = session['user']
+    st_login = request.form['st-login']
+    password = request.form['password']
+    if not st_login or not password:
+        return jsonify({'error': 'Not enough credentials data'})
+    else:
+        user.st_login = st_login
+        user.st_password = password
+
+        db.session.commit()
+        return jsonify({'status': None})
