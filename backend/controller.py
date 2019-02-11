@@ -8,10 +8,13 @@ from sqlalchemy_utils import database_exists
 from backend.__config__ import BaseConfig
 from backend.db import db, initialize_database
 from backend.service import auth_service, user_service, spbu_service
+from backend.service.util.json_encoder import ModelEncoder
 
 controller = Flask('controller')
 controller.config.from_object(BaseConfig)
 controller.app_context().push()
+controller.json_encoder = ModelEncoder
+
 db.init_app(controller)
 
 if __name__ == '__main__':

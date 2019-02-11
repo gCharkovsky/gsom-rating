@@ -1,29 +1,17 @@
 #!/var/www/u0626898/data/myenv/bin/python
 # -*- coding: utf-8 -*-
-# noinspection PyUnresolvedReferences
-from backend.db import db, track_db, subject_db
 from datetime import datetime
+from backend.db import db, JSONStripped
 
-user_track = db.Table(
-    '$user$track',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('track_id', db.Integer, db.ForeignKey('track.id'), primary_key=True),
-    db.Column('priority', db.Integer, nullable=False),
-)
-
-user_subject = db.Table(
-    '$user$subject',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('subject_id', db.Integer, db.ForeignKey('subject.id'), primary_key=True),
-    db.Column('mark', db.String(2), nullable=False),
-    db.Column('is_relevant', db.Boolean, default=True),
-)
 
 public_user_data = ['id', 'username', 'gpa', 'priorities']
 
 
-class User(db.Model):
+class User(db.Model, JSONStripped):
     __tablename__ = 'user'
+
+    def __init__(self, *args, **kwargs):
+        super(User, self).__init__(args, kwargs)
 
     id = \
         db.Column(db.Integer, primary_key=True)
@@ -48,22 +36,52 @@ class User(db.Model):
     gpa = \
         db.Column(db.Integer, default=0)
     scores = \
-        db.relationship('Subject', secondary=user_subject, lazy='subquery')
+        db.relationship('UserSubject', lazy='subquery')
     priorities = \
-        db.relationship('Track', secondary=user_track, lazy='subquery')
+        db.relationship('UserTrack', lazy='subquery')
 
     def __repr__(self):
         return '<User %r>' % self.login
 
-    def jsonify(self):
-        blacklist = {
-            'metadata',
-            'query',
-            'query_class',
-        }
-        return {attr: getattr(self, attr)
-                for attr in self.__dict__.keys()
-                if not attr.startswith('_') and attr not in blacklist}
+
+class UserTrack(db.Model, JSONStripped):
+    __tablename__ = '$user$track'
+
+    def __init__(self, *args, **kwargs):
+        super(UserTrack, self).__init__(args, kwargs)
+
+    user_id = \
+        db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    track_id = \
+        db.Column('track_id', db.Integer, db.ForeignKey('track.id'), primary_key=True)
+    priority = \
+        db.Column('priority', db.Integer, nullable=False)
+
+    track = db.relationship('Track', lazy='subquery')
+
+    def __repr__(self):
+        return '<UserTrack %d %d>' % self.user_id % self.track_id
+
+
+class UserSubject(db.Model, JSONStripped):
+    __tablename__ = '$user$subject'
+
+    def __init__(self, *args, **kwargs):
+        super(UserSubject, self).__init__(args, kwargs)
+
+    user_id = \
+        db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    subject_id = \
+        db.Column('subject_id', db.Integer, db.ForeignKey('subject.id'), primary_key=True)
+    mark = \
+        db.Column('mark', db.String(2), nullable=False)
+    is_relevant = \
+        db.Column('is_relevant', db.Boolean, default=True)
+
+    subject = db.relationship('Subject', lazy='subquery')
+
+    def __repr__(self):
+        return '<UserSubject %d %d>' % self.user_id % self.subject_id
 
 
 def add_user(login, password_hash):
@@ -81,8 +99,8 @@ def get_user_by_login(login):
     return User.query.filter_by(login=login).first()
 
 
-def get_user_by_id(id):
-    return User.query.filter_by(id=id).first()
+def get_user_by_id(user_id):
+    return User.query.filter_by(id=user_id).first()
 
 
 def get_public_users_by_course(course):

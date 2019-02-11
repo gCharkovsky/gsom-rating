@@ -4,7 +4,7 @@ from flask import Blueprint, request, session, jsonify
 
 from backend.db.user_db import *
 from backend.service.auth_service import login_required
-from backend.service.spbu_service import array_load
+from backend.service.spbu_service import load_as_array
 
 user = Blueprint('user', __name__)
 
@@ -24,7 +24,7 @@ def profile(login):
 def me():
     user_id = session['user_id']
     user = get_user_by_id(user_id)
-    return jsonify(user.jsonify())
+    return jsonify(user)
 
 
 @user.route('/update', methods=['POST'], endpoint='update_profile')
@@ -57,11 +57,11 @@ def update_st():
         user.st_login = st_login
         user.st_password = password
 
-        marks = array_load()
+        marks = load_as_array()
         scores, cnt = 0, 0
         for term in marks:
             for k, v in term:
-                mark = user.scores.query.filter_by(subject_id=subject_db.get_subject_by_name(k).id) #TODO: запись в бд
+                mark = user.scores.query.filter_by(subject_id=subject_db.get_subject_by_name(k).id)  # TODO: запись в бд
                 if mark.is_relevant and str(mark.mark[1]).isnumeric():
                     cnt += 1
                     scores += mark.mark[1]
