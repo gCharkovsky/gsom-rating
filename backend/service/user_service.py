@@ -54,11 +54,13 @@ def update_st():
         return jsonify({
             'status': 'Not enough data to authorize at my.spbu.ru',
         })
-    elif user.st_login is not None:
-        return jsonify({
-            'status': 'Someone already has this st_login',
-        })
     else:
+        st_user = User.get_one(st_login=st_login)
+        if st_user is not None and st_user.id != user.id:
+            return jsonify({
+                'status': 'Someone else already has this st_login',
+            })
+
         user.st_login = st_login
         user.st_password = password
 

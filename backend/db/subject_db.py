@@ -22,7 +22,7 @@ class Subject(db.Model, JSONStripped):
     @staticmethod
     def insert(**kwargs):
         subject = Subject(**kwargs)
-        db.session.insert(subject)
+        db.session.add(subject)
         db.session.commit()
         return subject
 
