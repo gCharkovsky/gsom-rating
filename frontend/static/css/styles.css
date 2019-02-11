@@ -92,6 +92,10 @@ h2{
     width: 20rem;
 }
 
+.inner-content{
+    padding: 1em;
+}
+
 .title {
     margin-top: 2rem;
     width: 100%;

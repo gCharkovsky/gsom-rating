@@ -42,6 +42,9 @@ def update_profile():
     return jsonify({'status': None})
 
 
+def calculate_gpa():  # TODO: Выполнить подсчет GPA с учетом флага на второй иностранный без подключения к СПбГУ
+    return 0
+
 @user.route('/update_st', methods=['POST'], endpoint='update_st')
 @login_required
 def update_st():
@@ -100,7 +103,7 @@ def update_st():
                     is_relevant=True,
                 )
                 user.scores.append(subject)
-                if subject.is_relevant:
+                if subject.is_relevant and subject.mark in mark_values.keys():
                     cnt += 1
                     scores += mark_values[subject.mark]
 
