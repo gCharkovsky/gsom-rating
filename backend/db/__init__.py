@@ -21,4 +21,4 @@ from backend.db import subject_db, track_db, user_db
 
 
 def initialize_database():
-    track_db.fill()
+    track_db.Track.fill()

@@ -11,7 +11,7 @@ class User(db.Model, JSONStripped):
     __tablename__ = 'user'
 
     def __init__(self, *args, **kwargs):
-        super(User, self).__init__(args, kwargs)
+        super(User, self).__init__(*args, **kwargs)
 
     id = \
         db.Column(db.Integer, primary_key=True)
@@ -36,19 +36,34 @@ class User(db.Model, JSONStripped):
     gpa = \
         db.Column(db.Integer, default=0)
     scores = \
-        db.relationship('UserSubject', lazy='subquery')
+        db.relationship('UserSubject', lazy='subquery', cascade='all, delete-orphan')
     priorities = \
-        db.relationship('UserTrack', lazy='subquery')
+        db.relationship('UserTrack', lazy='subquery', cascade='all, delete-orphan')
 
     def __repr__(self):
         return '<User %r>' % self.login
+
+    @staticmethod
+    def add(**kwargs):
+        user = User(**kwargs)
+        db.session.add(user)
+        db.session.commit()
+        return user.id
+
+    @staticmethod
+    def get_all(**kwargs):
+        return User.query.filter_by(**kwargs)
+
+    @staticmethod
+    def get_one(**kwargs):
+        return User.query.filter_by(**kwargs).first()
 
 
 class UserTrack(db.Model, JSONStripped):
     __tablename__ = '$user$track'
 
     def __init__(self, *args, **kwargs):
-        super(UserTrack, self).__init__(args, kwargs)
+        super(UserTrack, self).__init__(*args, **kwargs)
 
     user_id = \
         db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
@@ -60,14 +75,14 @@ class UserTrack(db.Model, JSONStripped):
     track = db.relationship('Track', lazy='subquery')
 
     def __repr__(self):
-        return '<UserTrack %d %d>' % self.user_id % self.track_id
+        return '<UserTrack %r %r>' % self.user_id % self.track_id
 
 
 class UserSubject(db.Model, JSONStripped):
     __tablename__ = '$user$subject'
 
     def __init__(self, *args, **kwargs):
-        super(UserSubject, self).__init__(args, kwargs)
+        super(UserSubject, self).__init__(*args, **kwargs)
 
     user_id = \
         db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
@@ -81,34 +96,4 @@ class UserSubject(db.Model, JSONStripped):
     subject = db.relationship('Subject', lazy='subquery')
 
     def __repr__(self):
-        return '<UserSubject %d %d>' % self.user_id % self.subject_id
-
-
-def add_user(login, password_hash):
-    user = User(
-        login=login,
-        password_hash=password_hash,
-        username=login,
-    )
-    db.session.add(user)
-    db.session.commit()
-    return user.id
-
-
-def get_user_by_login(login):
-    return User.query.filter_by(login=login).first()
-
-
-def get_user_by_id(user_id):
-    return User.query.filter_by(id=user_id).first()
-
-
-def get_public_users_by_course(course):
-    full_userlist = User.query.filter(User.course == course and User.is_public)
-    required_userlist = []
-    for user in full_userlist:
-        curr_user = {}
-        for data in public_user_data:
-            curr_user[data] = user[data]
-        required_userlist.append(curr_user)
-    return required_userlist
+        return '<UserSubject %r %r>' % self.user_id % self.subject_id

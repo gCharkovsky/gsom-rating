@@ -57,6 +57,7 @@
             <form id="request-form">
                 <input class="st_login" name="st_login" value="st064362">
                 <input class="password" name="password" value="JFHmWFi8">
+                <input type="submit" id="update" name="update" value="Update user"/>
                 <input type="submit" id="marks" name="marks" value="Get marks"/>
                 <input type="submit" id="course" name="course" value="Get course"/>
             </form>
@@ -138,6 +139,19 @@
                     console.log(data);
                     $.cookie('token', '', {path: '/', expires: -1});
                     $.removeCookie('token', {path: '/'})
+                }
+            );
+        });
+
+        $("#request-form>#update").click(function (e) {
+            e.preventDefault();
+
+            doAjax(
+                'http://127.0.0.1:5000/user/update_st',
+                'post',
+                $("#request-form").serialize(),
+                function (data) {
+                    console.log(data);
                 }
             );
         });

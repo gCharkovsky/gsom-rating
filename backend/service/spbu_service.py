@@ -70,13 +70,14 @@ def authorize(username, password):
 
 @spbu.route('/load', methods=['POST'])
 def load():
-    return jsonify(load_as_array())
+    return jsonify(load_marks_as_array())
 
 
-def load_as_array():
+def load_marks_as_array():
     st_login = request.form['st_login']
     password = request.form['password']
-    authorize(st_login, password)
+    if 'Login' not in session['cookies']:
+        authorize(st_login, password)
 
     requests.get('https://my.spbu.ru/default.aspx', headers={
         'Cookie': cookies(),
@@ -105,9 +106,14 @@ def load_as_array():
 
 @spbu.route('/course', methods=['POST'])
 def course():
+    return jsonify(load_course_as_dict())
+
+
+def load_course_as_dict():
     st_login = request.form['st_login']
     password = request.form['password']
-    authorize(st_login, password)
+    if 'Login' not in session['cookies']:
+        authorize(st_login, password)
 
     response = requests.get('https://my.spbu.ru/default.aspx', headers={
         'Cookie': cookies(),
@@ -117,10 +123,10 @@ def course():
     study_program = re.findall(_study_program, response_text)[0]
     course_year = re.findall(_course_year, response_text)[0]
 
-    return jsonify({
+    return {
         'study_program': study_program,
         'course_year': course_year,
-    })
+    }
 
 
 def parse_all(text_data):
