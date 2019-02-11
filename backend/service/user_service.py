@@ -12,7 +12,7 @@ user = Blueprint('user', __name__)
 
 @user.route('/course_list/<string:course>', methods=['GET'])
 def course_list(course):
-    return jsonify(User.get_all(course=course, is_public=True)) # TODO: выводить только публичную инфу о юзере: id, course, gpa, priorities
+    return jsonify(User.get_all(course=course, is_public=True).all()) # TODO: выводить только публичную инфу о юзере: id, course, gpa, priorities
 
 
 @user.route('/profile/<string:login>', methods=['GET'])

@@ -12,6 +12,21 @@ doAjax = function (url, type, data, success) {
     });
 };
 
+doProbablyBadAjax = function (url, type, data, success, error) {
+    if ($.cookie('token')) {
+        data = 'token=' + $.cookie('token') + '&' + data;
+    }
+    return $.ajax({
+        url: url,
+        type: type,
+        dataType: 'json',
+        data: data,
+        xhrFields: {withCredentials: true},
+        success: success,
+        error: error
+    });
+};
+
 /**
  * @return {string}
  */
@@ -104,8 +119,7 @@ var vue = new Vue({
             this.isMobile = true;
 
         this.checkSession();
-        if(this.isLogged)
-            this.requestData();
+        this.requestData();
         var grand = this;
         this.resize();
         window.addEventListener("resize", grand.resize, false);
@@ -187,7 +201,8 @@ var vue = new Vue({
         validateSt: function () {
             var grand = this;
             console.log('st_login=' + grand.stLogin + '&password=' + grand.stPassword);
-            doAjax(
+            grand.isLoading=true;
+            doProbablyBadAjax(
                 'http://127.0.0.1:5000/user/update_st',
                 'post',
                 'st_login=' + grand.stLogin + '&password=' + grand.stPassword,
@@ -196,6 +211,10 @@ var vue = new Vue({
                     if (data.marks.length > 0) {
                         grand.validSt = grand.stLogin;
                     }
+                    grand.isLoading=false;
+                },
+                function (err) {
+                    grand.isLoading=false;
                 });
         },
         getSpbuMarks: function () {
@@ -224,7 +243,7 @@ var vue = new Vue({
             var grand = this;
             doAjax(
                 ' http://127.0.0.1:5000/auth/check',
-                'get',
+                'post',
                 '',
                 function (data) {
                     grand.isLogged = data.check;
@@ -248,7 +267,6 @@ var vue = new Vue({
                         grand.isLogged = true;
                         console.log(data);
                         grand.requestData();
-
                     } else if (data.status === 'No user with such login') {
                         grand.loginErrorMessage = 'Неверный логин';
                     } else if (data.status === 'Invalid password') {

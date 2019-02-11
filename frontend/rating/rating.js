@@ -143,6 +143,8 @@ var vue = new Vue({
             this.requestData();
         else
             this.initCurrentStudent(0);
+
+        this.predictProfiles()
         var grand = this;
         this.resize();
         window.addEventListener("resize", grand.resize, false);
@@ -162,7 +164,7 @@ var vue = new Vue({
             var p = this.students.findIndex(this.isCurrent);
             p++;
             if (inTotal) {
-                return [Math.floor(p / this.k_real), this.theoreticalNumberOfStudents];
+                return [Math.floor((p-1) / this.k_real)+1, this.theoreticalNumberOfStudents];
             } else {
                 return [p, this.students.length];
             }
@@ -345,11 +347,15 @@ var vue = new Vue({
                     grand.currentId = data.id
                 }
             );
+            console.log('Course: ' + grand.course);
+            //var course_str = grand.course.substr(0, grand.course.length-2)+'\$zzz'+grand.course.substr(grand.course.length-1,2);
+            //console.log('Course String: ' + course_str);
             doAjax(
                 'http://127.0.0.1:5000/user/course_list/'+grand.course,
                 'get',
                 '',
                 function (data) {
+                    console.log(data);
                     this.jsonToStudentList(data);
                     grand.initCurrentStudent(grand.currentId);
                 }
@@ -383,6 +389,7 @@ var vue = new Vue({
                         grand.isLogged = true;
                         console.log(data);
                         grand.requestData();
+                        grand.predictProfiles();
 
                     } else if (data.status === 'No user with such login') {
                         grand.loginErrorMessage = 'Неверный логин';
