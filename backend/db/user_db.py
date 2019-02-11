@@ -44,9 +44,9 @@ class User(db.Model, JSONStripped):
         return '<User %r>' % self.login
 
     @staticmethod
-    def add(**kwargs):
+    def insert(**kwargs):
         user = User(**kwargs)
-        db.session.add(user)
+        db.session.insert(user)
         db.session.commit()
         return user.id
 

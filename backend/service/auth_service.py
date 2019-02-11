@@ -51,11 +51,11 @@ def register():
 
     if session.get('status') is None:
         return jsonify({
-            'user_id': User.add(
+            'user_id': User.insert(
                 login=login,
                 password_hash=generate_password_hash(password),
                 username=login
-            )
+            ).id
         })
     else:
         return jsonify({

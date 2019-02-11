@@ -54,6 +54,10 @@ def update_st():
         return jsonify({
             'status': 'Not enough data to authorize at my.spbu.ru',
         })
+    elif not (user.st_login is None):
+        return jsonify({
+            'status': 'Someone already has this st_login',
+        })
     else:
         user.st_login = st_login
         user.st_password = password
@@ -69,7 +73,10 @@ def update_st():
             for item in term:
                 subject = UserSubject(
                     user_id=user.id,
-                    subject_id=get_subject_or_insert(item['subject'], term_number).id,
+                    subject_id=Subject.get_or_insert(
+                        name=item['subject'],
+                        term=term_number
+                    ).id,
                     mark=item['mark'],
                     is_relevant=True,
                 )

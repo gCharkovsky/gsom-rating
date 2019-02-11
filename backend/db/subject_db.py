@@ -19,20 +19,22 @@ class Subject(db.Model, JSONStripped):
     def __repr__(self):
         return '<Subject %r>' % self.name
 
+    @staticmethod
+    def insert(**kwargs):
+        subject = Subject(**kwargs)
+        db.session.insert(subject)
+        db.session.commit()
+        return subject
 
-def add_subject(name, term):
-    subject = Subject(name=name, term=term)
-    db.session.add(subject)
-    db.session.commit()
-    return subject
+    @staticmethod
+    def get_all(**kwargs):
+        return Subject.query.filter_by(**kwargs)
 
+    @staticmethod
+    def get_one(**kwargs):
+        return Subject.query.filter_by(**kwargs).first()
 
-def get_subject_by_name(name):
-    return Subject.query.filter_by(name=name).first()
-
-
-def get_subject_or_insert(name, term):
-    subject = get_subject_by_name(name)
-    if subject is None:
-        subject = add_subject(name, term)
-    return subject
+    @staticmethod
+    def get_or_insert(**kwargs):
+        subject = Subject.get_one(**kwargs)
+        return Subject.add(**kwargs) if subject is None else subject
