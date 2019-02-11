@@ -37,4 +37,4 @@ class Subject(db.Model, JSONStripped):
     @staticmethod
     def get_or_insert(**kwargs):
         subject = Subject.get_one(**kwargs)
-        return Subject.add(**kwargs) if subject is None else subject
+        return Subject.insert(**kwargs) if subject is None else subject
