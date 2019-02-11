@@ -80,7 +80,8 @@ var vue = new Vue({
         scoreSecondLang: false,
         username: 'user',
 
-        priorities: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
+        priorities: [],
+        isPrioritiesEmpty: true,
 
         stLogin: '',
         validSt: '',
@@ -143,10 +144,13 @@ var vue = new Vue({
                 })
             )
         },
+        genPriorities : function() {
+            this.priorities=['Marketing','FM','Logistics','HR','IM'];
+            this.isPrioritiesEmpty = false;
+            this.sendPriorities();
+        },
         sendPriorities: function(){
-            doAjax(
-
-            )
+            //doAjax()
         },
         requestData: function () {
             var grand = this;
@@ -158,11 +162,17 @@ var vue = new Vue({
                     console.log(data);
                     grand.course=data.course;
                     grand.validSt=data.st_login;
+                    grand.stLogin=data.stLogin;
                     grand.isPublic=data.is_public;
                     grand.scoreSecondLang=data.score_second_lang;
                     grand.username=data.username;
-                    if(data.priorities != null){
+                    if(data.priorities != null && data.priorities.length !== 0){
                         grand.priorities = data.priorities;
+                        console.log('Loaded priorities:' + data.priorities.length);
+                        console.log(data.priorities);
+                    } else {
+                        grand.isPrioritiesEmpty = true;
+                        console.log('No priorities');
                     }
                 }
             )
