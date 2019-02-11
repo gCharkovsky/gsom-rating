@@ -54,7 +54,7 @@ def update_st():
         return jsonify({
             'status': 'Not enough data to authorize at my.spbu.ru',
         })
-    elif not (user.st_login is None):
+    elif user.st_login is not None:
         return jsonify({
             'status': 'Someone already has this st_login',
         })

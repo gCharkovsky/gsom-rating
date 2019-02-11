@@ -76,7 +76,7 @@ def load():
 def load_marks_as_array():
     st_login = request.form['st_login']
     password = request.form['password']
-    if 'Login' not in session['cookies']:
+    if 'ccokies' not in session and 'Login' not in session['cookies']:
         authorize(st_login, password)
 
     requests.get('https://my.spbu.ru/default.aspx', headers={
@@ -112,7 +112,7 @@ def course():
 def load_course_as_dict():
     st_login = request.form['st_login']
     password = request.form['password']
-    if 'Login' not in session['cookies']:
+    if 'cookies' not in session and 'Login' not in session['cookies']:
         authorize(st_login, password)
 
     response = requests.get('https://my.spbu.ru/default.aspx', headers={
