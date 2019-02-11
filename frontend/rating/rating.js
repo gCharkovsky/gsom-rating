@@ -78,7 +78,7 @@ var vue = new Vue({
         loginErrorMessage: '',
         isNotReversed: 1,
         actualComparator: 'gpa',
-        course: '2m', //пока не нужно
+        course: 'Менеджмент\$2', //пока не нужно
         directions: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
         priorities: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'], //перестановка пяти названий направлений
         user_namings: {
@@ -137,7 +137,8 @@ var vue = new Vue({
             this.isMobile = true;
         this.checkSession();
 
-        this.getStudentsFromLongShityString();// TODO: Заменить на запрос в БД
+        //this.getStudentsFromLongShityString();// TODO: Заменить на запрос в БД
+        this.requestData();
         if (this.isLogged)
             this.requestData();
         else
@@ -152,7 +153,7 @@ var vue = new Vue({
             $("#rating").removeClass("not-loaded");
         },
         isCourseCorrect: function () {
-            return this.course === '2m';
+            return this.course === 'Менеджмент$2';
         },
         isCurrent: function (student, index, array) {
             return student['id'] === this.currentId;
@@ -265,18 +266,7 @@ var vue = new Vue({
             return res;
         },
         sendProfiles: function () {
-            $.ajax({
-                url: '/cgi-bin/profileController.py', //url страницы
-                type: "POST", //метод отправки
-                dataType: "application/json", //формат данных
-                data: this.getSerializedPriorities(),
-                success: function (response_alpha) { //Данные отправлены успешно
-                    console.log('Данные обработаны и учтены')
-                },
-                error: function (response) { // Данные не отправлены
-                    alert('Произошла ошибка. Попробуйте еще раз');
-                }
-            });
+
         },
         jsonToStudentList: function (input) {
             var response = $.parseJSON(input);
@@ -284,7 +274,13 @@ var vue = new Vue({
             this.students.splice(0, this.students.length + 1);
             for (student_index in response) {
                 var student = response[student_index];
-                this.students.push(student);
+                var parsed_student = {
+                    'id': student.id,
+                    'username': student.username,
+                    'gpa': student.gpa,
+                    'predictedDirection': 'FM'
+                };
+                this.students.push(parsed_student);
             }
             this.students.sort(this.compareByGpa);
             this.predictProfiles();
@@ -345,16 +341,17 @@ var vue = new Vue({
                 'post',
                 '',
                 function (data) {
-                    this.course = data.course;
+                    grand.course = data.course;
+                    grand.currentId = data.id
                 }
             );
             doAjax(
-                'http://127.0.0.1:5000/user/course_list/'+this.course,
-                'post',
+                'http://127.0.0.1:5000/user/course_list/'+grand.course,
+                'get',
                 '',
                 function (data) {
-                    console.log(data.id);
-                    grand.initCurrentStudent(data.id);
+                    this.jsonToStudentList(data);
+                    grand.initCurrentStudent(grand.currentId);
                 }
             );
         },

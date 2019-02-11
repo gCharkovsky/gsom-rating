@@ -12,7 +12,7 @@ user = Blueprint('user', __name__)
 
 @user.route('/course_list/<string:course>', methods=['GET'])
 def course_list(course):
-    return jsonify(User.get_all(course=course, is_public=True))
+    return jsonify(User.get_all(course=course, is_public=True)) # TODO: выводить только публичную инфу о юзере: id, course, gpa, priorities
 
 
 @user.route('/profile/<string:login>', methods=['GET'])
@@ -50,6 +50,23 @@ def update_st():
     st_login = request.form.get('st_login')
     password = request.form.get('password')
 
+    mark_values = {
+        'A': 5,
+        'B': 4.5,
+        'C': 4,
+        'D': 3.5,
+        'E': 3,
+        'F': 0,
+        '5A': 5,
+        '5B': 4.7,
+        '4B': 4.3,
+        '4C': 4,
+        '4D': 3.7,
+        '3D': 3.3,
+        '3E': 3,
+        '2F': 0,
+    }
+
     if not st_login or not password:
         return jsonify({
             'status': 'Not enough data to authorize at my.spbu.ru',
@@ -85,11 +102,7 @@ def update_st():
                 user.scores.append(subject)
                 if subject.is_relevant:
                     cnt += 1
-                    if str.isdigit(subject.mark[0]):
-                        scores += int(subject.mark[0])
-                    else:
-                        c = ord(subject.mark[0]) - ord('A')
-                        scores += 5 - ((c + 1) // 2)
+                    scores += mark_values[subject.mark]
 
         user.course = course['study_program'] + '$' + course['course_year']
         user.gpa = scores / cnt
@@ -98,4 +111,5 @@ def update_st():
         return jsonify({
             'marks': marks,
             'gpa': user.gpa,
+            'course': user.course,
         })
