@@ -376,6 +376,7 @@ var vue = new Vue({
                     if (data.status == null) {
                         grand.hideLoginModal();
                         grand.isLogged = true;
+                        console.log(data);
                         grand.requestData();
 
                     } else if (data.status === 'No user with such login') {
