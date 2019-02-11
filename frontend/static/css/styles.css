@@ -236,21 +236,26 @@ svg.small-round-bar .gpa-num{
     display: block;
 }
 
-.login .btn-submit {
+
+/* button*/
+.btn-centered{
+    margin: 0 calc(50% - 8em) 1em
+}
+.btn-submit {
     border-color: var(--gsom-main-color);
     background-color: var(--gsom-main-color);
     color: var(--bg-color);
     cursor: pointer;
 }
 
-.login .btn-submit:hover {
+.btn-submit:hover {
 
     color: var(--gsom-main-color);
     background-color: rgba(255, 255, 255, 0);
 
 }
 
-.login .btn-secondary {
+.btn-secondary {
     border-style: none;
     border-width: 0;
     background-color: #00000000;
@@ -258,7 +263,7 @@ svg.small-round-bar .gpa-num{
     cursor: pointer;
 }
 
-.login .btn-secondary:hover {
+.btn-secondary:hover {
 
     background-color: #be1e2d10;
 

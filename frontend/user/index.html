@@ -43,13 +43,17 @@
     <aside>
         <div class="side-card block custom-shadow" v-if="isLogged">
             <h3>Приоритеты</h3>
-            <div class="priority" v-for="(prior,index) in priorities">
+            <div class="side-content" v-if="isPrioritiesEmpty">Вы еще не указали приоритеты.</div>
+            <input type="button" class="btn-submit btn-centered" value="Исправить!" v-if="isPrioritiesEmpty" @click="genPriorities()">
+            <div v-if="!isPrioritiesEmpty">
+                <div class="priority" v-for="(prior,index) in priorities">
                 <img class="img-btn" alt="up" src="../static/images/icons/up-arrow.svg"
                      v-on:click="downPriority(index-1)"
                 ><div class="priority-name">{{user_namings[prior]}}</div
                 ><img class="img-btn" alt="down" src="../static/images/icons/down-arrow.svg"
                      v-on:click="downPriority(index)">
                 <!--не трогать мусор!!! при переносе строк между img и div-ом вылезают неожиданные пробелы, от которых едет верстка -->
+            </div>
             </div>
         </div>
         <div class="block login side-card custom-shadow">
@@ -75,10 +79,13 @@
                     </label>
                 </div>
                 <div class="account-item">
-                    <label class="account-item-name">ST:
-                        <input class="account-item-value" v-model="stLogin">
+                    <label class="account-item-name">
+                        ST:
+                        <input class="account-item-value" v-if="stLogin===validSt" v-model="stLogin">
                     </label>
+
                     <div style="display: inline-block" v-if="stLogin!==validSt">
+                        <input v-model="stLogin">
                         Пароль:
                         <input type="password"  v-model="stPassword">
                         <input type="button" class="" id="validate-st" value="Подтвердить" @click="validateSt()">
