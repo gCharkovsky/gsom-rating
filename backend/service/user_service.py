@@ -12,7 +12,12 @@ user = Blueprint('user', __name__)
 
 @user.route('/course_list/<string:course>', methods=['GET'])
 def course_list(course):
-    return jsonify(User.get_all(course=course, is_public=True).all()) # TODO: выводить только публичную инфу о юзере: id, course, gpa, priorities
+    public_user_data = ['id', 'username', 'gpa', 'priorities']
+    raw_list = User.get_all(course=course, is_public=True).all()
+    res_list = []
+    for elem in raw_list:
+        res_list.append({'id':elem.id, 'username': elem.username, 'gpa': elem.gpa, 'priorities': elem.priorities})
+    return jsonify(res_list) # TODO: выводить публичную инфу по ключам из массива public_user_data
 
 
 @user.route('/profile/<string:login>', methods=['GET'])

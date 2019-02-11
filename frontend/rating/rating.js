@@ -336,6 +336,9 @@ var vue = new Vue({
         changeMobility: function () {
             this.isMobile ^= 1
         },
+        arrayToStudentList: function (data){
+
+        },
         requestData: function () {
             var grand = this;
             doAjax(
@@ -356,7 +359,7 @@ var vue = new Vue({
                 '',
                 function (data) {
                     console.log(data);
-                    this.jsonToStudentList(data);
+                    this.arrayToStudentList(data);
                     grand.initCurrentStudent(grand.currentId);
                 }
             );

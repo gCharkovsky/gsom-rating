@@ -4,7 +4,7 @@ from datetime import datetime
 from backend.db import db, JSONStripped
 
 
-public_user_data = ['id', 'username', 'gpa', 'priorities']
+
 
 
 class User(db.Model, JSONStripped):
