@@ -345,22 +345,30 @@ var vue = new Vue({
                 'post',
                 '',
                 function (data) {
+                    this.course = data.course;
+                }
+            );
+            doAjax(
+                'http://127.0.0.1:5000/user/course_list/'+this.course,
+                'post',
+                '',
+                function (data) {
                     console.log(data.id);
                     grand.initCurrentStudent(data.id);
                 }
             );
         },
         checkSession: function () {
-            /*var grand = this;
+            var grand = this;
             doAjax(
                 ' http://127.0.0.1:5000/auth/check',
                 'post',
                 '',
                 function (data) {
-                    grand.isLogged = data.isLogged;
+                    grand.isLogged = data.check;
                 }
-            );*/
-            this.isLogged = ($.cookie('token') != null);
+            );
+            //this.isLogged = ($.cookie('token') != null);
         },
         login: function () {
             console.log('login');

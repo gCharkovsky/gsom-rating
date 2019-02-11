@@ -162,7 +162,7 @@ var vue = new Vue({
                     console.log(data);
                     grand.course=data.course;
                     grand.validSt=data.st_login;
-                    grand.stLogin=data.stLogin;
+                    grand.stLogin=data.st_login;
                     grand.isPublic=data.is_public;
                     grand.scoreSecondLang=data.score_second_lang;
                     grand.username=data.username;
@@ -179,14 +179,14 @@ var vue = new Vue({
         },
         validateSt: function() {
             var grand = this;
-            console.log('st_login='+grand.stLogin+'&password='+grand.st_Password);
+            console.log('st_login='+grand.stLogin+'&password='+grand.stPassword);
                 doAjax(
                 'http://127.0.0.1:5000/user/update_st',
                 'post',
                 'st_login='+grand.stLogin+'&password='+grand.stPassword,
                 function (data) {
-                    console.log(data.isValid);
-                    if(data.isValid){
+                    console.log(data);
+                    if(data.marks.length>0) {
                         grand.validSt = grand.stLogin;
                     }
                 });

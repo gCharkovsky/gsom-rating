@@ -60,7 +60,7 @@
             <form method="post" id="spbu-login-form" action="">
                 <p>{{validSt}}</p>
                 <input type="password" class="password" name="st_password" placeholder="Пароль" v-model="stPassword">
-                <input type="button" class="btn-submit" id="get-marks" value="Синхронизировать данные">
+                <input type="button" class="btn-submit" id="get-marks" value="Синхронизировать данные" @click="validateSt()">
             </form>
             <p v-if="!isLoading"> Мы <b>не сохраняем</b> Ваш логин и пароль. Данные используются только для входа в
                 my.spbu</p>
