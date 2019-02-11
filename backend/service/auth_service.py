@@ -3,7 +3,7 @@
 from flask import Blueprint, request, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from backend.db.user_db import add_user, get_user_by_login
+from backend.db.user_db import User
 from backend.service.util.jwt import create_token, decode_token
 
 auth = Blueprint('auth', __name__)
@@ -15,8 +15,8 @@ def set_user():
         token = request.form['token'] if request.method == 'POST' else request.args['token']
         if not (token is None) and token != '':
             user_id, status = decode_token(token)
-            session['user_id'] = user_id
-            session['status'] = status
+            if not (user_id is None):
+                session['user_id'] = user_id
 
 
 @auth.after_app_request
@@ -46,12 +46,16 @@ def register():
         session['status'] = 'Login is required'
     elif not password:
         session['status'] = 'Password is required'
-    elif get_user_by_login(login) is not None:
+    elif User.get_one(login=login) is not None:
         session['status'] = 'Such login already exists'
 
     if session.get('status') is None:
         return jsonify({
-            'user_id': add_user(login, generate_password_hash(password))
+            'user_id': User.add(
+                login=login,
+                password_hash=generate_password_hash(password),
+                username=login
+            )
         })
     else:
         return jsonify({
@@ -69,7 +73,7 @@ def authorize():
     elif not password:
         session['status'] = 'Password is required'
     else:
-        user = get_user_by_login(login)
+        user = User.get_one(login=login)
         if user is None:
             session['status'] = 'No user with such login'
         elif not check_password_hash(user.password_hash, password):

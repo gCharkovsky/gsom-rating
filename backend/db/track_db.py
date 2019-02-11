@@ -2,20 +2,20 @@
 # -*- coding: utf-8 -*-
 from backend.db import db, JSONStripped
 
-tracks = [
-    'Marketing',
-    'FM',
-    'Logistics',
-    'HR',
-    'IM',
-]
-
 
 class Track(db.Model, JSONStripped):
     __tablename__ = 'track'
 
+    __tracks__ = [
+        'Marketing',
+        'FM',
+        'Logistics',
+        'HR',
+        'IM',
+    ]
+
     def __init__(self, *args, **kwargs):
-        super(Track, self).__init__(args, kwargs)
+        super(Track, self).__init__(*args, **kwargs)
 
     id = \
         db.Column(db.Integer, primary_key=True)
@@ -25,8 +25,7 @@ class Track(db.Model, JSONStripped):
     def __repr__(self):
         return '<Track %r>' % self.name
 
-
-def fill():
-    for track in tracks:
-        db.session.add(Track(name=track))
-    db.session.commit()
+    @staticmethod
+    def fill():
+        db.session.add_all([Track(name=name) for name in Track.__tracks__])
+        db.session.commit()

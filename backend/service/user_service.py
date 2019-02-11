@@ -2,36 +2,37 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, request, session, jsonify
 
-from backend.db.user_db import *
+from backend.db.user_db import User, UserSubject, UserTrack
+from backend.db.subject_db import *
 from backend.service.auth_service import login_required
-from backend.service.spbu_service import load_as_array
+from backend.service.spbu_service import load_marks_as_array, load_course_as_dict
 
 user = Blueprint('user', __name__)
 
 
 @user.route('/course_list/<string:course>', methods=['GET'])
 def course_list(course):
-    return jsonify(get_public_users_by_course(course))
+    return jsonify(User.get_all(course=course, is_public=True))
 
 
 @user.route('/profile/<string:login>', methods=['GET'])
 def profile(login):
-    return jsonify(get_user_by_login(login))
+    return jsonify(User.get_one(login=login))
 
 
 @user.route('/me', methods=['POST'], endpoint='me')
 @login_required
 def me():
-    user_id = session['user_id']
-    user = get_user_by_id(user_id)
+    id = session['user_id']
+    user = User.get_one(id=id)
     return jsonify(user)
 
 
 @user.route('/update', methods=['POST'], endpoint='update_profile')
 @login_required
 def update_profile():
-    user_id = session['user_id']
-    user = get_user_by_id(user_id)
+    id = session['user_id']
+    user = User.get_one(id=id)
 
     for field in ['username', 'priorities', 'is_public', 'score_second_lang']:
         if field in request.form:
@@ -44,8 +45,8 @@ def update_profile():
 @user.route('/update_st', methods=['POST'], endpoint='update_st')
 @login_required
 def update_st():
-    user_id = session['user_id']
-    user = get_user_by_id(user_id)
+    id = session['user_id']
+    user = User.get_one(id=id)
     st_login = request.form.get('st_login')
     password = request.form.get('password')
 
@@ -57,14 +58,31 @@ def update_st():
         user.st_login = st_login
         user.st_password = password
 
-        marks = load_as_array()
+        marks = load_marks_as_array()
+        course = load_course_as_dict()
         scores, cnt = 0, 0
-        for term in marks:
-            for k, v in term:
-                mark = user.scores.query.filter_by(subject_id=subject_db.get_subject_by_name(k).id)  # TODO: запись в бд
-                if mark.is_relevant and str(mark.mark[1]).isnumeric():
+
+        user.scores = []
+        db.session.commit()
+
+        for term_number, term in enumerate(marks, 1):
+            for item in term:
+                subject = UserSubject(
+                    user_id=user.id,
+                    subject_id=get_subject_or_insert(item['subject'], term_number).id,
+                    mark=item['mark'],
+                    is_relevant=True,
+                )
+                user.scores.append(subject)
+                if subject.is_relevant:
                     cnt += 1
-                    scores += mark.mark[1]
+                    if str.isdigit(subject.mark[0]):
+                        scores += int(subject.mark[0])
+                    else:
+                        c = ord(subject.mark[0]) - ord('A')
+                        scores += 5 - ((c + 1) // 2)
+
+        user.course = course['study_program'] + '$' + course['course_year']
         user.gpa = scores / cnt
 
         db.session.commit()
