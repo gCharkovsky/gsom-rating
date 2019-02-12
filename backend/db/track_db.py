@@ -29,3 +29,7 @@ class Track(db.Model, JSONStripped):
     def fill():
         db.session.add_all([Track(name=name) for name in Track.__tracks__])
         db.session.commit()
+
+    @staticmethod
+    def get_one(**kwargs):
+        return Track.query.filter_by(**kwargs).first()

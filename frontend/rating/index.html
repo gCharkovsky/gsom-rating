@@ -145,7 +145,7 @@
                              :class="{'current' : student['id']==students.find(isCurrent)['id']}">{{index+1}}
                         </div>
                         <div class="list-item-part student-name">{{student['username']}}</div>
-                        <div class="list-item-part student-gpa">{{student['gpa']}}</div>
+                        <div class="list-item-part student-gpa">{{student['gpa'].toFixed(3)}}</div>
                         <div class="list-item-part student-wanted-dir">{{user_namings[student['priorities'][0]]}}</div>
                         <div class="list-item-part student-expected-dir">
                             {{user_namings[student['predictedDirection']]}}

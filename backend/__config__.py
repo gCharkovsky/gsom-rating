@@ -13,7 +13,7 @@ class PathInfo(object):
 
 class BaseConfig(SecretConfig):
     SQLALCHEMY_DATABASE_URI = \
-        'sqlite:///' + PathInfo.DATABASE_DORESH_PATH
+        'sqlite:///' + PathInfo.DATABASE_GOSHA_PATH
         # 'mysql://' + SecretConfig.DB_USER+':'+SecretConfig.DB_PASSWORD+'@'+PathInfo.SERVER_PATH
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False

@@ -74,10 +74,13 @@ var vue = new Vue({
         isLoading: false,
         isMobile: false,
         isLogged: false,
+
         regErrorMessage: '',
         loginErrorMessage: '',
+
         isNotReversed: 1,
         actualComparator: 'gpa',
+
         course: 'Менеджмент\$2', //пока не нужно
         directions: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
         priorities: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'], //перестановка пяти названий направлений
@@ -337,7 +340,8 @@ var vue = new Vue({
             this.isMobile ^= 1
         },
         arrayToStudentList: function (data){
-
+            this.students = data;
+            this.students.sort(this.compareByActual)
         },
         requestData: function () {
             var grand = this;
@@ -359,7 +363,7 @@ var vue = new Vue({
                 '',
                 function (data) {
                     console.log(data);
-                    this.arrayToStudentList(data);
+                    grand.arrayToStudentList(data);
                     grand.initCurrentStudent(grand.currentId);
                 }
             );
