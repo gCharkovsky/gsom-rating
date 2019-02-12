@@ -98,7 +98,11 @@ def calculate_gpa():  # TODO: Выполнить подсчет GPA с учет�
                 cnt += 1
                 scores += mark_values[subject.mark]
 
-    user.gpa = scores / cnt
+    if cnt>0:
+        user.gpa = scores / cnt
+    else:
+        user.gpa = 0
+
     return 0
 
 

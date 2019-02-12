@@ -87,14 +87,6 @@
         </div>
     </div>
     <aside>
-        <div class="side-card block custom-shadow" v-if="!isLogged">
-            <h3>Требуется вход</h3>
-            <div class="side-content">
-                <b style="cursor: pointer" v-on:click="showLoginModal()">Войдите</b> или <b style="cursor: pointer"
-                                                                                            v-on:click="showRegisterModal()">зарегистрируйтесь</b>,
-                чтобы заглянуть в будущее
-            </div>
-        </div>
         <div class="side-card block custom-shadow" v-if="isLogged">
             <h3>Приоритеты</h3>
             <div class="side-content" v-if="isPrioritiesEmpty">Вы еще не указали приоритеты.</div>
@@ -115,7 +107,7 @@
                 </div>
             </div>
         </div>
-        <div class="block login side-card custom-shadow">
+        <div class="block login side-card custom-shadow" v-if="isLogged">
             <form method="post" id="spbu-login-form" action="">
                 <b style="padding: 1em">{{validSt}}</b>
                 <input type="password" class="password" name="st_password" placeholder="Пароль" v-model="stPassword">
@@ -167,9 +159,9 @@
                     <input type="checkbox" class="checkbox" id="second-lang" v-model="scoreSecondLang">
                     <label for="second-lang">Учитывать оценку по второму иностранному</label>
                 </div>
+                <input type="button" class="btn-submit btn-left" @click="sendData()" value="Сохранить изменения">
             </div>
         </div>
-
     </div>
     <footer>
         <p>2019© <a href="https://vk.com/g_charkovsky">g.charkovsky</a>, <a href="https://vk.com/doreshnikov">d.oreshnikov</a>

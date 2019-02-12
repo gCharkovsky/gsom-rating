@@ -81,7 +81,7 @@ var vue = new Vue({
         isNotReversed: 1,
         actualComparator: 'gpa',
 
-        course: 'Менеджмент\$2', //пока не нужно
+        course: '', //пока не нужно
         directions: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
         priorities: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'], //перестановка пяти названий направлений
         user_namings: {
@@ -139,15 +139,7 @@ var vue = new Vue({
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
             this.isMobile = true;
         this.checkSession();
-
-        //this.getStudentsFromLongShityString();// TODO: Заменить на запрос в БД
-        this.requestData();
-        if (this.isLogged)
-            this.requestData();
-        else
-            this.initCurrentStudent(0);
-
-        this.predictProfiles()
+        //this.predictProfiles();
         var grand = this;
         this.resize();
         window.addEventListener("resize", grand.resize, false);
@@ -167,7 +159,7 @@ var vue = new Vue({
             var p = this.students.findIndex(this.isCurrent);
             p++;
             if (inTotal) {
-                return [Math.floor((p-1) / this.k_real)+1, this.theoreticalNumberOfStudents];
+                return [Math.floor((p - 1) / this.k_real) + 1, this.theoreticalNumberOfStudents];
             } else {
                 return [p, this.students.length];
             }
@@ -223,7 +215,12 @@ var vue = new Vue({
         },
         initCurrentStudent: function (id) {
             this.currentId = id;
+            console.log('Students:');
+            console.log(this.students);
+            console.log('Current:');
+            console.log(this.students.find(this.isCurrent));
             this.priorities = this.students.find(this.isCurrent)['priorities'];
+            console.log(this.priorities);
             this.priorities.reverse();
             this.priorities.reverse();
             console.log('Current student has id: ' + id);
@@ -339,8 +336,29 @@ var vue = new Vue({
         changeMobility: function () {
             this.isMobile ^= 1
         },
-        arrayToStudentList: function (data){
-            this.students = data;
+        arrayToPriorities: function (arr) {
+            let res = [];
+            for (let prior in arr) {
+                res[arr[prior]['priority']] = arr[prior]['track']['name'];
+            }
+            res.splice(0, 1);
+            return res;
+        },
+        arrayToStudentList: function (data) {
+            this.students = [];
+
+            for (let item in data) {
+                console.log(data[item]['priorities']);
+                console.log(this.arrayToPriorities(data[item]['priorities']));
+                let stud = {
+                    'id': data[item]['id'],
+                    'gpa': data[item]['gpa'],
+                    'username': data[item]['username'],
+                    'priorities': this.arrayToPriorities(data[item]['priorities'])
+                };
+                this.students.push(stud);
+            }
+            //this.students.splice(0, 1);
             this.students.sort(this.compareByActual)
         },
         requestData: function () {
@@ -350,23 +368,25 @@ var vue = new Vue({
                 'post',
                 '',
                 function (data) {
-                    grand.course = data.course;
-                    grand.currentId = data.id
-                }
-            );
-            console.log('Course: ' + grand.course);
-            //var course_str = grand.course.substr(0, grand.course.length-2)+'\$zzz'+grand.course.substr(grand.course.length-1,2);
-            //console.log('Course String: ' + course_str);
-            doAjax(
-                'http://127.0.0.1:5000/user/course_list/'+grand.course,
-                'get',
-                '',
-                function (data) {
                     console.log(data);
-                    grand.arrayToStudentList(data);
-                    grand.initCurrentStudent(grand.currentId);
+                    grand.course = data.course;
+                    grand.currentId = data.id;
+                    console.log('Course: ' + grand.course);
+                    doAjax(
+                        'http://127.0.0.1:5000/user/course_list/' + grand.course,
+                        'get',
+                        '',
+                        function (data) {
+                            console.log('Data:');
+                            console.log(data);
+                            grand.arrayToStudentList(data);
+                            grand.initCurrentStudent(grand.currentId);
+                            grand.predictProfiles();
+                        }
+                    );
                 }
             );
+
         },
         checkSession: function () {
             var grand = this;
@@ -376,6 +396,9 @@ var vue = new Vue({
                 '',
                 function (data) {
                     grand.isLogged = data.check;
+                    if (grand.isLogged) {
+                        grand.requestData();
+                    }
                 }
             );
             //this.isLogged = ($.cookie('token') != null);

@@ -116,6 +116,7 @@ var vue = new Vue({
             'HR': 'УЧР',
             'IM': 'Инфмен'
         },
+        tracks: ['Marketing','FM', 'Logistics', 'HR', 'IM']
     },
     created: function () {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
@@ -192,16 +193,6 @@ var vue = new Vue({
             this.isPrioritiesEmpty = false;
             this.sendData();
         },
-        sendPriorities: function () {
-            var grand = this;
-            doAjax(
-                'http://127.0.0.1:5000/user/update',
-                'post',
-                ''+grand.priorities,
-                function (data) {
-                }
-            )
-        },
         requestData: function () {
             var grand = this;
             doAjax(
@@ -218,9 +209,12 @@ var vue = new Vue({
                     grand.username = data.username;
                     grand.gpa = data.gpa;
                     if (data.priorities != null && data.priorities.length !== 0) {
-                        grand.priorities = data.priorities;
-                        console.log('Loaded priorities:' + data.priorities.length);
-                        console.log(data.priorities);
+                        for (let prior in data.priorities) {
+                            grand.priorities[data.priorities[prior]['priority']] = data.priorities[prior]['track']['name'];
+                        }
+                        grand.priorities.splice(0,1);
+                        console.log(grand.priorities);
+                        grand.isPrioritiesEmpty = false;
                     } else {
                         grand.isPrioritiesEmpty = true;
                         console.log('No priorities');
