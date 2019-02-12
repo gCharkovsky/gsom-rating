@@ -3,7 +3,6 @@
 import json
 from flask import Blueprint, request, session, jsonify
 
-
 from backend.db.user_db import User, UserSubject, UserTrack
 from backend.db.subject_db import *
 from backend.db.track_db import *
@@ -33,6 +32,7 @@ def profile(login):
 def me():
     id = session['user_id']
     user = User.get_one(id=id)
+    calculate_gpa()
     return jsonify(user)
 
 
@@ -48,7 +48,6 @@ def update_profile():
 
     user.priorities = []
     db.session.commit()
-
 
     prior_number = 0
     for prior in json.loads(request.form.to_dict()['data'])['priorities']:
@@ -66,6 +65,40 @@ def update_profile():
 
 
 def calculate_gpa():  # TODO: Выполнить подсчет GPA с учетом флага на второй иностранный без подключения к СПбГУ
+    id = session['user_id']
+    user = User.get_one(id=id)
+    mark_values = {
+        'A': 5,
+        'B': 4.5,
+        'C': 4,
+        'D': 3.5,
+        'E': 3,
+        'F': 0,
+        '5A': 5,
+        '5B': 4.7,
+        '4B': 4.3,
+        '4C': 4,
+        '4D': 3.7,
+        '3D': 3.3,
+        '3E': 3,
+        '2F': 0,
+    }
+    second_lang_names = [
+        'Испанский язык',
+        'Немецкий язык',
+        'Французский язык',
+    ]
+    scores, cnt = 0, 0
+    marks = user.scores
+
+    for subject in marks:
+        print(subject.mark)
+        if subject.is_relevant and subject.mark in mark_values.keys():
+            if user.score_second_lang or subject.subject.name not in second_lang_names:
+                cnt += 1
+                scores += mark_values[subject.mark]
+
+    user.gpa = scores / cnt
     return 0
 
 
@@ -133,6 +166,8 @@ def update_st():
 
         user.course = course['study_program'] + '$' + course['course_year']
         user.gpa = scores / cnt
+
+        calculate_gpa()
 
         db.session.commit()
         return jsonify({
