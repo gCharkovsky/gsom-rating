@@ -175,7 +175,7 @@ var vue = new Vue({
                     'priorities': grand.priorities,
                 }));
             doAjax(
-                'http://127.0.0.1:5000/user/update',
+                'https://gsom-rating.ru/user/update',
                 'post',
                 'data='+JSON.stringify({
                     'username': grand.username,
@@ -196,7 +196,7 @@ var vue = new Vue({
         requestData: function () {
             var grand = this;
             doAjax(
-                'http://127.0.0.1:5000/user/me',
+                'https://gsom-rating.ru/user/me',
                 'post',
                 '',
                 function (data) {
@@ -227,7 +227,7 @@ var vue = new Vue({
             console.log('st_login=' + grand.stLogin + '&password=' + grand.stPassword);
             grand.isLoading=true;
             doProbablyBadAjax(
-                'http://127.0.0.1:5000/user/update_st',
+                'https://gsom-rating.ru/user/update_st',
                 'post',
                 'st_login=' + grand.stLogin + '&password=' + grand.stPassword,
                 function (data) {
@@ -247,7 +247,7 @@ var vue = new Vue({
         checkSession: function () {
             var grand = this;
             doAjax(
-                'http://127.0.0.1:5000/auth/check',
+                'https://gsom-rating.ru/auth/check',
                 'post',
                 '',
                 function (data) {
@@ -260,7 +260,7 @@ var vue = new Vue({
             console.log('login');
             var grand = this;
             doAjax(
-                'http://127.0.0.1:5000/auth/authorize',
+                'https://gsom-rating.ru/auth/authorize',
                 'post',
                 $("#login-form").serialize(),
                 function (data) {
@@ -287,7 +287,7 @@ var vue = new Vue({
             var grand = this;
             if ($("#register-form input[type=password]")[0].value === $("#register-form input[type=password]")[1].value) {
                 doAjax(
-                    'http://127.0.0.1:5000/auth/register',
+                    'https://gsom-rating.ru/auth/register',
                     'post',
                     $("#register-form").serialize(),
                     function (data) {
@@ -310,7 +310,7 @@ var vue = new Vue({
             console.log('logout');
             var grand = this;
             doAjax(
-                'http://127.0.0.1:5000/auth/logout',
+                'https://gsom-rating.ru/auth/logout',
                 'post',
                 '',
                 function (data) {

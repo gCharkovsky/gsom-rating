@@ -34,7 +34,7 @@ class User(db.Model, JSONStripped):
     score_second_lang = \
         db.Column(db.Boolean, default=True)
     gpa = \
-        db.Column(db.Integer, default=0)
+        db.Column(db.Float, default=0)
     scores = \
         db.relationship('UserSubject', lazy='subquery', cascade='all, delete-orphan')
     priorities = \

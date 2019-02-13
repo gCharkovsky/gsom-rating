@@ -39,8 +39,8 @@
         </ul>
         <ul class="navbar-right">
             <li class="nav-item" v-if="isLogged">
-                <a class="nav-link" href="../user" v-if="!isMobile">Личный кабинет</a>
-                <a class="nav-link" href="../user" v-if="isMobile"><img class="ico-label" src="../static/images/icons/user-black.svg" alt="Account"></a>
+                <a class="nav-link" href="../user/" v-if="!isMobile">Личный кабинет</a>
+                <a class="nav-link" href="../user/" v-if="isMobile"><img class="ico-label" src="../static/images/icons/user-black.svg" alt="Account"></a>
             </li>
             <li class="nav-item">
                 <button class="login-menu-button" id="login-btn" v-if="!isLogged" v-on:click="showLoginModal()">Войти</button>

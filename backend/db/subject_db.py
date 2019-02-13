@@ -12,7 +12,7 @@ class Subject(db.Model, JSONStripped):
     id = \
         db.Column(db.Integer, primary_key=True)
     name = \
-        db.Column(db.String(60), unique=True)
+        db.Column(db.String(255), unique=True)
     term = \
         db.Column(db.Integer, index=True, nullable=False)
 

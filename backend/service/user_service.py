@@ -12,14 +12,15 @@ from backend.service.spbu_service import load_marks_as_array, load_course_as_dic
 user = Blueprint('user', __name__)
 
 
-@user.route('/course_list/<string:course>', methods=['GET'])
-def course_list(course):
-    # public_user_data = ['id', 'username', 'gpa', 'priorities']
+@user.route('/course_list', methods=['GET'], endpoint='course_list')
+@login_required
+def course_list():
+    course = user.course
     raw_list = User.get_all(course=course, is_public=True).all()
     res_list = []
     for elem in raw_list:
         res_list.append({'id': elem.id, 'username': elem.username, 'gpa': elem.gpa, 'priorities': elem.priorities})
-    return jsonify(res_list)  # TODO: выводить публичную инфу по ключам из массива public_user_data
+    return jsonify(res_list)
 
 
 @user.route('/profile/<string:login>', methods=['GET'])
@@ -32,7 +33,6 @@ def profile(login):
 def me():
     id = session['user_id']
     user = User.get_one(id=id)
-    calculate_gpa()
     return jsonify(user)
 
 
@@ -65,6 +65,7 @@ def update_profile():
 
 
 def calculate_gpa():  # TODO: Выполнить подсчет GPA с учетом флага на второй иностранный без подключения к СПбГУ
+    print('calc gpa')
     id = session['user_id']
     user = User.get_one(id=id)
     mark_values = {
@@ -92,13 +93,12 @@ def calculate_gpa():  # TODO: Выполнить подсчет GPA с учет�
     marks = user.scores
 
     for subject in marks:
-        print(subject.mark)
         if subject.is_relevant and subject.mark in mark_values.keys():
             if user.score_second_lang or subject.subject.name not in second_lang_names:
                 cnt += 1
                 scores += mark_values[subject.mark]
 
-    if cnt>0:
+    if cnt > 0:
         user.gpa = scores / cnt
     else:
         user.gpa = 0
@@ -168,7 +168,7 @@ def update_st():
                     cnt += 1
                     scores += mark_values[subject.mark]
 
-        user.course = course['study_program'] + '$' + course['course_year']
+        user.course = course['study_program'] + '_' + course['course_year']
         user.gpa = scores / cnt
 
         calculate_gpa()

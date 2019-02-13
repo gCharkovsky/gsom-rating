@@ -451,7 +451,7 @@ var vue = new Vue({
             var grand = this;
             grand.isLoading = true;
             doAjax(
-                'http://127.0.0.1:5000/spbu/load',
+                'https://gsom-rating.ru/spbu/load',
                 'post',
                 $("#spbu-login-form").serialize(),
                 function (data) {
@@ -468,7 +468,7 @@ var vue = new Vue({
             console.log('login');
             var grand = this;
             doAjax(
-                'http://127.0.0.1:5000/auth/authorize',
+                'https://gsom-rating.ru/auth/authorize',
                 'post',
                 $("#login-form").serialize(),
                 function (data) {
@@ -493,7 +493,7 @@ var vue = new Vue({
             var grand = this;
             if ($("#register-form input[type=password]")[0].value === $("#register-form input[type=password]")[1].value) {
                 doAjax(
-                    'http://127.0.0.1:5000/auth/register',
+                    'https://gsom-rating.ru/auth/register',
                     'post',
                     $("#register-form").serialize(),
                     function (data) {
@@ -516,7 +516,7 @@ var vue = new Vue({
             console.log('logout');
             var grand = this;
             doAjax(
-                'http://127.0.0.1:5000/auth/logout',
+                'https://gsom-rating.ru/auth/logout',
                 'post',
                 '',
                 function (data) {
