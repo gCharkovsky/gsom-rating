@@ -9,7 +9,7 @@ class PathInfo(object):
     DATABASE_DORESH_PATH = \
         r'C:\Users\isuca\projects\gsom-rating\tmp\test.sqlite'
     SERVER_PATH = \
-        r'gsom-rating.ru:3306/u0626898_gsrating'
+        r'gsom-rating.ru:3306/u0626898_gsbeta'
 
 class BaseConfig(SecretConfig):
     SQLALCHEMY_DATABASE_URI = \

@@ -32,7 +32,7 @@ class User(db.Model, JSONStripped):
     is_public = \
         db.Column(db.Boolean, default=True)
     score_second_lang = \
-        db.Column(db.Boolean, default=True)
+        db.Column(db.Boolean, default=False)
     gpa = \
         db.Column(db.Float, default=0)
     scores = \

@@ -563,7 +563,8 @@ svg.small-round-bar .gpa-num{
 }
 
 .account-item-name{
-
+    display: block;
+    width: 100%;
 }
 
 .account-item-value{

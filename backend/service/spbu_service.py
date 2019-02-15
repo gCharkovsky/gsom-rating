@@ -68,6 +68,11 @@ def authorize(username, password):
         })
 
 
+@spbu.route('/check', methods=['POST'])
+def check():
+    return authorize(request.form.get('st_login'), request.form.get('password'))
+
+
 @spbu.route('/load', methods=['POST'])
 def load():
     return jsonify(load_marks_as_array())

@@ -23,26 +23,34 @@
         <ul class="navbar-nav">
             <li class="nav-item">
                 <input type="checkbox" class="checkbox" id="mobile" name="mobile" v-model="isMobile">
-                <label for="mobile"><img class="ico-label" src="../static/images/icons/mobile.svg" alt="mobile"> </label>
+                <label for="mobile"><img class="ico-label" src="../static/images/icons/mobile.svg" alt="mobile">
+                </label>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="../calculator" v-if="!isMobile">Калькулятор</a>
-                <a class="nav-link" href="../calculator" v-if="isMobile"><img class="ico-label" src="../static/images/icons/calculator.svg" alt="Calculator"></a>
+                <a class="nav-link" href="../calculator/" v-if="!isMobile">Калькулятор</a>
+                <a class="nav-link" href="../calculator/" v-if="isMobile"><img class="ico-label"
+                                                                              src="../static/images/icons/calculator.svg"
+                                                                              alt="Calculator"></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#" v-if="!isMobile">Рейтинг</a>
-                <a class="nav-link" href="#" v-if="isMobile"><img class="ico-label" src="../static/images/icons/trophy.svg" alt="Rating"></a>
+                <a class="nav-link" href="#" v-if="isMobile"><img class="ico-label"
+                                                                  src="../static/images/icons/trophy.svg" alt="Rating"></a>
             </li>
 
         </ul>
         <ul class="navbar-right">
             <li class="nav-item" v-if="isLogged">
                 <a class="nav-link" href="../user/" v-if="!isMobile">Личный кабинет</a>
-                <a class="nav-link" href="../user/" v-if="isMobile"><img class="ico-label" src="../static/images/icons/user-black.svg" alt="Account"></a>
+                <a class="nav-link" href="../user/" v-if="isMobile"><img class="ico-label"
+                                                                         src="../static/images/icons/user-black.svg"
+                                                                         alt="Account"></a>
             </li>
             <li class="nav-item">
-                <button class="login-menu-button" id="login-btn" v-if="!isLogged" v-on:click="showLoginModal()">Войти</button>
-                <img class="ico-label" src="../static/images/icons/logout.svg" alt="Log Out" id="logout-btn" v-if="isLogged" v-on:click="logout()">
+                <button class="login-menu-button" id="login-btn" v-if="!isLogged" v-on:click="showLoginModal()">Войти
+                </button>
+                <img class="ico-label" src="../static/images/icons/logout.svg" alt="Log Out" id="logout-btn"
+                     v-if="isLogged" v-on:click="logout()">
             </li>
         </ul>
     </nav>
@@ -50,13 +58,14 @@
         <div class="modal-content block login">
             <h2>Вход</h2>
             <form method="post" id="login-form" action="">
-                <input type="text"  name="login" placeholder="Логин" >
+                <input type="text" name="login" placeholder="Логин">
                 <input type="password" class="password" name="password" placeholder="Пароль">
                 <p style="color:var(--gsom-main-color)">{{loginErrorMessage}}</p>
-                <input type="button" class="btn btn-submit" id="login" value="Войти"  v-on:click="login()">
+                <input type="button" class="btn btn-submit" id="login" value="Войти" v-on:click="login()">
 
             </form>
-            <input type="button" class="btn btn-secondary" id="reg-from-login-btn" value="Регистрация" v-on:click="hideLoginModal(); showRegisterModal()">
+            <input type="button" class="btn btn-secondary" id="reg-from-login-btn" value="Регистрация"
+                   v-on:click="hideLoginModal(); showRegisterModal()">
         </div>
     </div>
     <div id="register-modal" class="modal ">
@@ -65,12 +74,15 @@
             <form method="post" id="register-form" action="">
                 <input type="text" name="login" placeholder="Логин" autocomplete="off">
                 <input type="password" class="password" name="password" placeholder="Пароль" autocomplete="off">
-                <input type="password" class="password" name="password_copy" placeholder="Повторите пароль" autocomplete="off">
+                <input type="password" class="password" name="password_copy" placeholder="Повторите пароль"
+                       autocomplete="off">
                 <!--TODO: RE-capcha -->
                 <p style="color:var(--gsom-main-color)">{{regErrorMessage}}</p>
-                <input type="button" class="btn btn-submit" id="register" value="Зарегистрироваться" v-on:click="register()">
+                <input type="button" class="btn btn-submit" id="register" value="Зарегистрироваться"
+                       v-on:click="register()">
             </form>
-            <input type="button" class="btn btn-secondary" id="login-from-reg-btn" value="Вход"  v-on:click="hideRegisterModal(); showLoginModal()">
+            <input type="button" class="btn btn-secondary" id="login-from-reg-btn" value="Вход"
+                   v-on:click="hideRegisterModal(); showLoginModal()">
         </div>
     </div>
     <aside>
@@ -89,47 +101,47 @@
                     </svg>
 
                     <div style="display: inline-block; float:right; height:80px">
-                        <div class="rating-position"><b style="font-size:150%">{{getCurrentRatingPosition(false)[0]}}</b>/{{getCurrentRatingPosition(false)[1]}}</div>
-                        <div class="rating-position"><b style="font-size:150%">~{{getCurrentRatingPosition(true)[0]}}</b>/{{getCurrentRatingPosition(true)[1]}}</div>
+                        <div class="rating-position"><b
+                                style="font-size:150%">{{getCurrentRatingPosition(false)[0]}}</b>/{{getCurrentRatingPosition(false)[1]}}
+                        </div>
+                        <div class="rating-position"><b
+                                style="font-size:150%">~{{getCurrentRatingPosition(true)[0]}}</b>/{{getCurrentRatingPosition(true)[1]}}
+                        </div>
                     </div>
                     <img class="info-img" src="../static/images/icons/pedestal.svg" alt="rating">
                 </div>
 
-                <div>Прогноз: <b style="font-size:120%">{{user_namings[students.find(isCurrent)['predictedDirection']]}}</b></div>
+                <div>Прогноз: <b
+                        style="font-size:120%">{{user_namings[students.find(isCurrent)['predictedDirection']]}}</b>
+                </div>
             </div>
 
         </div>
-        <div class="side-card block custom-shadow" v-if="isLogged">
+        <div class="side-card block custom-shadow">
+            <div class="side-content" v-if="isPrioritiesEmpty">Вы еще не указали приоритеты.</div>
+            <input type="button" class="btn-submit btn-centered" value="Исправить!" v-if="priorities.length<5"
+                   @click="genPriorities()">
             <h3>Приоритеты</h3>
             <div class="priority" v-for="(prior,index) in priorities">
                 <img class="img-btn" alt="up" src="../static/images/icons/up-arrow.svg"
                      v-on:click="downPriority(index-1)"
-                ><div class="priority-name">{{user_namings[prior]}}</div
-                ><img class="img-btn" alt="down" src="../static/images/icons/down-arrow.svg"
+                >
+                <div class="priority-name">{{user_namings[prior]}}
+                </div
+                >
+                <img class="img-btn" alt="down" src="../static/images/icons/down-arrow.svg"
                      v-on:click="downPriority(index)">
                 <!--не трогать мусор!!! при переносе строк между img и div-ом вылезают неожиданные пробелы, от которых едет верстка -->
             </div>
         </div>
-        <div class="side-card block custom-shadow" v-if="!isLogged">
-            <h3>Требуется вход</h3>
-            <div class="side-content">
-                <b style="cursor: pointer" v-on:click="showLoginModal()">Войдите</b> или <b style="cursor: pointer" v-on:click="showRegisterModal()">зарегистрируйтесь</b>, чтобы заглянуть в будущее
-            </div>
-        </div>
-        <div class="side-card block custom-shadow" v-if="!isCourseCorrect()">
-            <h3>Только второй курс</h3>
-            <div class="side-content">
-                К сожалению, в данный момент рейтинг функционирует только для второго курса. Ждём и верим)
-            </div>
-        </div>
     </aside>
     <div class="container-wid">
-        <div class="long-content">
+        <div class="long-content" v-if="isLogged">
             <h2>Рейтинг</h2>
             <div class="block custom-shadow">
                 <div class="student-list">
                     <div class="students-header">
-                        <div class="student-index list-header" v-on:click="getStudentsFromLongShityString()">#</div>
+                        <div class="student-index list-header">#</div>
                         <div class="student-name list-header" v-on:click="sortStudentsBy('username')">Имя</div>
                         <div class="student-gpa list-header" v-on:click="sortStudentsBy('gpa')">GPA</div>
                         <div class="student-wanted-dir list-header" v-on:click="sortStudentsBy('expected')">Светлые
@@ -154,7 +166,44 @@
                 </div>
             </div>
         </div>
-
+        <div class="long-content" v-if="!isLogged">
+            <h2>Быстрая регистрация</h2>
+            <div class="block custom-shadow">
+                <div class="inner-content">
+                    <div class="account-item">
+                        <p>Логин: <b>{{stLogin}}</b></p>
+                        <p>Пароль: <b>Ваш st-пароль</b></p>
+                        Даже так мы не узнаем Ваш пароль от st. <a href="https://habr.com/ru/post/210760/"
+                                                                   target="_blank">Как это работает?</a>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="account-item">
+                        <label class="account-item-name">
+                            <b style="display: inline-block; width: 8em;">Никнейм:</b>
+                            <input v-model="username"> &ndash; так Вас видят другие пользователи
+                        </label>
+                        <label class="account-item-name">
+                            <b style="display: inline-block; width: 8em;">ST-login:</b>
+                            <input v-model="stLogin">
+                        </label>
+                        <label class="account-item-name">
+                            <b style="display: inline-block; width: 8em;">ST-password:</b>
+                            <input type="password" v-model="stPassword">
+                        </label>
+                    </div>
+                    <div class="account-item">
+                        <input type="checkbox" class="checkbox" id="is-public" v-model="isPublic">
+                        <label for="is-public">Учитывать в общем рейтинге</label>
+                    </div>
+                    <p><i>Не забудьте расставить приоритеты в панели</i> <i v-if="!isMobile">справа!</i><i v-if="isMobile">выше!</i></p>
+                    <input type="button" class="btn-submit btn-left" @click="fastRegister()"
+                           value="Зарегистрироваться!">
+                    <div v-if="isLoading">
+                        {{registration_status}}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <footer>
         <p>2019© <a href="https://vk.com/g_charkovsky">g.charkovsky</a>, <a href="https://vk.com/doreshnikov">d.oreshnikov</a>

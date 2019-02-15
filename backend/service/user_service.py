@@ -12,9 +12,11 @@ from backend.service.spbu_service import load_marks_as_array, load_course_as_dic
 user = Blueprint('user', __name__)
 
 
-@user.route('/course_list', methods=['GET'], endpoint='course_list')
+@user.route('/course_list', methods=['POST'], endpoint='course_list')
 @login_required
 def course_list():
+    id = session['user_id']
+    user = User.get_one(id=id)
     course = user.course
     raw_list = User.get_all(course=course, is_public=True).all()
     res_list = []

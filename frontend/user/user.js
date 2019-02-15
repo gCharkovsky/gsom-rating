@@ -99,7 +99,7 @@ var vue = new Vue({
 
         isPublic: true,
         scoreSecondLang: false,
-        username: 'user',
+        username: 'error',
 
         priorities: [],
         isPrioritiesEmpty: true,
@@ -107,7 +107,7 @@ var vue = new Vue({
         stLogin: '',
         validSt: '',
         stPassword: '',
-        course: '2m',
+        course: '',
 
         user_namings: {
             'Marketing': 'Маркетинг',

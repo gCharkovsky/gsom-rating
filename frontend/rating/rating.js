@@ -66,12 +66,36 @@ function toHex(n) {
         + "0123456789ABCDEF".charAt(n % 16);
 }
 
+function haiku() {
+    var adjs = ["autumn", "hidden", "bitter", "misty", "silent", "empty", "dry",
+        "dark", "summer", "icy", "delicate", "quiet", "white", "cool", "spring",
+        "winter", "patient", "twilight", "dawn", "crimson", "wispy", "weathered",
+        "blue", "billowing", "broken", "cold", "damp", "falling", "frosty", "green",
+        "long", "late", "lingering", "bold", "little", "morning", "muddy", "old",
+        "red", "rough", "still", "small", "sparkling", "throbbing", "shy",
+        "wandering", "withered", "wild", "black", "young", "holy", "solitary",
+        "fragrant", "aged", "snowy", "proud", "floral", "restless", "divine",
+        "polished", "ancient", "purple", "lively", "nameless"]
+
+        , nouns = ["waterfall", "river", "breeze", "moon", "rain", "wind", "sea",
+        "morning", "snow", "lake", "sunset", "pine", "shadow", "leaf", "dawn",
+        "glitter", "forest", "hill", "cloud", "meadow", "sun", "glade", "bird",
+        "brook", "butterfly", "bush", "dew", "dust", "field", "fire", "flower",
+        "firefly", "feather", "grass", "haze", "mountain", "night", "pond",
+        "darkness", "snowflake", "silence", "sound", "sky", "shape", "surf",
+        "thunder", "violet", "water", "wildflower", "wave", "water", "resonance",
+        "sun", "wood", "dream", "cherry", "tree", "fog", "frost", "voice", "paper",
+        "frog", "smoke", "star"];
+
+    return adjs[Math.floor(Math.random() * (adjs.length - 1))] + "_" + nouns[Math.floor(Math.random() * (nouns.length - 1))];
+}
 
 var vue = new Vue({
     el: "#rating",
     data: {
         sessionId: -1,
         isLoading: false,
+        isPreload:true,
         isMobile: false,
         isLogged: false,
 
@@ -81,9 +105,19 @@ var vue = new Vue({
         isNotReversed: 1,
         actualComparator: 'gpa',
 
-        course: '', //пока не нужно
+        isPublic: true,
+        scoreSecondLang: false,
+        username: haiku(),
+
+        priorities: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
+
+        stLogin: '',
+        stPassword: '',
+        registration_status: '',
+        course: '',
+
+
         directions: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
-        priorities: ['Marketing', 'FM', 'Logistics', 'HR', 'IM'], //перестановка пяти названий направлений
         user_namings: {
             'Marketing': 'Маркетинг',
             'FM': 'Финмен',
@@ -115,31 +149,12 @@ var vue = new Vue({
         currentId: 0,
         theoreticalNumberOfStudents: 135,
         k_real: 1,
-        students: [{
-            'id': 0,
-            'username': 'Goshan',
-            'priorities': ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
-            'gpa': 3.92,
-            'predictedDirection': 'IM'
-        }, {
-            'id': 1,
-            'username': 'Marketolog228',
-            'priorities': ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
-            'gpa': 4.12,
-            'predictedDirection': 'Marketing'
-        }, {
-            'id': 2,
-            'username': 'Marketolog229',
-            'priorities': ['Marketing', 'FM', 'Logistics', 'HR', 'IM'],
-            'gpa': 2.22,
-            'predictedDirection': 'Logistics'
-        }]
+        students: []
     },
     created: function () {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
             this.isMobile = true;
         this.checkSession();
-        //this.predictProfiles();
         var grand = this;
         this.resize();
         window.addEventListener("resize", grand.resize, false);
@@ -299,8 +314,17 @@ var vue = new Vue({
             } else {
                 console.log('невозможно изменить приоритет крайнего элемента')
             }
-
-            //TODO: this.sendPriorities();, reqest priorities
+            var grand = this;
+            doAjax(
+                'https://gsom-rating.ru/user/update',
+                'post',
+                'data=' + JSON.stringify({
+                    'priorities': grand.priorities,
+                }),
+                function () {
+                    console.log('success')
+                }
+            );
             var current = this.students.find(this.isCurrent);
             current['priorities'] = this.priorities;
             this.predictProfiles();
@@ -344,6 +368,20 @@ var vue = new Vue({
             res.splice(0, 1);
             return res;
         },
+        genPriorities: function () {
+            var grand = this;
+            this.priorities = ['Marketing', 'FM', 'Logistics', 'HR', 'IM'];
+            doAjax(
+                'https://gsom-rating.ru/user/update',
+                'post',
+                'data=' + JSON.stringify({
+                    'priorities': grand.priorities,
+                }),
+                function () {
+                    console.log('success')
+                }
+            )
+        },
         arrayToStudentList: function (data) {
             this.students = [];
 
@@ -359,6 +397,7 @@ var vue = new Vue({
                 this.students.push(stud);
             }
             //this.students.splice(0, 1);
+
             this.students.sort(this.compareByActual)
         },
         requestData: function () {
@@ -373,14 +412,19 @@ var vue = new Vue({
                     grand.currentId = data.id;
                     console.log('Course: ' + grand.course);
                     doAjax(
-                        'https://gsom-rating.ru/user/course_list/' + grand.course,
-                        'get',
-                        '',
+                        'https://gsom-rating.ru/user/course_list',
+                        'post',
+                        JSON.stringify({"course": grand.course}),
                         function (data) {
                             console.log('Data:');
                             console.log(data);
                             grand.arrayToStudentList(data);
                             grand.initCurrentStudent(grand.currentId);
+                            for (var stud in grand.students) {
+                                if (grand.students[stud]['priorities'].length < 5 && grand.students[stud]['id']!==grand.currentId) {
+                                    grand.students.splice(stud, 1);
+                                }
+                            }
                             grand.predictProfiles();
                         }
                     );
@@ -469,6 +513,92 @@ var vue = new Vue({
                     $.removeCookie('token', {path: '/'});
                     $("#register-modal")[0].style.display = "none";
                     $("#login-modal")[0].style.display = "none";
+                }
+            );
+        },
+        fastRegister: function () {
+            var grand = this;
+            grand.isLoading = true;
+            grand.registration_status = 'Проверяем корректность введенных данных';
+            doAjax(
+                'https://gsom-rating.ru/spbu/check', //check ST
+                'post',
+                'st_login=' + grand.stLogin + '&password=' + grand.stPassword,
+                function (data) {
+                    if (data.status === 'Invalid login/password') {
+                        grand.registration_status = 'Некорректные данные st';
+                        grand.isLoading = false;
+                    } else {
+                        grand.registration_status = 'Данные st верны, регистрируемся на сайте...';
+                        doAjax(
+                            'https://gsom-rating.ru/auth/register', //регистрируемся на сайте с логином и паролем, эквивалентными st
+                            'post',
+                            'login=' + grand.stLogin + '&password=' + grand.stPassword,
+                            function (data) {
+                                grand.registration_status = 'Успешная регистрация, вход...';
+                                if (data.status == null) {
+                                    doAjax(
+                                        'https://gsom-rating.ru/auth/authorize',
+                                        'post',
+                                        'login=' + grand.stLogin + '&password=' + grand.stPassword,
+                                        function (data) {
+                                            $.cookie('token', data.token, {path: '/'});
+                                            if (data.status == null) {
+                                                grand.registration_status = 'Вход выполнен, синхронизируемся с спбгу (это может занять некоторое время)...';
+                                                doAjax(
+                                                    'https://gsom-rating.ru/user/update_st',
+                                                    'post',
+                                                    'st_login=' + grand.stLogin + '&password=' + grand.stPassword,
+                                                    function (data) {
+                                                        if (data.marks.length > 0) {
+                                                            grand.registration_status = 'Данные синхронизированы. Обновляем информацию пользователя...';
+                                                            doAjax(
+                                                                'https://gsom-rating.ru/user/update',
+                                                                'post',
+                                                                'data=' + JSON.stringify({
+                                                                    'username': grand.username,
+                                                                    'is_public': grand.isPublic,
+                                                                    'score_second_lang': false,
+                                                                    'priorities': grand.priorities,
+                                                                }),
+                                                                function () {
+                                                                    grand.registration_status = 'Регистрация прошла успешно. Наслаждайтесь рейтингом.';
+                                                                    grand.isLoading = false;
+                                                                    grand.isLogged = true;
+                                                                    grand.requestData();
+                                                                    grand.username = haiku();
+                                                                    grand.stPassword = '';
+                                                                    grand.stLogin = '';
+                                                                }
+                                                            )
+                                                        } else {
+                                                            grand.registration_status = 'Синхронизация с спбгу пошла не по плану. Перейдите в Личный кабинет и повторите попытку';
+                                                            grand.isLoading = false;
+                                                        }
+                                                    });
+                                            } else if (data.status === 'No user with such login') {
+                                                grand.registration_status = 'Неверный логин. Что-то пошло не так';
+                                                grand.isLoading = false;
+                                            } else if (data.status === 'Invalid password') {
+                                                grand.registration_status = 'Неверный пароль. Что-то пошло не так';
+                                                grand.isLoading = false;
+                                            } else {
+                                                grand.registration_status = data.status;
+                                                grand.isLoading = false;
+                                            }
+                                        }
+                                    );
+                                } else if (data.status === 'Such login already exists') {
+                                    grand.registration_status = 'Логин занят. Возможно, Вы уже регистрировались на сайте';
+                                    grand.isLoading = false;
+                                } else {
+                                    grand.registration_status = data.status;
+                                    grand.isLoading = false;
+                                }
+                                console.log(data);
+                            }
+                        );
+                    }
                 }
             );
         },
