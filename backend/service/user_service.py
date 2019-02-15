@@ -1,13 +1,15 @@
 #!/var/www/u0626898/data/myenv/bin/python
 # -*- coding: utf-8 -*-
 import json
+import pandas
+from io import StringIO
 from flask import Blueprint, request, session, jsonify
 
 from backend.db.user_db import User, UserSubject, UserTrack
 from backend.db.subject_db import *
 from backend.db.track_db import *
 from backend.service.auth_service import login_required
-from backend.service.spbu_service import load_marks_as_array, load_course_as_dict
+from backend.service.spbu_service import load_marks_content, load_course_as_dict, to_digit
 
 user = Blueprint('user', __name__)
 
@@ -67,7 +69,6 @@ def update_profile():
 
 
 def calculate_gpa():  # TODO: Выполнить подсчет GPA с учетом флага на второй иностранный без подключения к СПбГУ
-    print('calc gpa')
     id = session['user_id']
     user = User.get_one(id=id)
     mark_values = {
@@ -147,37 +148,38 @@ def update_st():
         user.st_login = st_login
         user.st_password = password
 
-        marks = load_marks_as_array()
+        marks_raw = load_marks_content('2i0')
+        marks = pandas.read_csv(StringIO(marks_raw), sep=';')
+        marks['parsed'] = list(map(to_digit, marks['ОЦЕНКА'].values))
+
         course = load_course_as_dict()
         scores, cnt = 0, 0
 
         user.scores = []
         db.session.commit()
 
-        for term_number, term in enumerate(marks, 1):
-            for item in term:
+        for item in zip(
+                marks['НАЗВАНИЕ ДИСЦИПЛИНЫ'],
+                marks['parsed'] + marks['ДОП. ОЦЕНКА']
+        ):
+            if isinstance(item[1], str):
+                subject_id = Subject.get_or_insert(
+                    name=item[0],
+                    term=1
+                ).id
                 subject = UserSubject(
                     user_id=user.id,
-                    subject_id=Subject.get_or_insert(
-                        name=item['subject'],
-                        term=term_number
-                    ).id,
-                    mark=item['mark'],
+                    subject_id=subject_id,
+                    mark=item[1],
                     is_relevant=True,
                 )
                 user.scores.append(subject)
-                if subject.is_relevant and subject.mark in mark_values.keys():
-                    cnt += 1
-                    scores += mark_values[subject.mark]
 
         user.course = course['study_program'] + '_' + course['course_year']
-        user.gpa = scores / cnt
-
         calculate_gpa()
 
         db.session.commit()
         return jsonify({
-            'marks': marks,
             'gpa': user.gpa,
             'course': user.course,
         })

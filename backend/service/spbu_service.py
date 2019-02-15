@@ -8,12 +8,29 @@ from flask import Blueprint, request, session, jsonify
 spbu = Blueprint('spbu', __name__)
 SESSION_NAME = 'ASP.NET_SessionId'
 
+MARKS_MAP = {
+    'Неудовлетворительно': '2',
+    'Удовлетворительно': '3',
+    'Хорошо': '4',
+    'Отлично': '5',
+
+    'Зачтено': '',
+    'Не зачтено': '',
+
+    'Неявка': '-'
+}
+
+
+def to_digit(mark):
+    return MARKS_MAP.get(mark)
+
+
 _session_id = re.compile(r'{name}=([^;]*);'.format(name=SESSION_NAME))
 _username_field = re.compile(r'(Logon\$v0_[0-9]+\$MainLayoutEdit\$xaf_l12\$xaf_l35\$xaf_dviUserName_Edit)')
 _password_field = re.compile(r'(Logon\$v0_[0-9]+\$MainLayoutEdit\$xaf_l12\$xaf_l40\$xaf_dviPassword_Edit)')
 _event_validation = re.compile(r'id="__EVENTVALIDATION" value="([^"]+)"')
 
-_study_program = re.compile(r'<span id="[\w]+StudyProgram_Name_View">(\w+)</span>')
+_study_program = re.compile(r'<span id="[\w]+StudyProgram_Name_View">([^<]+)</span>')
 _course_year = re.compile(r'<span id="[\w]+Course_Name_View">([0-9]+)</span>')
 
 
@@ -75,10 +92,10 @@ def check():
 
 @spbu.route('/load', methods=['POST'])
 def load():
-    return jsonify(load_marks_as_array())
+    return jsonify(parse_all(load_marks_content()))
 
 
-def load_marks_as_array():
+def load_marks_content(link='2i4'):
     st_login = request.form['st_login']
     password = request.form['password']
     authorize(st_login, password)
@@ -102,10 +119,10 @@ def load_marks_as_array():
         'Connection': 'keep-alive',
     }, data={
         '__EVENTTARGET': 'globalCallbackControl',
-        '__EVENTARGUMENT': 'Vertical$mainMenu:2i4:XafCallback',
+        '__EVENTARGUMENT': 'Vertical$mainMenu:{link}:XafCallback'.format(link=link),
     })
 
-    return parse_all(response.content.decode('utf-8'))
+    return response.content.decode('utf-8')
 
 
 @spbu.route('/course', methods=['POST'])
@@ -133,17 +150,6 @@ def load_course_as_dict():
 
 
 def parse_all(text_data):
-    MARKS_MAP = {
-        'Неудовлетворительно': '2',
-        'Удовлетворительно': '3',
-        'Хорошо': '4',
-        'Отлично': '5',
-
-        'Зачтено': '',
-        'Не зачтено': '',
-
-        'Неявка': '-'
-    }
     MARKS_LETTERS = {
         'A', 'B', 'C', 'D', 'E', 'F',
     }

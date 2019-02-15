@@ -12,7 +12,7 @@ class Subject(db.Model, JSONStripped):
     id = \
         db.Column(db.Integer, primary_key=True)
     name = \
-        db.Column(db.String(255), unique=True)
+        db.Column(db.String(255))
     term = \
         db.Column(db.Integer, index=True, nullable=False)
 
@@ -36,5 +36,6 @@ class Subject(db.Model, JSONStripped):
 
     @staticmethod
     def get_or_insert(**kwargs):
-        subject = Subject.get_one(**kwargs)
-        return Subject.insert(**kwargs) if subject is None else subject
+        with db.session.no_autoflush:
+            subject = Subject.get_one(**kwargs)
+            return Subject.insert(**kwargs) if subject is None else subject

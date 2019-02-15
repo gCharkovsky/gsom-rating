@@ -4,9 +4,6 @@ from datetime import datetime
 from backend.db import db, JSONStripped
 
 
-
-
-
 class User(db.Model, JSONStripped):
     __tablename__ = 'user'
 
