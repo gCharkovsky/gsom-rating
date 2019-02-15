@@ -420,10 +420,21 @@ var vue = new Vue({
                             console.log(data);
                             grand.arrayToStudentList(data);
                             grand.initCurrentStudent(grand.currentId);
+                            var deathlist = [];
                             for (var stud in grand.students) {
                                 if (grand.students[stud]['priorities'].length < 5 && grand.students[stud]['id']!==grand.currentId) {
-                                    grand.students.splice(stud, 1);
+                                    console.log('student ' + grand.students[stud]['username'] + ' has no priorities');
+                                    deathlist.push(grand.students[stud]['id']);
                                 }
+                            }
+                            for (var bad_stud in deathlist){
+
+                                for (var stud in grand.students) {
+                                if (grand.students[stud]['id']===deathlist[bad_stud]) {
+                                    grand.students.splice(stud,1);
+                                    break;
+                                }
+                            }
                             }
                             grand.predictProfiles();
                         }

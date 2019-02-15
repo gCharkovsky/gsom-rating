@@ -122,7 +122,7 @@ var vue = new Vue({
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
             this.isMobile = true;
         this.checkSession();
-        this.requestData();
+
         var grand = this;
         this.resize();
         window.addEventListener("resize", grand.resize, false);
@@ -252,6 +252,9 @@ var vue = new Vue({
                 '',
                 function (data) {
                     grand.isLogged = data.check;
+                    if (grand.isLogged){
+                        this.requestData();
+                    }
                 }
             );
             //this.isLogged = ($.cookie('token') != null);
