@@ -95,7 +95,7 @@ var vue = new Vue({
     data: {
         sessionId: -1,
         isLoading: false,
-        isPreload:true,
+        isPreload: true,
         isMobile: false,
         isLogged: false,
 
@@ -171,8 +171,8 @@ var vue = new Vue({
             return student['id'] === this.currentId;
         },
         getCurrentRatingPosition: function (inTotal) {
-            var p = this.students.findIndex(this.isCurrent);
-            p++;
+            var p = this.students[this.students.findIndex(this.isCurrent)]['position'];
+            console.log(p);
             if (inTotal) {
                 return [Math.floor((p - 1) / this.k_real) + 1, this.theoreticalNumberOfStudents];
             } else {
@@ -398,6 +398,7 @@ var vue = new Vue({
             }
             //this.students.splice(0, 1);
 
+
             this.students.sort(this.compareByActual)
         },
         requestData: function () {
@@ -422,20 +423,24 @@ var vue = new Vue({
                             grand.initCurrentStudent(grand.currentId);
                             var deathlist = [];
                             for (var stud in grand.students) {
-                                if (grand.students[stud]['priorities'].length < 5 && grand.students[stud]['id']!==grand.currentId) {
+                                if (grand.students[stud]['priorities'].length < 5 && grand.students[stud]['id'] !== grand.currentId) {
                                     console.log('student ' + grand.students[stud]['username'] + ' has no priorities');
                                     deathlist.push(grand.students[stud]['id']);
                                 }
                             }
-                            for (var bad_stud in deathlist){
-
+                            for (var bad_stud in deathlist) {
                                 for (var stud in grand.students) {
-                                if (grand.students[stud]['id']===deathlist[bad_stud]) {
-                                    grand.students.splice(stud,1);
-                                    break;
+                                    if (grand.students[stud]['id'] === deathlist[bad_stud]) {
+                                        grand.students.splice(stud, 1);
+                                        break;
+                                    }
                                 }
                             }
+                            grand.students.sort(grand.compareByGpa);
+                            for (var i in grand.students) {
+                                grand.students[i]['position'] = (parseInt(i) + 1);
                             }
+                            grand.students.sort(grand.compareByActual);
                             grand.predictProfiles();
                         }
                     );

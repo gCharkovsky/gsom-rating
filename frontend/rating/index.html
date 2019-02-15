@@ -151,17 +151,20 @@
                             реальность
                         </div>
                     </div>
-                    <div class="student" v-for="(student, index)  in students"
-                         :class="{'current' : student['id']==students.find(isCurrent)['id']}">
-                        <div class="list-item-part student-index"
-                             :class="{'current' : student['id']==students.find(isCurrent)['id']}">{{index+1}}
+                    <div  v-for="(student, index)  in students">
+                        <div class="student" :class="{'current' : student['id']==students.find(isCurrent)['id']}">
+                            <div class="list-item-part student-index">{{student['position']}}</div>
+                            <div class="list-item-part student-name">{{student['username']}}</div>
+                            <div class="list-item-part student-gpa">{{student['gpa'].toFixed(3)}}</div>
+                            <div class="list-item-part student-wanted-dir">{{user_namings[student['priorities'][0]]}}
+                            </div>
+                            <div class="list-item-part student-expected-dir">
+                                {{user_namings[student['predictedDirection']]}}
+                            </div>
                         </div>
-                        <div class="list-item-part student-name">{{student['username']}}</div>
-                        <div class="list-item-part student-gpa">{{student['gpa'].toFixed(3)}}</div>
-                        <div class="list-item-part student-wanted-dir">{{user_namings[student['priorities'][0]]}}</div>
-                        <div class="list-item-part student-expected-dir">
-                            {{user_namings[student['predictedDirection']]}}
-                        </div>
+
+                        <div class="divider" v-if="index<students.length-1 && actualComparator==='expected' && students[index]['priorities'][0]!==students[index+1]['priorities'][0]"></div>
+                        <div class="divider" v-if="index<students.length-1 && actualComparator==='predicted' && students[index]['predictedDirection']!==students[index+1]['predictedDirection']"></div>
                     </div>
                 </div>
             </div>
