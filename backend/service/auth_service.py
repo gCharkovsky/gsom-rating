@@ -38,7 +38,7 @@ def login_required(action):
     return wrapper
 
 
-@auth.route('/register/', methods=['POST'])
+@auth.route('/register', methods=['POST'])
 def register():
     login = request.form.get('login')
     password = request.form.get('password')
@@ -63,7 +63,7 @@ def register():
         })
 
 
-@auth.route('/authorize/', methods=['POST'])
+@auth.route('/authorize', methods=['POST'])
 def authorize():
     login = request.form.get('login')
     password = request.form.get('password')
@@ -92,7 +92,7 @@ def authorize():
         })
 
 
-@auth.route('/logout/', methods=['POST'])
+@auth.route('/logout', methods=['POST'])
 def logout():
     if 'user_id' in session:
         session.pop('user_id')
@@ -101,7 +101,7 @@ def logout():
     })
 
 
-@auth.route('/check/', methods=['POST'])
+@auth.route('/check', methods=['POST'])
 def check():
     return jsonify({
         'check': 'user_id' in session,
