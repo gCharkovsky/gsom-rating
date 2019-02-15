@@ -12,7 +12,7 @@ from backend.service.spbu_service import load_marks_as_array, load_course_as_dic
 user = Blueprint('user', __name__)
 
 
-@user.route('/course_list', methods=['POST'], endpoint='course_list')
+@user.route('/course_list/', methods=['POST'], endpoint='course_list')
 @login_required
 def course_list():
     id = session['user_id']
@@ -25,12 +25,12 @@ def course_list():
     return jsonify(res_list)
 
 
-@user.route('/profile/<string:login>', methods=['GET'])
+@user.route('/profile/<string:login>/', methods=['GET'])
 def profile(login):
     return jsonify(User.get_one(login=login))
 
 
-@user.route('/me', methods=['POST'], endpoint='me')
+@user.route('/me/', methods=['POST'], endpoint='me')
 @login_required
 def me():
     id = session['user_id']
@@ -38,7 +38,7 @@ def me():
     return jsonify(user)
 
 
-@user.route('/update', methods=['POST'], endpoint='update_profile')
+@user.route('/update/', methods=['POST'], endpoint='update_profile')
 @login_required
 def update_profile():
     id = session['user_id']
@@ -108,7 +108,7 @@ def calculate_gpa():  # TODO: Выполнить подсчет GPA с учет�
     return 0
 
 
-@user.route('/update_st', methods=['POST'], endpoint='update_st')
+@user.route('/update_st/', methods=['POST'], endpoint='update_st')
 @login_required
 def update_st():
     id = session['user_id']

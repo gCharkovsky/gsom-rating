@@ -26,7 +26,7 @@ def parse_argument(text, arg):
     return re.findall(_arg, text)[0]
 
 
-@spbu.route('/authorize', methods=['POST'])
+@spbu.route('/authorize/', methods=['POST'])
 def authorize(username, password):
     session['cookies'] = {}
 
@@ -68,12 +68,12 @@ def authorize(username, password):
         })
 
 
-@spbu.route('/check', methods=['POST'])
+@spbu.route('/check/', methods=['POST'])
 def check():
     return authorize(request.form.get('st_login'), request.form.get('password'))
 
 
-@spbu.route('/load', methods=['POST'])
+@spbu.route('/load/', methods=['POST'])
 def load():
     return jsonify(load_marks_as_array())
 
@@ -108,7 +108,7 @@ def load_marks_as_array():
     return parse_all(response.content.decode('utf-8'))
 
 
-@spbu.route('/course', methods=['POST'])
+@spbu.route('/course/', methods=['POST'])
 def course():
     return jsonify(load_course_as_dict())
 
