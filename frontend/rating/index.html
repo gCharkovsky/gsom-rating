@@ -118,7 +118,7 @@
 
         </div>
         <div class="side-card block custom-shadow">
-            <div class="side-content" v-if="isPrioritiesEmpty">Вы еще не указали приоритеты.</div>
+            <div class="side-content" v-if="priorities.length<5">Вы еще не указали приоритеты.</div>
             <input type="button" class="btn-submit btn-centered" value="Исправить!" v-if="priorities.length<5"
                    @click="genPriorities()">
             <h3>Приоритеты</h3>

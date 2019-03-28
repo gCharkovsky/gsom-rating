@@ -253,7 +253,7 @@ var vue = new Vue({
                 function (data) {
                     grand.isLogged = data.check;
                     if (grand.isLogged){
-                        this.requestData();
+                        grand.requestData();
                     }
                 }
             );

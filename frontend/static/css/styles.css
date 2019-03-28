@@ -345,6 +345,10 @@ svg.small-round-bar .gpa-num{
     color: var(--gsom-main-color);
 }
 
+.mobile .navbar-brand{
+    display: none;
+}
+
 .navbar-nav {
     display: block;
     height: 100%;
